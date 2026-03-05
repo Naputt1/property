@@ -1,0 +1,117 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: naputt
+  IMAGE_NAME: property-backend
+  RUSTFS_URL: ${{ secrets.RUSTFS_URL }}
+  RUSTFS_ACCESS_KEY: ${{ secrets.RUSTFS_ACCESS_KEY }}
+  RUSTFS_SECRET_KEY: ${{ secrets.RUSTFS_SECRET_KEY }}
+  BUCKET_NAME: property
+  SERVER_IP: 100.109.25.99
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container # enables advanced caching
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Backend Docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          platforms: linux/arm64
+          context: ./backend
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cache,mode=max
+
+          # For Raspberry Pi (ARM), you might want to enable multi-arch build
+          # platforms: linux/amd64,linux/arm64
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install palumi dependencies
+        working-directory: infra/pulumi
+        run: pnpm install
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          hostname: github-runnervm
+
+      - name: Wait & Verify Connectivity to Tailscale
+        run: |
+          tailscale ping ras-pi.tail0684eb.ts.net || echo "Ping only via DERP, continuing..."
+
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Set up Pulumi
+        id: pulumi
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: Naputt1/prod
+          work-dir: infra/pulumi
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Build and Deploy Frontend to RustFS
+        run: |
+          cd infra/pulumi
+
+          RUSTFS_PORT=$(pulumi stack output rustfsPort)
+          RUSTFS_ACCESS_KEY=$(pulumi stack output rustfsAccessKey)
+          RUSTFS_SECRET_KEY=$(pulumi stack output rustfsPassword --show-secrets)
+
+          echo "::add-mask::$RUSTFS_SECRET_KEY"
+
+          cd ../../frontend
+          chmod +x upload-to-rustfs.sh
+
+          RUSTFS_URL="http://100.109.25.99:${RUSTFS_PORT}" \
+          RUSTFS_ACCESS_KEY="$RUSTFS_ACCESS_KEY" \
+          RUSTFS_SECRET_KEY="$RUSTFS_SECRET_KEY" \
+          ./upload-to-rustfs.sh
+        env:
+          BUCKET_NAME: ${{ env.BUCKET_NAME }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
