@@ -1,0 +1,3 @@
+name: property
+runtime: nodejs
+description: A Pulumi program to deploy property to k3s

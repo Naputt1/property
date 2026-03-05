@@ -1,0 +1,217 @@
+basePath: /api
+definitions:
+  backend_internal_models.CSVConfigPayload:
+    properties:
+      column_mapping:
+        additionalProperties:
+          type: string
+        type: object
+      file_path:
+        type: string
+      has_header:
+        type: boolean
+    required:
+    - file_path
+    type: object
+  internal_routes_api.BaseResponse:
+    properties:
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.ErrorResponse:
+    properties:
+      error:
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
+  internal_routes_api.JobResponse:
+    properties:
+      job_id:
+        type: string
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.LoginBody:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  internal_routes_api.LoginResponse:
+    properties:
+      status:
+        example: true
+        type: boolean
+      token:
+        type: string
+    type: object
+  internal_routes_api.PropertyListResponse:
+    properties:
+      data:
+        items: {}
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.PropertyResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a comprehensive API for analyzing and accessing UK housing
+    market and rental data.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: UK Housing Market & Rental Intelligence API
+  version: "1.0"
+paths:
+  /admin/upload:
+    post:
+      consumes:
+      - application/json
+      description: Queue a background job to migrate properties from a CSV file
+      parameters:
+      - description: CSV Migration Configuration
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_models.CSVConfigPayload'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/internal_routes_api.JobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Upload CSV for migration
+      tags:
+      - admin
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user with username and password
+      parameters:
+      - description: User login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_routes_api.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: User login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Log out the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+      summary: User logout
+      tags:
+      - auth
+  /property:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of UK housing properties with pagination and filtering
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.PropertyListResponse'
+      security:
+      - JwtAuth: []
+      summary: List properties
+      tags:
+      - property
+  /property/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information for a specific property
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.PropertyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Get property by ID
+      tags:
+      - property
+securityDefinitions:
+  JwtAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
