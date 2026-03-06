@@ -34,6 +34,7 @@ func (Job) TableName() string {
 }
 
 type CSVConfigPayload struct {
+	JobID         string            `json:"job_id"`
 	FilePath      string            `json:"file_path" binding:"required"`
 	ColumnMapping map[string]string `json:"column_mapping"`
 	HasHeader     bool              `json:"has_header"`

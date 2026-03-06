@@ -24,3 +24,10 @@ type JobRepository interface {
 	GetByID(ctx context.Context, id string) (*models.Job, error)
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
 }
+
+type AnalyticsRepository interface {
+	GetMedianPriceByRegion(ctx context.Context, regionType string) ([]models.MedianPriceResult, error)
+	GetPriceTrend(ctx context.Context, interval string) ([]models.PriceTrendResult, error)
+	GetAffordability(ctx context.Context) ([]models.AffordabilityResult, error)
+	GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error)
+}

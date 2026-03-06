@@ -49,7 +49,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/backend_internal_models.CSVConfigPayload"
+                            "$ref": "#/definitions/models.CSVConfigPayload"
                         }
                     }
                 ],
@@ -57,19 +57,170 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                            "$ref": "#/definitions/api.JobResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/affordability": {
+            "get": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Get relative affordability by property type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get affordability index",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.AffordabilityResult"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/growth-hotspots": {
+            "get": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Get top districts with highest price growth rate",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get growth hotspots",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of results",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.GrowthHotspotResult"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/median-price": {
+            "get": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Get median price grouped by county, district, or town_city",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get median price by region",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "county",
+                        "description": "Region type (county, district, town_city)",
+                        "name": "by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MedianPriceResult"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/price-trend": {
+            "get": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Get average and median price trends over time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get price trend analysis",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "month",
+                        "description": "Time interval (month, year)",
+                        "name": "interval",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.PriceTrendResult"
+                            }
                         }
                     }
                 }
@@ -95,7 +246,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.LoginBody"
+                            "$ref": "#/definitions/api.LoginBody"
                         }
                     }
                 ],
@@ -103,13 +254,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.LoginResponse"
+                            "$ref": "#/definitions/api.LoginResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -132,7 +283,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     }
                 }
@@ -160,7 +311,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PropertyListResponse"
+                            "$ref": "#/definitions/api.PropertyListResponse"
                         }
                     }
                 }
@@ -197,13 +348,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PropertyResponse"
+                            "$ref": "#/definitions/api.PropertyResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -211,7 +362,116 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "backend_internal_models.CSVConfigPayload": {
+        "api.BaseResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "api.JobResponse": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "api.LoginBody": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.PropertyListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {}
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "api.PropertyResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "models.AffordabilityResult": {
+            "type": "object",
+            "properties": {
+                "avg_price": {
+                    "type": "integer"
+                },
+                "property_type": {
+                    "type": "string"
+                },
+                "relative_affordability": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.CSVConfigPayload": {
             "type": "object",
             "required": [
                 "file_path"
@@ -231,98 +491,48 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.BaseResponse": {
+        "models.GrowthHotspotResult": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
+                "current_median": {
+                    "type": "integer"
                 },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "internal_routes_api.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
+                "growth_rate": {
+                    "type": "number"
                 },
-                "status": {
-                    "type": "boolean",
-                    "example": false
-                }
-            }
-        },
-        "internal_routes_api.JobResponse": {
-            "type": "object",
-            "properties": {
-                "job_id": {
-                    "type": "string"
+                "prev_median": {
+                    "type": "integer"
                 },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "internal_routes_api.LoginBody": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
+                "region": {
                     "type": "string"
                 }
             }
         },
-        "internal_routes_api.LoginResponse": {
+        "models.MedianPriceResult": {
             "type": "object",
             "properties": {
-                "status": {
-                    "type": "boolean",
-                    "example": true
+                "median_price": {
+                    "type": "integer"
                 },
-                "token": {
+                "region": {
                     "type": "string"
                 }
             }
         },
-        "internal_routes_api.PropertyListResponse": {
+        "models.PriceTrendResult": {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {}
+                "avg_price": {
+                    "type": "integer"
                 },
-                "message": {
+                "median_price": {
+                    "type": "integer"
+                },
+                "period": {
                     "type": "string"
                 },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "internal_routes_api.PropertyResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
+                "transaction_count": {
+                    "type": "integer"
                 }
             }
         }

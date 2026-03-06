@@ -166,9 +166,15 @@ func JwtSign(cfg *config.Config) func(*gin.Context) {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "User data not found in context"})
 			return
 		}
-		user := userData.(models.UserJwt)
+		userJwt := userData.(models.UserJwt)
 
-		accessTokenString, ok := token.CreateAccessToken(user, cfg.Opt.SecretKey, uint(cfg.Opt.TokenVersion))
+		var user models.User
+		if err := cfg.DB.First(&user, userJwt.Id).Error; err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "User not found"})
+			return
+		}
+
+		accessTokenString, ok := token.CreateAccessToken(userJwt, cfg.Opt.SecretKey, uint(cfg.Opt.TokenVersion))
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "Failed to create access token"})
 			return
@@ -183,7 +189,7 @@ func JwtSign(cfg *config.Config) func(*gin.Context) {
 		refresh_version := refreshVersionData.(int64)
 
 		refreshData := models.UserJwtRefresh{
-			Id: user.Id,
+			Id: userJwt.Id,
 		}
 
 		refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.NewRefreshTokenClaim(refreshData, uint(refresh_version), uint(cfg.Opt.TokenVersion)))
@@ -196,7 +202,10 @@ func JwtSign(cfg *config.Config) func(*gin.Context) {
 
 		SetCookie(c, token.REFRESH_TOKEN_NAME, refreshTokenString, token.REFRESH_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 
-		c.JSON(http.StatusOK, gin.H{"status": true})
+		c.JSON(http.StatusOK, gin.H{
+			"status": true,
+			"user":   user,
+		})
 	}
 }
 

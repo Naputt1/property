@@ -55,6 +55,9 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 		propertyGroup := apiGroup.Group("/property")
 		api.RegisterPropertyRoutes(propertyGroup, cfg, svcs.Property)
 
+		analyticsGroup := apiGroup.Group("/analytics")
+		api.RegisterAnalyticsRoutes(analyticsGroup, cfg, svcs.Analytics)
+
 		adminGroup := apiGroup.Group("/admin")
 		adminGroup.Use(middlewares.AdminMiddleware())
 		api.RegisterAdminRoutes(adminGroup, cfg, svcs.Job)

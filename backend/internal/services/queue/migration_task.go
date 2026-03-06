@@ -5,6 +5,7 @@ import (
 	"backend/internal/services"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -33,12 +34,21 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		return err
 	}
 
-	slog.Info("Starting CSV migration task", "file", payload.FilePath)
+	jobID := payload.JobID
+	slog.Info("Starting CSV migration task", "file", payload.FilePath, "job_id", jobID)
+
+	// Update job status to RUNNING
+	if jobID != "" {
+		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusRunning, "Processing CSV file")
+	}
 
 	// Open CSV file
 	file, err := os.Open(payload.FilePath)
 	if err != nil {
 		slog.Error("Failed to open CSV file", "error", err)
+		if jobID != "" {
+			_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to open file: %v", err))
+		}
 		return err
 	}
 	defer file.Close()
@@ -49,6 +59,9 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 	if payload.HasHeader {
 		if _, err := reader.Read(); err != nil {
 			slog.Error("Failed to read header", "error", err)
+			if jobID != "" {
+				_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to read header: %v", err))
+			}
 			return err
 		}
 	}
@@ -64,6 +77,9 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 			slog.Warn("Task cancelled by context")
 			if len(batch) > 0 {
 				_ = h.svcs.Property.CreateBatch(ctx, batch, len(batch)) 
+			}
+			if jobID != "" {
+				_ = h.svcs.Job.UpdateJobStatus(context.Background(), jobID, models.JobStatusFailed, "Task cancelled")
 			}
 			return ctx.Err()
 		default:
@@ -113,6 +129,9 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		if len(batch) >= batchSize {
 			if err := h.svcs.Property.CreateBatch(ctx, batch, batchSize); err != nil {
 				slog.Error("Failed to process batch", "error", err)
+				if jobID != "" {
+					_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to save batch: %v", err))
+				}
 				return err
 			}
 			batch = batch[:0] // clear batch
@@ -125,10 +144,21 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 	if len(batch) > 0 {
 		if err := h.svcs.Property.CreateBatch(ctx, batch, len(batch)); err != nil {
 			slog.Error("Failed to process final batch", "error", err)
+			if jobID != "" {
+				_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to save final batch: %v", err))
+			}
 			return err
 		}
 	}
 
-	slog.Info("CSV migration task completed successfully", "totalProcessed", totalProcessed)
+	// Invalidate analytics cache as new data has been added
+	_ = h.svcs.Analytics.ClearCache(ctx)
+
+	// Update job status to SUCCESS
+	if jobID != "" {
+		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusSuccess, fmt.Sprintf("Successfully processed %d records", totalProcessed))
+	}
+
+	slog.Info("CSV migration task completed successfully", "totalProcessed", totalProcessed, "job_id", jobID)
 	return nil
 }

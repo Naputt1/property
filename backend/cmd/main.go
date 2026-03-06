@@ -9,12 +9,15 @@ import (
 	"backend/internal/services/queue"
 	"context"
 	"flag"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/hibiken/asynq"
 )
 
 // @title UK Housing Market & Rental Intelligence API
@@ -51,15 +54,24 @@ func main() {
 	// Initialize Database Connection and auto-migrations
 	db.InitDB(cfg)
 
+	// Initialize asynq client
+	asynqClient := asynq.NewClient(asynq.RedisClientOpt{
+		Addr:     fmt.Sprintf("%s:%d", cfg.Opt.Redis.Host, cfg.Opt.Redis.Port),
+		Password: cfg.Opt.Redis.Password,
+		DB:       cfg.Opt.Redis.DB,
+	})
+	defer asynqClient.Close()
+
 	// Initialize Repositories
 	repos := services.Repositories{
-		User:     repository.NewUserRepository(cfg.DB),
-		Property: repository.NewPropertyRepository(cfg.DB),
-		Job:      repository.NewJobRepository(cfg.DB),
+		User:      repository.NewUserRepository(cfg.DB),
+		Property:  repository.NewPropertyRepository(cfg.DB),
+		Job:       repository.NewJobRepository(cfg.DB),
+		Analytics: repository.NewAnalyticsRepository(cfg.DB),
 	}
 
 	// Initialize Services
-	svcs := services.NewServices(repos)
+	svcs := services.NewServices(cfg, repos, asynqClient)
 
 	// Initialize and Start Asynq Server for background migration tasks
 	asynqSrv, err := queue.NewAsynqServer(cfg, svcs)
