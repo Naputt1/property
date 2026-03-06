@@ -20,6 +20,7 @@ type PropertyService interface {
 type JobService interface {
 	CreateJob(ctx context.Context, taskType string, payload []byte) (*models.Job, error)
 	UpdateJobStatus(ctx context.Context, id string, status models.JobStatus, message string) error
+	UpdateJobProgress(ctx context.Context, id string, progress, total int) error
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
 }
 

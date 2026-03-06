@@ -23,6 +23,13 @@ func (r *jobRepository) Update(ctx context.Context, job *models.Job) error {
 	return r.db.WithContext(ctx).Save(job).Error
 }
 
+func (r *jobRepository) UpdateProgress(ctx context.Context, id string, progress, total int) error {
+	return r.db.WithContext(ctx).Model(&models.Job{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"progress": progress,
+		"total":    total,
+	}).Error
+}
+
 func (r *jobRepository) GetByID(ctx context.Context, id string) (*models.Job, error) {
 	var job models.Job
 	err := r.db.WithContext(ctx).First(&job, "id = ?", id).Error

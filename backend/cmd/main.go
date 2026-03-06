@@ -7,6 +7,8 @@ import (
 	"backend/internal/routes"
 	"backend/internal/services"
 	"backend/internal/services/queue"
+	"backend/internal/socket"
+	"backend/internal/storage"
 	"context"
 	"flag"
 	"fmt"
@@ -51,6 +53,17 @@ func main() {
 	}
 	defer cfg.Close()
 
+	// Initialize Bucket Service
+	bucketSvc, err := storage.NewS3Service(cfg.Opt.Bucket)
+	if err != nil {
+		slog.Error("failed to initialize bucket service", "error", err)
+		os.Exit(1)
+	}
+	if err := bucketSvc.EnsureBucket(context.Background()); err != nil {
+		slog.Warn("failed to ensure bucket exists", "error", err)
+	}
+	cfg.RegisterBucket(bucketSvc)
+
 	// Initialize Database Connection and auto-migrations
 	db.InitDB(cfg)
 
@@ -62,6 +75,10 @@ func main() {
 	})
 	defer asynqClient.Close()
 
+	// Initialize WebSocket manager
+	socketMgr := socket.NewManager(cfg)
+	go socketMgr.Run()
+
 	// Initialize Repositories
 	repos := services.Repositories{
 		User:      repository.NewUserRepository(cfg.DB),
@@ -71,7 +88,7 @@ func main() {
 	}
 
 	// Initialize Services
-	svcs := services.NewServices(cfg, repos, asynqClient)
+	svcs := services.NewServices(cfg, repos, asynqClient, socketMgr)
 
 	// Initialize and Start Asynq Server for background migration tasks
 	asynqSrv, err := queue.NewAsynqServer(cfg, svcs)

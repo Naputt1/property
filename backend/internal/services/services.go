@@ -12,6 +12,7 @@ type Services struct {
 	Property  PropertyService
 	Job       JobService
 	Analytics AnalyticsService
+	Socket    repository.SocketService
 }
 
 type Repositories struct {
@@ -21,11 +22,12 @@ type Repositories struct {
 	Analytics repository.AnalyticsRepository
 }
 
-func NewServices(cfg *config.Config, repos Repositories, asynqClient *asynq.Client) *Services {
+func NewServices(cfg *config.Config, repos Repositories, asynqClient *asynq.Client, socket repository.SocketService) *Services {
 	return &Services{
 		User:      NewUserService(repos.User),
 		Property:  NewPropertyService(repos.Property),
 		Job:       NewJobService(repos.Job, asynqClient),
 		Analytics: NewAnalyticsService(cfg, repos.Analytics),
+		Socket:    socket,
 	}
 }

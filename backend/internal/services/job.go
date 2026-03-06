@@ -73,6 +73,10 @@ func (s *jobService) UpdateJobStatus(ctx context.Context, id string, status mode
 	return s.repo.Update(ctx, job)
 }
 
+func (s *jobService) UpdateJobProgress(ctx context.Context, id string, progress, total int) error {
+	return s.repo.UpdateProgress(ctx, id, progress, total)
+}
+
 func (s *jobService) GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error) {
 	return s.repo.GetJobs(ctx, limit, offset)
 }

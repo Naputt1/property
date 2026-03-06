@@ -6,11 +6,8 @@ import (
 	"backend/internal/services"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +16,7 @@ import (
 
 // StreamUploadCSV godoc
 // @Summary Stream upload CSV file
-// @Description Stream a large CSV file directly from the request body to disk and queue a migration job
+// @Description Stream a large CSV file directly from the request body to bucket and queue a migration job
 // @Tags admin
 // @Accept octet-stream
 // @Produce json
@@ -31,52 +28,38 @@ import (
 // @Router /admin/stream-upload [post]
 func StreamUploadCSV(c *gin.Context) {
 	svc := c.MustGet("jobService").(services.JobService)
+	cfg := c.MustGet("config").(*config.Config)
 	
 	originalFilename := c.DefaultQuery("filename", "upload.csv")
 
-	// Create temp directory if not exists
-	tempDir := "tmp/uploads"
-	if err := os.MkdirAll(tempDir, 0755); err != nil {
-		slog.Error("Failed to create upload directory", "error", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create upload directory"})
-		return
-	}
-
-	// Save file with unique name
-	filename := fmt.Sprintf("%s-%s", uuid.New().String(), originalFilename)
-	filePath := filepath.Join(tempDir, filename)
+	// Create unique key for the bucket
+	bucketKey := fmt.Sprintf("uploads/%s-%s", uuid.New().String(), originalFilename)
 	
-	out, err := os.Create(filePath)
-	if err != nil {
-		slog.Error("Failed to create local file", "error", err, "path", filePath)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create local file"})
-		return
-	}
-	defer out.Close()
+	slog.Info("Starting to stream upload to bucket", "filename", originalFilename, "bucketKey", bucketKey)
 
-	slog.Info("Starting to stream upload to disk", "filename", originalFilename, "path", filePath)
-
-	// Stream directly from request body to file
-	// This is synchronous to ensure file integrity before job creation
-	_, err = io.Copy(out, c.Request.Body)
-	if err != nil {
-		slog.Error("Failed during streaming to disk", "error", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed during streaming to disk"})
-		return
+	// Stream directly from request body to bucket
+	contentType := "text/csv"
+	if c.Request.Header.Get("Content-Type") != "" {
+		contentType = c.Request.Header.Get("Content-Type")
 	}
 
-	// Get absolute path
-	absPath, err := filepath.Abs(filePath)
+	size := c.Request.ContentLength
+	if size <= 0 {
+		size = -1
+	}
+
+	err := cfg.Bucket.Upload(c.Request.Context(), bucketKey, c.Request.Body, size, contentType)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to get absolute path"})
+		slog.Error("Failed during streaming to bucket", "error", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed during streaming to bucket"})
 		return
 	}
 
-	slog.Info("Stream upload completed, queuing migration job", "path", absPath)
+	slog.Info("Stream upload to bucket completed, queuing migration job", "bucketKey", bucketKey)
 
 	// Queue job
 	req := models.CSVConfigPayload{
-		FilePath:  absPath,
+		BucketKey: bucketKey,
 		HasHeader: true,
 	}
 
@@ -86,7 +69,6 @@ func StreamUploadCSV(c *gin.Context) {
 		return
 	}
 
-	// svc.CreateJob now properly enqueues to asynq
 	job, err := svc.CreateJob(c.Request.Context(), "properties:migrate:csv", payloadBytes)
 	if err != nil {
 		slog.Error("Failed to create migration job", "error", err)
@@ -105,7 +87,7 @@ func StreamUploadCSV(c *gin.Context) {
 
 // UploadCSVFile godoc
 // @Summary Upload CSV file directly
-// @Description Upload a CSV file via multipart/form-data and queue a migration job
+// @Description Upload a CSV file via multipart/form-data to bucket and queue a migration job
 // @Tags admin
 // @Accept multipart/form-data
 // @Produce json
@@ -117,6 +99,7 @@ func StreamUploadCSV(c *gin.Context) {
 // @Router /admin/upload-file [post]
 func UploadCSVFile(c *gin.Context) {
 	svc := c.MustGet("jobService").(services.JobService)
+	cfg := c.MustGet("config").(*config.Config)
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -124,31 +107,26 @@ func UploadCSVFile(c *gin.Context) {
 		return
 	}
 
-	// Create temp directory if not exists
-	tempDir := "tmp/uploads"
-	if err := os.MkdirAll(tempDir, 0755); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create upload directory"})
-		return
-	}
+	// Create unique key for the bucket
+	bucketKey := fmt.Sprintf("uploads/%s-%s", uuid.New().String(), file.Filename)
 
-	// Save file with unique name
-	filename := fmt.Sprintf("%s-%s", uuid.New().String(), file.Filename)
-	filePath := filepath.Join(tempDir, filename)
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to save uploaded file"})
-		return
-	}
-
-	// Get absolute path
-	absPath, err := filepath.Abs(filePath)
+	src, err := file.Open()
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to get absolute path"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to open uploaded file"})
+		return
+	}
+	defer src.Close()
+
+	err = cfg.Bucket.Upload(c.Request.Context(), bucketKey, src, file.Size, file.Header.Get("Content-Type"))
+	if err != nil {
+		slog.Error("Failed to upload to bucket", "error", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to upload to bucket"})
 		return
 	}
 
 	// Queue job
 	req := models.CSVConfigPayload{
-		FilePath:  absPath,
+		BucketKey: bucketKey,
 		HasHeader: true, // Default to true
 	}
 
