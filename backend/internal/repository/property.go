@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type propertyRepository struct {
@@ -20,7 +21,7 @@ func (r *propertyRepository) Create(ctx context.Context, property *models.Proper
 }
 
 func (r *propertyRepository) CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error {
-	return r.db.WithContext(ctx).CreateInBatches(properties, batchSize).Error
+	return r.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(properties, batchSize).Error
 }
 
 func (r *propertyRepository) GetByID(ctx context.Context, id string) (*models.Property, error) {
