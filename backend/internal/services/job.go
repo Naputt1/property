@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
@@ -51,7 +52,13 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 
 	// Enqueue to asynq
 	task := asynq.NewTask(taskType, payload)
-	info, err := s.asynqClient.Enqueue(task)
+	
+	var opts []asynq.Option
+	if taskType == "properties:migrate:csv" {
+		opts = append(opts, asynq.Timeout(2*time.Hour))
+	}
+
+	info, err := s.asynqClient.Enqueue(task, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to enqueue task: %w", err)
 	}
@@ -79,4 +86,8 @@ func (s *jobService) UpdateJobProgress(ctx context.Context, id string, progress,
 
 func (s *jobService) GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error) {
 	return s.repo.GetJobs(ctx, limit, offset)
+}
+
+func (s *jobService) GetJobByID(ctx context.Context, id string) (*models.Job, error) {
+	return s.repo.GetByID(ctx, id)
 }

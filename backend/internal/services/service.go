@@ -22,6 +22,7 @@ type JobService interface {
 	UpdateJobStatus(ctx context.Context, id string, status models.JobStatus, message string) error
 	UpdateJobProgress(ctx context.Context, id string, progress, total int) error
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
+	GetJobByID(ctx context.Context, id string) (*models.Job, error)
 }
 
 type AnalyticsService interface {

@@ -38,6 +38,8 @@ func (Job) TableName() string {
 type CSVConfigPayload struct {
 	JobID         string            `json:"job_id"`
 	BucketKey     string            `json:"bucket_key"`
+	File          string            `json:"file"` // Backward compatibility
+	Path          string            `json:"path"` // Backward compatibility
 	ColumnMapping map[string]string `json:"column_mapping"`
 	HasHeader     bool              `json:"has_header"`
 }

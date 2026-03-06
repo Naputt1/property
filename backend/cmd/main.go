@@ -73,6 +73,11 @@ func main() {
 		Password: cfg.Opt.Redis.Password,
 		DB:       cfg.Opt.Redis.DB,
 	})
+
+	if err := asynqClient.Ping(); err != nil {
+		slog.Error("failed to connect to Redis", "error", err)
+	}
+
 	defer asynqClient.Close()
 
 	// Initialize WebSocket manager
@@ -96,7 +101,7 @@ func main() {
 		slog.Error("failed to initialize asynq server", "error", err)
 		os.Exit(1)
 	}
-	
+
 	go func() {
 		if err := asynqSrv.Start(); err != nil {
 			slog.Error("Failed to start asynq server", "error", err)
