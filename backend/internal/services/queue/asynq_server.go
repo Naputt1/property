@@ -38,7 +38,7 @@ func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, 
 	mux.Use(loggingMiddleware)
 
 	// Register handlers
-	migrationHandler := NewMigrationHandler(svcs)
+	migrationHandler := NewMigrationHandler(svcs, cfg.Bucket)
 	mux.HandleFunc("properties:migrate:csv", migrationHandler.HandleCSVMigrateTask)
 
 	server := &AsynqServer{

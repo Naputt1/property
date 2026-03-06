@@ -44,6 +44,10 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	r.GET("/ws", middlewares.JwtAuth(cfg), func(c *gin.Context) {
+		svcs.Socket.ServeWS(c)
+	})
+
 	// Auth routes
 	authGroup := r.Group("/api/auth")
 	api.RegisterAuthRoutes(authGroup, cfg)

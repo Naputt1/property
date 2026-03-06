@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"backend/internal/repository"
+
 	"github.com/caarlos0/env/v10"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
@@ -30,9 +32,18 @@ type OptionRedis struct {
 	DB       int    `env:"REDIS_DB" envDefault:"0"`
 }
 
+type OptionBucket struct {
+	Endpoint   string `env:"BUCKET_ENDPOINT" envDefault:"http://localhost:9000"`
+	AccessKey  string `env:"BUCKET_ACCESS_KEY" envDefault:"rustfsadmin"`
+	SecretKey  string `env:"BUCKET_SECRET_KEY" envDefault:"rustfsadmin"`
+	UseSSL     bool   `env:"BUCKET_USE_SSL" envDefault:"false"`
+	BucketName string `env:"BUCKET_NAME" envDefault:"property-data"`
+}
+
 type Option struct {
 	DB           OptionDatabase
 	Redis        OptionRedis
+	Bucket       OptionBucket
 	SecretKey    string `env:"SECRET_KEY" envDefault:"secret"`
 	TokenVersion int    `env:"TOKEN_VERSION" envDefault:"1"`
 	Port         string `env:"PORT" envDefault:"8080"`
@@ -40,9 +51,10 @@ type Option struct {
 }
 
 type Config struct {
-	DB    *gorm.DB
-	Redis *redis.Client
-	Opt   Option
+	DB     *gorm.DB
+	Redis  *redis.Client
+	Bucket repository.BucketService
+	Opt    Option
 }
 
 func (c *Config) Close() {
@@ -56,6 +68,10 @@ func (c *Config) Close() {
 	if c.Redis != nil {
 		c.Redis.Close()
 	}
+}
+
+func (c *Config) RegisterBucket(bucket repository.BucketService) {
+	c.Bucket = bucket
 }
 
 func CreateConfig() (*Config, error) {
@@ -115,6 +131,12 @@ const (
 	CONTEXT_USER            = "user"
 	CONTEXT_VERSION         = "version"
 	CONTEXT_REFRESH_VERSION = "version"
+)
+
+type WsMessageType string
+
+const (
+	WsMessageTypeJobUpdate WsMessageType = "job_update"
 )
 
 const DEFAULT_USER = "admin"

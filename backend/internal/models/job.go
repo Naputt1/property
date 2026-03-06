@@ -27,6 +27,8 @@ type Job struct {
 	Message  string         `json:"message"`          // For error messages or success info
 	Payload  datatypes.JSON `json:"payload"`          // Custom data the job was initiated with
 	Result   datatypes.JSON `json:"result,omitempty"` // Data resulting from completion/failure
+	Progress int            `gorm:"default:0" json:"progress"`
+	Total    int            `gorm:"default:0" json:"total"`
 }
 
 func (Job) TableName() string {
@@ -35,7 +37,7 @@ func (Job) TableName() string {
 
 type CSVConfigPayload struct {
 	JobID         string            `json:"job_id"`
-	FilePath      string            `json:"file_path" binding:"required"`
+	BucketKey     string            `json:"bucket_key"`
 	ColumnMapping map[string]string `json:"column_mapping"`
 	HasHeader     bool              `json:"has_header"`
 }

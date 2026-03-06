@@ -1,30 +1,34 @@
 package queue
 
 import (
+	"backend/internal/config"
 	"backend/internal/models"
+	"backend/internal/repository"
 	"backend/internal/services"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"os"
 
 	"encoding/csv"
 	"io"
 	"strconv"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 )
 
 type MigrationHandler struct {
-	svcs *services.Services
+	svcs   *services.Services
+	bucket repository.BucketService
 }
 
-func NewMigrationHandler(svcs *services.Services) *MigrationHandler {
+func NewMigrationHandler(svcs *services.Services, bucket repository.BucketService) *MigrationHandler {
 	return &MigrationHandler{
-		svcs: svcs,
+		svcs:   svcs,
+		bucket: bucket,
 	}
 }
 
@@ -35,25 +39,25 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 	}
 
 	jobID := payload.JobID
-	slog.Info("Starting CSV migration task", "file", payload.FilePath, "job_id", jobID)
+	slog.Info("Starting CSV migration task", "bucket_key", payload.BucketKey, "job_id", jobID)
 
 	// Update job status to RUNNING
 	if jobID != "" {
-		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusRunning, "Processing CSV file")
+		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusRunning, "Processing CSV file from bucket")
 	}
 
-	// Open CSV file
-	file, err := os.Open(payload.FilePath)
+	// Open CSV from bucket
+	object, totalSize, err := h.bucket.GetObject(ctx, payload.BucketKey)
 	if err != nil {
-		slog.Error("Failed to open CSV file", "error", err)
+		slog.Error("Failed to get object from bucket", "error", err)
 		if jobID != "" {
-			_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to open file: %v", err))
+			_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to open bucket object: %v", err))
 		}
 		return err
 	}
-	defer file.Close()
+	defer object.Close()
 
-	reader := csv.NewReader(file)
+	reader := csv.NewReader(object)
 	
 	// UK Land Registry dataset doesn't have headers by default, but it's configurable
 	if payload.HasHeader {
@@ -69,6 +73,8 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 	var batch []models.Property
 	batchSize := 1000
 	totalProcessed := 0
+	lastProgressUpdate := time.Now()
+	bytesRead := int64(0)
 
 	for {
 		// Respect context cancellation
@@ -94,8 +100,13 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 			continue
 		}
 
+		// Estimate bytes read (very rough estimate based on record content)
+		for _, s := range record {
+			bytesRead += int64(len(s)) + 1 // +1 for comma
+		}
+		bytesRead += 1 // for newline
+
 		// Very basic mapping based on dataset.csv
-		// Ensure record length is sufficient
 		if len(record) < 16 {
 			slog.Warn("Skipping malformed record", "record", record)
 			continue
@@ -105,7 +116,7 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		dateOfTransfer, _ := time.Parse("2006-01-02 15:04", record[2])
 
 		property := models.Property{
-			ID:               uuid.New().String(), // Generate new UUID for primary key
+			ID:               uuid.New().String(), 
 			Price:            price,
 			DateOfTransfer:   dateOfTransfer,
 			Postcode:         record[3],
@@ -136,7 +147,31 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 			}
 			batch = batch[:0] // clear batch
 			
-			slog.Info("Processed batch", "total", totalProcessed)
+			// Update progress every 5 seconds
+			if time.Since(lastProgressUpdate) >= 5*time.Second {
+				progress := 0
+				if totalSize > 0 {
+					progress = int((float64(bytesRead) / float64(totalSize)) * 100)
+					if progress > 100 {
+						progress = 99 // Cap at 99 until finish
+					}
+				}
+				
+				if jobID != "" {
+					_ = h.svcs.Job.UpdateJobProgress(ctx, jobID, progress, totalProcessed)
+					h.svcs.Socket.Broadcast(gin.H{
+						"type": config.WsMessageTypeJobUpdate,
+						"data": gin.H{
+							"id":       jobID,
+							"status":   models.JobStatusRunning,
+							"progress": progress,
+							"total":    totalProcessed,
+						},
+					})
+				}
+				lastProgressUpdate = time.Now()
+				slog.Info("Processed progress", "total", totalProcessed, "progress", progress)
+			}
 		}
 	}
 
@@ -151,13 +186,26 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		}
 	}
 
-	// Invalidate analytics cache as new data has been added
+	// Invalidate analytics cache
 	_ = h.svcs.Analytics.ClearCache(ctx)
 
 	// Update job status to SUCCESS
 	if jobID != "" {
 		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusSuccess, fmt.Sprintf("Successfully processed %d records", totalProcessed))
+		_ = h.svcs.Job.UpdateJobProgress(ctx, jobID, 100, totalProcessed)
+		h.svcs.Socket.Broadcast(gin.H{
+			"type": config.WsMessageTypeJobUpdate,
+			"data": gin.H{
+				"id":       jobID,
+				"status":   models.JobStatusSuccess,
+				"progress": 100,
+				"total":    totalProcessed,
+			},
+		})
 	}
+
+	// Optional: Delete from bucket after successful migration
+	// _ = h.bucket.RemoveObject(ctx, h.bucketName, payload.BucketKey, minio.RemoveObjectOptions{})
 
 	slog.Info("CSV migration task completed successfully", "totalProcessed", totalProcessed, "job_id", jobID)
 	return nil
