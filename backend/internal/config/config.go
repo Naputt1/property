@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v10"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -39,8 +40,9 @@ type Option struct {
 }
 
 type Config struct {
-	DB  *gorm.DB
-	Opt Option
+	DB    *gorm.DB
+	Redis *redis.Client
+	Opt   Option
 }
 
 func (c *Config) Close() {
@@ -49,6 +51,10 @@ func (c *Config) Close() {
 		if err == nil {
 			sqlDB.Close()
 		}
+	}
+
+	if c.Redis != nil {
+		c.Redis.Close()
 	}
 }
 
@@ -59,7 +65,11 @@ func CreateConfig() (*Config, error) {
 		return nil, fmt.Errorf("failed to parse env: %w", err)
 	}
 
-	logFile, err := os.OpenFile("backend.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logDir := "logs"
+	if _, err := os.Stat(logDir); os.IsNotExist(err) {
+		_ = os.Mkdir(logDir, 0755)
+	}
+	logFile, err := os.OpenFile(fmt.Sprintf("%s/backend.log", logDir), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
@@ -87,9 +97,17 @@ func CreateConfig() (*Config, error) {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Minute * 5)
 
+	// Redis client initialization
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", opt.Redis.Host, opt.Redis.Port),
+		Password: opt.Redis.Password,
+		DB:       opt.Redis.DB,
+	})
+
 	return &Config{
-		DB:  db,
-		Opt: *opt,
+		DB:    db,
+		Redis: rdb,
+		Opt:   *opt,
 	}, nil
 }
 

@@ -30,6 +30,5 @@ tmp
 file/**.**
 
 !.gitkeep
-log.txt
+logs/*.log
 postgres-data
-backend.log

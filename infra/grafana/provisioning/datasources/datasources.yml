@@ -1,13 +1,14 @@
 apiVersion: 1
 
 datasources:
-  - name: Prometheus
+  - name: Property-Prometheus
+    uid: prop-prometheus
     type: prometheus
     access: proxy
     url: http://prometheus:9090
-    isDefault: true
     editable: true
-  - name: Loki
+  - name: Property-Loki
+    uid: prop-loki
     type: loki
     access: proxy
     url: http://loki:3100

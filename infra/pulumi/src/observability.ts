@@ -345,7 +345,7 @@ providers:
                 {
                   datasource: { type: "prometheus", uid: "Prometheus" },
                   editorMode: "code",
-                  expr: "rate(gin_http_requests_total[5m])",
+                  expr: "rate(gin_requests_total[5m])",
                   format: "time_series",
                   range: true,
                   refId: "A",
@@ -405,7 +405,7 @@ providers:
                 {
                   datasource: { type: "prometheus", uid: "Prometheus" },
                   editorMode: "code",
-                  expr: "sum(rate(gin_http_request_duration_seconds_sum[5m])) / sum(rate(gin_http_request_duration_seconds_count[5m]))",
+                  expr: "sum(rate(gin_request_duration_seconds_sum[5m])) / sum(rate(gin_request_duration_seconds_count[5m]))",
                   format: "time_series",
                   range: true,
                   refId: "A",

@@ -1,6 +1,79 @@
 basePath: /api
 definitions:
-  backend_internal_models.CSVConfigPayload:
+  api.BaseResponse:
+    properties:
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
+  api.JobResponse:
+    properties:
+      job_id:
+        type: string
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  api.LoginBody:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  api.LoginResponse:
+    properties:
+      status:
+        example: true
+        type: boolean
+      token:
+        type: string
+    type: object
+  api.PropertyListResponse:
+    properties:
+      data:
+        items: {}
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  api.PropertyResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  models.AffordabilityResult:
+    properties:
+      avg_price:
+        type: integer
+      property_type:
+        type: string
+      relative_affordability:
+        type: number
+    type: object
+  models.CSVConfigPayload:
     properties:
       column_mapping:
         additionalProperties:
@@ -13,69 +86,34 @@ definitions:
     required:
     - file_path
     type: object
-  internal_routes_api.BaseResponse:
+  models.GrowthHotspotResult:
     properties:
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  internal_routes_api.ErrorResponse:
-    properties:
-      error:
-        type: string
-      status:
-        example: false
-        type: boolean
-    type: object
-  internal_routes_api.JobResponse:
-    properties:
-      job_id:
-        type: string
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  internal_routes_api.LoginBody:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  internal_routes_api.LoginResponse:
-    properties:
-      status:
-        example: true
-        type: boolean
-      token:
+      current_median:
+        type: integer
+      growth_rate:
+        type: number
+      prev_median:
+        type: integer
+      region:
         type: string
     type: object
-  internal_routes_api.PropertyListResponse:
+  models.MedianPriceResult:
     properties:
-      data:
-        items: {}
-        type: array
-      message:
+      median_price:
+        type: integer
+      region:
         type: string
-      status:
-        example: true
-        type: boolean
     type: object
-  internal_routes_api.PropertyResponse:
+  models.PriceTrendResult:
     properties:
-      data: {}
-      message:
+      avg_price:
+        type: integer
+      median_price:
+        type: integer
+      period:
         type: string
-      status:
-        example: true
-        type: boolean
+      transaction_count:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -103,27 +141,121 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/backend_internal_models.CSVConfigPayload'
+          $ref: '#/definitions/models.CSVConfigPayload'
       produces:
       - application/json
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/internal_routes_api.JobResponse'
+            $ref: '#/definitions/api.JobResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Upload CSV for migration
       tags:
       - admin
+  /analytics/affordability:
+    get:
+      consumes:
+      - application/json
+      description: Get relative affordability by property type
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AffordabilityResult'
+            type: array
+      security:
+      - JwtAuth: []
+      summary: Get affordability index
+      tags:
+      - analytics
+  /analytics/growth-hotspots:
+    get:
+      consumes:
+      - application/json
+      description: Get top districts with highest price growth rate
+      parameters:
+      - default: 10
+        description: Number of results
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GrowthHotspotResult'
+            type: array
+      security:
+      - JwtAuth: []
+      summary: Get growth hotspots
+      tags:
+      - analytics
+  /analytics/median-price:
+    get:
+      consumes:
+      - application/json
+      description: Get median price grouped by county, district, or town_city
+      parameters:
+      - default: county
+        description: Region type (county, district, town_city)
+        in: query
+        name: by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MedianPriceResult'
+            type: array
+      security:
+      - JwtAuth: []
+      summary: Get median price by region
+      tags:
+      - analytics
+  /analytics/price-trend:
+    get:
+      consumes:
+      - application/json
+      description: Get average and median price trends over time
+      parameters:
+      - default: month
+        description: Time interval (month, year)
+        in: query
+        name: interval
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PriceTrendResult'
+            type: array
+      security:
+      - JwtAuth: []
+      summary: Get price trend analysis
+      tags:
+      - analytics
   /auth/login:
     post:
       consumes:
@@ -135,18 +267,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/internal_routes_api.LoginBody'
+          $ref: '#/definitions/api.LoginBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_routes_api.LoginResponse'
+            $ref: '#/definitions/api.LoginResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
       summary: User login
       tags:
       - auth
@@ -161,7 +293,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_routes_api.BaseResponse'
+            $ref: '#/definitions/api.BaseResponse'
       summary: User logout
       tags:
       - auth
@@ -176,7 +308,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_routes_api.PropertyListResponse'
+            $ref: '#/definitions/api.PropertyListResponse'
       security:
       - JwtAuth: []
       summary: List properties
@@ -199,11 +331,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_routes_api.PropertyResponse'
+            $ref: '#/definitions/api.PropertyResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Get property by ID

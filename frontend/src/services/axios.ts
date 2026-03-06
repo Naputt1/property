@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import { useAuthStore } from "@/store/auth";
 import type {
   AxiosError,
   AxiosHeaderValue,
@@ -64,10 +65,12 @@ export type ApiResponse<T = any, TError = any, TMeta = any> =
   | ApiResponseSuccess<T>
   | ApiResponseError<TError, TMeta>;
 
-function initAxios() {
+export function initAxios() {
+  const { clearAuth } = useAuthStore.getState();
+
   const axiosInstance = axios.create({
     baseURL: axiosConfig.baseURL,
-    timeout: 10000,
+    timeout: 30000,
     headers: {
       "Content-Type": "application/json",
     },
@@ -86,7 +89,8 @@ function initAxios() {
 
       if (error.response) {
         if (error.response.status === 401) {
-          // Handle unauthorized, maybe redirect to login or refresh token
+          clearAuth();
+          // Handle unauthorized, maybe redirect to login
           if (window.location.pathname !== "/login") {
             window.location.href = "/login";
           }

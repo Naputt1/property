@@ -22,3 +22,11 @@ type JobService interface {
 	UpdateJobStatus(ctx context.Context, id string, status models.JobStatus, message string) error
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
 }
+
+type AnalyticsService interface {
+	GetMedianPriceByRegion(ctx context.Context, regionType string) ([]models.MedianPriceResult, error)
+	GetPriceTrend(ctx context.Context, interval string) ([]models.PriceTrendResult, error)
+	GetAffordability(ctx context.Context) ([]models.AffordabilityResult, error)
+	GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error)
+	ClearCache(ctx context.Context) error
+}
