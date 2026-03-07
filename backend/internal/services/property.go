@@ -14,8 +14,8 @@ func NewPropertyService(repo repository.PropertyRepository) PropertyService {
 	return &propertyService{repo: repo}
 }
 
-func (s *propertyService) GetProperties(ctx context.Context, limit, offset int) ([]models.Property, int64, error) {
-	return s.repo.GetProperties(ctx, limit, offset)
+func (s *propertyService) GetProperties(ctx context.Context, filters map[string]interface{}, limit, offset int) ([]models.Property, int64, error) {
+	return s.repo.GetProperties(ctx, filters, limit, offset)
 }
 
 func (s *propertyService) GetPropertyByID(ctx context.Context, id string) (*models.Property, error) {
