@@ -69,3 +69,23 @@ type GrowthHotspotResponse struct {
 	BaseResponse
 	Data []models.GrowthHotspotResult `json:"data"`
 }
+
+type NewBuildPremiumResponse struct {
+	BaseResponse
+	Data []models.NewBuildPremiumResult `json:"data"`
+}
+
+type PropertyTypeDistributionResponse struct {
+	BaseResponse
+	Data []models.PropertyTypeDistributionResult `json:"data"`
+}
+
+type PriceBracketResponse struct {
+	BaseResponse
+	Data []models.PriceBracketResult `json:"data"`
+}
+
+type TopActiveAreaResponse struct {
+	BaseResponse
+	Data []models.TopActiveAreaResult `json:"data"`
+}

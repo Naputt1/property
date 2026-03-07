@@ -143,16 +143,99 @@ func (s *analyticsService) GetGrowthHotspots(ctx context.Context, limit int) ([]
 	return results, nil
 }
 
+func (s *analyticsService) GetNewBuildPremium(ctx context.Context, regionType string) ([]models.NewBuildPremiumResult, error) {
+	cacheKey := fmt.Sprintf("%snew_build_premium:%s", AnalyticsCachePrefix, regionType)
+	var results []models.NewBuildPremiumResult
+
+	found, _ := s.getCached(ctx, cacheKey, &results)
+	if found {
+		return results, nil
+	}
+
+	results, err := s.repo.GetNewBuildPremium(ctx, regionType)
+	if err != nil {
+		return nil, err
+	}
+
+	s.setCache(ctx, cacheKey, results)
+	return results, nil
+}
+
+func (s *analyticsService) GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error) {
+	cacheKey := fmt.Sprintf("%sproperty_type_distribution", AnalyticsCachePrefix)
+	var results []models.PropertyTypeDistributionResult
+
+	found, _ := s.getCached(ctx, cacheKey, &results)
+	if found {
+		return results, nil
+	}
+
+	results, err := s.repo.GetPropertyTypeDistribution(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	s.setCache(ctx, cacheKey, results)
+	return results, nil
+}
+
+func (s *analyticsService) GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error) {
+	cacheKey := fmt.Sprintf("%sprice_bracket_distribution", AnalyticsCachePrefix)
+	var results []models.PriceBracketResult
+
+	found, _ := s.getCached(ctx, cacheKey, &results)
+	if found {
+		return results, nil
+	}
+
+	results, err := s.repo.GetPriceBracketDistribution(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	s.setCache(ctx, cacheKey, results)
+	return results, nil
+}
+
+func (s *analyticsService) GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error) {
+	cacheKey := fmt.Sprintf("%stop_active_areas:%s:%d", AnalyticsCachePrefix, regionType, limit)
+	var results []models.TopActiveAreaResult
+
+	found, _ := s.getCached(ctx, cacheKey, &results)
+	if found {
+		return results, nil
+	}
+
+	results, err := s.repo.GetTopActiveAreas(ctx, regionType, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	s.setCache(ctx, cacheKey, results)
+	return results, nil
+}
+
 func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 	slog.Info("Starting analytics cache pre-computation")
 	start := time.Now()
 
-	// Precompute median price by region
 	regions := []string{"county", "district", "town_city"}
+
+	// Precompute median price by region
 	for _, region := range regions {
 		_, err := s.GetMedianPriceByRegion(ctx, region)
 		if err != nil {
 			slog.Error("failed to precompute median price", "region", region, "error", err)
+		}
+
+		_, err = s.GetNewBuildPremium(ctx, region)
+		if err != nil {
+			slog.Error("failed to precompute new build premium", "region", region, "error", err)
+		}
+
+		_, err = s.GetTopActiveAreas(ctx, region, 10)
+		if err != nil {
+			slog.Error("failed to precompute top active areas", "region", region, "error", err)
 		}
 	}
 
@@ -175,6 +258,17 @@ func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 	_, err = s.GetGrowthHotspots(ctx, 10)
 	if err != nil {
 		slog.Error("failed to precompute growth hotspots", "error", err)
+	}
+
+	// Precompute distributions
+	_, err = s.GetPropertyTypeDistribution(ctx)
+	if err != nil {
+		slog.Error("failed to precompute property type distribution", "error", err)
+	}
+
+	_, err = s.GetPriceBracketDistribution(ctx)
+	if err != nil {
+		slog.Error("failed to precompute price bracket distribution", "error", err)
 	}
 
 	slog.Info("Analytics cache pre-computation completed", "duration", time.Since(start))
