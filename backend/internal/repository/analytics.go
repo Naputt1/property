@@ -113,3 +113,94 @@ func (r *analyticsRepository) GetGrowthHotspots(ctx context.Context, limit int) 
 	err := r.db.WithContext(ctx).Raw(query, limit).Scan(&results).Error
 	return results, err
 }
+
+func (r *analyticsRepository) GetNewBuildPremium(ctx context.Context, regionType string) ([]models.NewBuildPremiumResult, error) {
+	var results []models.NewBuildPremiumResult
+
+	validRegions := map[string]bool{"county": true, "district": true, "town_city": true}
+	if !validRegions[regionType] {
+		return nil, fmt.Errorf("invalid region type: %s", regionType)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT %s as region,
+		       AVG(CASE WHEN old_new = 'Y' THEN price END)::bigint as new_avg,
+		       AVG(CASE WHEN old_new = 'N' THEN price END)::bigint as old_avg,
+		       CASE 
+		           WHEN AVG(CASE WHEN old_new = 'N' THEN price END) > 0 
+		           THEN ((AVG(CASE WHEN old_new = 'Y' THEN price END) - AVG(CASE WHEN old_new = 'N' THEN price END)) / AVG(CASE WHEN old_new = 'N' THEN price END)) * 100
+		           ELSE 0 
+		       END as premium_percent
+		FROM properties
+		WHERE %s IS NOT NULL AND %s != ''
+		GROUP BY region
+		HAVING AVG(CASE WHEN old_new = 'Y' THEN price END) IS NOT NULL
+		   AND AVG(CASE WHEN old_new = 'N' THEN price END) IS NOT NULL
+		ORDER BY premium_percent DESC
+	`, regionType, regionType, regionType)
+
+	err := r.db.WithContext(ctx).Raw(query).Scan(&results).Error
+	return results, err
+}
+
+func (r *analyticsRepository) GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error) {
+	var results []models.PropertyTypeDistributionResult
+
+	query := `
+		SELECT property_type,
+		       COUNT(*) as count,
+		       (COUNT(*)::float / (SELECT COUNT(*) FROM properties)::float) * 100 as percentage
+		FROM properties
+		GROUP BY property_type
+		ORDER BY count DESC
+	`
+
+	err := r.db.WithContext(ctx).Raw(query).Scan(&results).Error
+	return results, err
+}
+
+func (r *analyticsRepository) GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error) {
+	var results []models.PriceBracketResult
+
+	query := `
+		SELECT 
+			CASE 
+				WHEN price < 150000 THEN '< £150k'
+				WHEN price >= 150000 AND price < 250000 THEN '£150k - £250k'
+				WHEN price >= 250000 AND price < 500000 THEN '£250k - £500k'
+				WHEN price >= 500000 AND price < 1000000 THEN '£500k - £1M'
+				ELSE '> £1M'
+			END as bracket,
+			COUNT(*) as count,
+			(COUNT(*)::float / (SELECT COUNT(*) FROM properties)::float) * 100 as percentage
+		FROM properties
+		GROUP BY bracket
+		ORDER BY MIN(price) ASC
+	`
+
+	err := r.db.WithContext(ctx).Raw(query).Scan(&results).Error
+	return results, err
+}
+
+func (r *analyticsRepository) GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error) {
+	var results []models.TopActiveAreaResult
+
+	validRegions := map[string]bool{"county": true, "district": true, "town_city": true}
+	if !validRegions[regionType] {
+		return nil, fmt.Errorf("invalid region type: %s", regionType)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT %s as region,
+		       COUNT(*) as transaction_count,
+		       SUM(price)::bigint as total_value
+		FROM properties
+		WHERE %s IS NOT NULL AND %s != ''
+		GROUP BY region
+		ORDER BY transaction_count DESC
+		LIMIT ?
+	`, regionType, regionType, regionType)
+
+	err := r.db.WithContext(ctx).Raw(query, limit).Scan(&results).Error
+	return results, err
+}

@@ -30,6 +30,10 @@ type AnalyticsService interface {
 	GetPriceTrend(ctx context.Context, interval string) ([]models.PriceTrendResult, error)
 	GetAffordability(ctx context.Context) ([]models.AffordabilityResult, error)
 	GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error)
+	GetNewBuildPremium(ctx context.Context, regionType string) ([]models.NewBuildPremiumResult, error)
+	GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error)
+	GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error)
+	GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error)
 	PrecomputeCache(ctx context.Context) error
 	ClearCache(ctx context.Context) error
 }

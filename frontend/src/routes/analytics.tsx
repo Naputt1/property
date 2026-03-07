@@ -11,12 +11,19 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import {
   medianPriceQuery,
   priceTrendQuery,
   affordabilityQuery,
   growthHotspotsQuery,
+  newBuildPremiumQuery,
+  propertyTypeDistributionQuery,
+  priceBracketDistributionQuery,
+  topActiveAreasQuery,
 } from "@/query/analytics";
 import { useQuery } from "@tanstack/react-query";
 
@@ -24,9 +31,20 @@ export const Route = createFileRoute("/analytics")({
   component: Analytics,
 });
 
+const COLORS = [
+  "#2563eb",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+];
+
 function Analytics() {
   const [regionType, setRegionType] = useState("county");
   const [trendInterval, setTrendInterval] = useState("month");
+  const [premiumRegion, setPremiumRegion] = useState("county");
+  const [activeAreaRegion, setActiveAreaRegion] = useState("district");
 
   const { data: medianPrices, isLoading: loadingMedian } = useQuery(
     medianPriceQuery.getOptions({ param: { by: regionType } }),
@@ -40,11 +58,20 @@ function Analytics() {
   const { data: hotspots, isLoading: loadingHotspots } = useQuery(
     growthHotspotsQuery.getOptions({ param: { limit: 10 } }),
   );
-
-  // const medianPrices = (medianPricesRes as any)?.data || [];
-  // const priceTrends = (priceTrendsRes as any)?.data || [];
-  // const affordability = (affordabilityRes as any)?.data || [];
-  // const hotspots = (hotspotsRes as any)?.data || [];
+  const { data: newBuildPremium, isLoading: loadingPremium } = useQuery(
+    newBuildPremiumQuery.getOptions({ param: { by: premiumRegion } }),
+  );
+  const { data: typeDistribution, isLoading: loadingTypeDist } = useQuery(
+    propertyTypeDistributionQuery.getOptions({}),
+  );
+  const { data: bracketDistribution, isLoading: loadingBracketDist } = useQuery(
+    priceBracketDistributionQuery.getOptions({}),
+  );
+  const { data: activeAreas, isLoading: loadingActiveAreas } = useQuery(
+    topActiveAreasQuery.getOptions({
+      param: { by: activeAreaRegion, limit: 10 },
+    }),
+  );
 
   const formatPrice = (value: number | undefined) => {
     if (value === undefined) return "£0";
@@ -53,6 +80,18 @@ function Analytics() {
       currency: "GBP",
       maximumFractionDigits: 0,
     }).format(value);
+  };
+
+  const getPropertyTypeName = (type: string | undefined) => {
+    if (!type) return "Unknown";
+    const types: Record<string, string> = {
+      D: "Detached",
+      S: "Semi-Detached",
+      T: "Terraced",
+      F: "Flats",
+      O: "Other",
+    };
+    return types[type] || type;
   };
 
   return (
@@ -64,112 +103,294 @@ function Analytics() {
         </p>
       </header>
 
-      {/* Median Price Section */}
-      <section className="bg-white p-6 rounded-xl border shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Median Price by Region</h2>
-          <select
-            className="border rounded px-3 py-1 text-sm bg-gray-50"
-            value={regionType}
-            onChange={(e) => setRegionType(e.target.value)}
-          >
-            <option value="county">County</option>
-            <option value="district">District</option>
-            <option value="town_city">Town/City</option>
-          </select>
-        </div>
-        <div className="h-[400px] w-full">
-          {!loadingMedian ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={medianPrices?.slice(0, 15)}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="region" fontSize={12} tickMargin={10} />
-                <YAxis
-                  tickFormatter={(value) => `£${value / 1000}k`}
-                  fontSize={12}
-                />
-                <Tooltip
-                  formatter={(value: any) => formatPrice(Number(value))}
-                  contentStyle={{
-                    borderRadius: "8px",
-                    border: "none",
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                  }}
-                />
-                <Bar
-                  dataKey="median_price"
-                  fill="#2563eb"
-                  radius={[4, 4, 0, 0]}
-                  name="Median Price"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              Loading...
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Main Trends Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        {/* Price Trend Section */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Market Price Trends</h2>
+            <select
+              className="border rounded px-3 py-1 text-sm bg-gray-50"
+              value={trendInterval}
+              onChange={(e) => setTrendInterval(e.target.value)}
+            >
+              <option value="month">Monthly</option>
+              <option value="year">Yearly</option>
+            </select>
+          </div>
+          <div className="h-87.5 w-full">
+            {!loadingTrends ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={priceTrends}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="period" fontSize={12} tickMargin={10} />
+                  <YAxis
+                    tickFormatter={(value) => `£${value / 1000}k`}
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    formatter={(value: any) => formatPrice(Number(value))}
+                  />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="avg_price"
+                    stroke="#2563eb"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Average Price"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="median_price"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Median Price"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
 
-      {/* Price Trend Section */}
-      <section className="bg-white p-6 rounded-xl border shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Market Price Trends</h2>
-          <select
-            className="border rounded px-3 py-1 text-sm bg-gray-50"
-            value={trendInterval}
-            onChange={(e) => setTrendInterval(e.target.value)}
-          >
-            <option value="month">Monthly</option>
-            <option value="year">Yearly</option>
-          </select>
-        </div>
-        <div className="h-[400px] w-full">
-          {!loadingTrends ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={priceTrends}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="period" fontSize={12} tickMargin={10} />
-                <YAxis
-                  tickFormatter={(value) => `£${value / 1000}k`}
-                  fontSize={12}
-                />
-                <Tooltip
-                  formatter={(value: any) => formatPrice(Number(value))}
-                />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="avg_price"
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Average Price"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="median_price"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Median Price"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              Loading...
-            </div>
-          )}
-        </div>
-      </section>
+        {/* Median Price Section */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Median Price by Region</h2>
+            <select
+              className="border rounded px-3 py-1 text-sm bg-gray-50"
+              value={regionType}
+              onChange={(e) => setRegionType(e.target.value)}
+            >
+              <option value="county">County</option>
+              <option value="district">District</option>
+              <option value="town_city">Town/City</option>
+            </select>
+          </div>
+          <div className="h-87.5 w-full">
+            {!loadingMedian ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={medianPrices?.slice(0, 15)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="region" fontSize={12} tickMargin={10} />
+                  <YAxis
+                    tickFormatter={(value) => `£${value / 1000}k`}
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    formatter={(value: any) => formatPrice(Number(value))}
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
+                  />
+                  <Bar
+                    dataKey="median_price"
+                    fill="#2563eb"
+                    radius={[4, 4, 0, 0]}
+                    name="Median Price"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* Complex Analytics Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* New Build Premium */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">New Build Premium</h2>
+            <select
+              className="border rounded px-3 py-1 text-sm bg-gray-50"
+              value={premiumRegion}
+              onChange={(e) => setPremiumRegion(e.target.value)}
+            >
+              <option value="county">County</option>
+              <option value="district">District</option>
+            </select>
+          </div>
+          <div className="h-87.5 w-full">
+            {!loadingPremium ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={newBuildPremium?.slice(0, 10)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="region" fontSize={10} />
+                  <YAxis
+                    tickFormatter={(value) => `£${value / 1000}k`}
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    formatter={(value: any) => formatPrice(Number(value))}
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="new_avg"
+                    fill="#8b5cf6"
+                    name="New Build Avg"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="old_avg"
+                    fill="#94a3b8"
+                    name="Established Avg"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Top Active Areas */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Most Active Areas</h2>
+            <select
+              className="border rounded px-3 py-1 text-sm bg-gray-50"
+              value={activeAreaRegion}
+              onChange={(e) => setActiveAreaRegion(e.target.value)}
+            >
+              <option value="district">District</option>
+              <option value="town_city">Town/City</option>
+              <option value="county">County</option>
+            </select>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-50 text-gray-600 uppercase text-xs font-medium">
+                <tr>
+                  <th className="px-4 py-3">Region</th>
+                  <th className="px-4 py-3 text-right">Transactions</th>
+                  <th className="px-4 py-3 text-right">Total Value</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {!loadingActiveAreas ? (
+                  activeAreas?.map((area, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-medium">{area.region}</td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {area.transaction_count.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {formatPrice(area.total_value)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="px-4 py-8 text-center text-gray-400"
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      {/* Distribution Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Property Type Distribution */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <h2 className="text-lg font-semibold mb-6">Property Type Stock</h2>
+          <div className="h-75 w-full">
+            {!loadingTypeDist ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={typeDistribution}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="count"
+                    nameKey="property_type"
+                    label={({ name }) => getPropertyTypeName(name)}
+                  >
+                    {typeDistribution?.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: any, name: any) => [
+                      value.toLocaleString(),
+                      getPropertyTypeName(name as string),
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Price Bracket Distribution */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm md:col-span-2">
+          <h2 className="text-lg font-semibold mb-6">Market Price Segments</h2>
+          <div className="h-75 w-full">
+            {!loadingBracketDist ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={bracketDistribution}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="bracket" fontSize={12} />
+                  <YAxis fontSize={12} />
+                  <Tooltip
+                    formatter={(value: any) => [
+                      `${Number(value).toFixed(1)}%`,
+                      "Market Share",
+                    ]}
+                  />
+                  <Bar
+                    dataKey="percentage"
+                    fill="#3b82f6"
+                    radius={[4, 4, 0, 0]}
+                    name="Market Share"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Affordability Index */}
         <section className="bg-white p-6 rounded-xl border shadow-sm">
           <h2 className="text-xl font-semibold mb-6">Affordability by Type</h2>
-          <div className="h-[350px] w-full">
+          <div className="h-87.5 w-full">
             {!loadingAffordability ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={affordability} layout="vertical">
@@ -180,6 +401,7 @@ function Analytics() {
                     type="category"
                     width={100}
                     fontSize={12}
+                    tickFormatter={(value) => getPropertyTypeName(value)}
                   />
                   <Tooltip
                     formatter={(value: any, name: any) => {
@@ -202,10 +424,6 @@ function Analytics() {
               </div>
             )}
           </div>
-          <p className="text-xs text-gray-400 mt-4">
-            * Lower relative affordability index indicates more accessible
-            pricing compared to market average.
-          </p>
         </section>
 
         {/* Growth Hotspots */}

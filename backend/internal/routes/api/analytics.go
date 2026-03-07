@@ -20,6 +20,10 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 	rg.GET("/price-trend", h.GetPriceTrend)
 	rg.GET("/affordability", h.GetAffordability)
 	rg.GET("/growth-hotspots", h.GetGrowthHotspots)
+	rg.GET("/new-build-premium", h.GetNewBuildPremium)
+	rg.GET("/property-type-distribution", h.GetPropertyTypeDistribution)
+	rg.GET("/price-bracket-distribution", h.GetPriceBracketDistribution)
+	rg.GET("/top-active-areas", h.GetTopActiveAreas)
 }
 
 // GetMedianPriceByRegion godoc
@@ -113,6 +117,102 @@ func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, GrowthHotspotResponse{
+		BaseResponse: BaseResponse{Status: true},
+		Data:         results,
+	})
+}
+
+// GetNewBuildPremium godoc
+// @Summary Get new build premium
+// @Description Get average prices of new builds vs established properties by region
+// @Tags analytics
+// @Accept json
+// @Produce json
+// @Param by query string false "Region type (county, district, town_city)" default(county)
+// @Success 200 {object} NewBuildPremiumResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /analytics/new-build-premium [get]
+// @Security JwtAuth
+func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
+	regionType := c.DefaultQuery("by", "county")
+	results, err := h.svc.GetNewBuildPremium(c.Request.Context(), regionType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, NewBuildPremiumResponse{
+		BaseResponse: BaseResponse{Status: true},
+		Data:         results,
+	})
+}
+
+// GetPropertyTypeDistribution godoc
+// @Summary Get property type distribution
+// @Description Get distribution of properties by type (detached, semi, flat, etc.)
+// @Tags analytics
+// @Accept json
+// @Produce json
+// @Success 200 {object} PropertyTypeDistributionResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /analytics/property-type-distribution [get]
+// @Security JwtAuth
+func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
+	results, err := h.svc.GetPropertyTypeDistribution(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, PropertyTypeDistributionResponse{
+		BaseResponse: BaseResponse{Status: true},
+		Data:         results,
+	})
+}
+
+// GetPriceBracketDistribution godoc
+// @Summary Get price bracket distribution
+// @Description Get distribution of properties by price ranges
+// @Tags analytics
+// @Accept json
+// @Produce json
+// @Success 200 {object} PriceBracketResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /analytics/price-bracket-distribution [get]
+// @Security JwtAuth
+func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
+	results, err := h.svc.GetPriceBracketDistribution(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, PriceBracketResponse{
+		BaseResponse: BaseResponse{Status: true},
+		Data:         results,
+	})
+}
+
+// GetTopActiveAreas godoc
+// @Summary Get top active areas
+// @Description Get regions with highest transaction volume
+// @Tags analytics
+// @Accept json
+// @Produce json
+// @Param by query string false "Region type (county, district, town_city)" default(district)
+// @Param limit query int false "Number of results" default(10)
+// @Success 200 {object} TopActiveAreaResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /analytics/top-active-areas [get]
+// @Security JwtAuth
+func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
+	regionType := c.DefaultQuery("by", "district")
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, _ := strconv.Atoi(limitStr)
+
+	results, err := h.svc.GetTopActiveAreas(c.Request.Context(), regionType, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, TopActiveAreaResponse{
 		BaseResponse: BaseResponse{Status: true},
 		Data:         results,
 	})

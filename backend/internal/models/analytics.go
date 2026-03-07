@@ -24,3 +24,28 @@ type GrowthHotspotResult struct {
 	PrevMedian    int64   `json:"prev_median"`
 	CurrentMedian int64   `json:"current_median"`
 }
+
+type NewBuildPremiumResult struct {
+	Region         string  `json:"region"`
+	NewAvg         int64   `json:"new_avg"`
+	OldAvg         int64   `json:"old_avg"`
+	PremiumPercent float64 `json:"premium_percent"`
+}
+
+type PropertyTypeDistributionResult struct {
+	PropertyType string  `json:"property_type"`
+	Count        int64   `json:"count"`
+	Percentage   float64 `json:"percentage"`
+}
+
+type PriceBracketResult struct {
+	Bracket    string  `json:"bracket"`
+	Count      int64   `json:"count"`
+	Percentage float64 `json:"percentage"`
+}
+
+type TopActiveAreaResult struct {
+	Region           string `json:"region"`
+	TransactionCount int64  `json:"transaction_count"`
+	TotalValue       int64  `json:"total_value"`
+}
