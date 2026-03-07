@@ -244,6 +244,9 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		}
 	}
 
+	// Refresh materialized view for analytics via queue with short delay
+	_ = h.svcs.Job.EnqueueAnalyticsRefresh(context.Background(), 5*time.Second)
+
 	// Invalidate analytics cache
 	_ = h.svcs.Analytics.ClearCache(context.Background())
 

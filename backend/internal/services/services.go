@@ -23,11 +23,13 @@ type Repositories struct {
 }
 
 func NewServices(cfg *config.Config, repos Repositories, asynqClient *asynq.Client, socket repository.SocketService) *Services {
+	analyticsSvc := NewAnalyticsService(cfg, repos.Analytics)
+	jobSvc := NewJobService(repos.Job, asynqClient)
 	return &Services{
 		User:      NewUserService(repos.User),
-		Property:  NewPropertyService(repos.Property),
-		Job:       NewJobService(repos.Job, asynqClient),
-		Analytics: NewAnalyticsService(cfg, repos.Analytics),
+		Property:  NewPropertyService(repos.Property, analyticsSvc, jobSvc),
+		Job:       jobSvc,
+		Analytics: analyticsSvc,
 		Socket:    socket,
 	}
 }

@@ -3,6 +3,7 @@ package services
 import (
 	"backend/internal/models"
 	"context"
+	"time"
 )
 
 type UserService interface {
@@ -22,6 +23,7 @@ type PropertyService interface {
 
 type JobService interface {
 	CreateJob(ctx context.Context, taskType string, payload []byte) (*models.Job, error)
+	EnqueueAnalyticsRefresh(ctx context.Context, delay time.Duration) error
 	UpdateJobStatus(ctx context.Context, id string, status models.JobStatus, message string) error
 	UpdateJobProgress(ctx context.Context, id string, progress, total int) error
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
@@ -37,6 +39,7 @@ type AnalyticsService interface {
 	GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error)
 	GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error)
 	GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error)
+	RefreshMaterializedView(ctx context.Context) error
 	PrecomputeCache(ctx context.Context) error
 	ClearCache(ctx context.Context) error
 }

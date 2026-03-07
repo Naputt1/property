@@ -52,7 +52,7 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 
 	// Enqueue to asynq
 	task := asynq.NewTask(taskType, payload)
-	
+
 	var opts []asynq.Option
 	if taskType == "properties:migrate:csv" {
 		opts = append(opts, asynq.Timeout(2*time.Hour))
@@ -66,6 +66,27 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 	fmt.Printf("Enqueued task: id=%s queue=%s\n", info.ID, info.Queue)
 
 	return job, nil
+}
+
+func (s *jobService) EnqueueAnalyticsRefresh(ctx context.Context, delay time.Duration) error {
+	task := asynq.NewTask("analytics:refresh_mvs", nil)
+
+	opts := []asynq.Option{
+		asynq.ProcessIn(delay),
+		asynq.TaskID("analytics_refresh_mv_singleton"),
+		asynq.MaxRetry(3),
+		asynq.Unique(delay),
+	}
+
+	_, err := s.asynqClient.Enqueue(task, opts...)
+	if err != nil {
+		if fmt.Sprintf("%v", err) == "task already exists" {
+			return nil
+		}
+		return fmt.Errorf("failed to enqueue analytics refresh: %w", err)
+	}
+
+	return nil
 }
 
 func (s *jobService) UpdateJobStatus(ctx context.Context, id string, status models.JobStatus, message string) error {

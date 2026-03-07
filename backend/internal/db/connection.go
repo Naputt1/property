@@ -127,5 +127,123 @@ func migrations() []*gormigrate.Migration {
 				return nil
 			},
 		},
+		{
+			ID: "2026030704_analytics_mv",
+			Migrate: func(tx *gorm.DB) error {
+				// Create Materialized View for yearly stats
+				// This aggregates data by year and district for fast hotspots analysis
+				mvQuery := `
+					CREATE MATERIALIZED VIEW IF NOT EXISTS property_yearly_stats AS
+					SELECT district,
+					       extract(year from date_of_transfer) as year,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties
+					GROUP BY district, year
+				`
+				if err := tx.Exec(mvQuery).Error; err != nil {
+					return err
+				}
+
+				// Index for the Materialized View
+				if err := tx.Exec("CREATE INDEX IF NOT EXISTS idx_pys_district_year ON property_yearly_stats(district, year)").Error; err != nil {
+					return err
+				}
+
+				// Add composite indexes to properties table for faster regional aggregates
+				extraIndexes := []string{
+					"CREATE INDEX IF NOT EXISTS idx_properties_county_price ON properties(county, price)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_district_price ON properties(district, price)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_town_city_price ON properties(town_city, price)",
+				}
+				for _, q := range extraIndexes {
+					if err := tx.Exec(q).Error; err != nil {
+						return err
+					}
+				}
+
+				return nil
+			},
+			Rollback: func(tx *gorm.DB) error {
+				if err := tx.Exec("DROP MATERIALIZED VIEW IF EXISTS property_yearly_stats").Error; err != nil {
+					return err
+				}
+				return nil
+			},
+		},
+		{
+			ID: "2026030705_comprehensive_analytics_mvs",
+			Migrate: func(tx *gorm.DB) error {
+				// 1. Monthly Stats per District (Foundation for Trends and Hotspots)
+				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS property_yearly_stats")
+				
+				mvMonthly := `
+					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_district_monthly_stats AS
+					SELECT district,
+					       extract(year from date_of_transfer) as year,
+					       extract(month from date_of_transfer) as month,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties
+					GROUP BY district, year, month
+				`
+				if err := tx.Exec(mvMonthly).Error; err != nil {
+					return err
+				}
+				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_dms_unique ON mv_district_monthly_stats(district, year, month)")
+
+				// 2. Regional Stats (For regional medians and active areas)
+				mvRegional := `
+					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_regional_stats AS
+					SELECT 'county' as region_type, county as region_name,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties WHERE county IS NOT NULL AND county != '' GROUP BY county
+					UNION ALL
+					SELECT 'district' as region_type, district as region_name,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties WHERE district IS NOT NULL AND district != '' GROUP BY district
+					UNION ALL
+					SELECT 'town_city' as region_type, town_city as region_name,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties WHERE town_city IS NOT NULL AND town_city != '' GROUP BY town_city
+				`
+				if err := tx.Exec(mvRegional).Error; err != nil {
+					return err
+				}
+				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_rs_unique ON mv_regional_stats(region_type, region_name)")
+
+				// 3. New Build Premium Stats
+				mvNewBuild := `
+					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_new_build_stats AS
+					SELECT 'county' as region_type, county as region_name, old_new,
+					       AVG(price)::bigint as avg_price
+					FROM properties WHERE county IS NOT NULL AND county != '' GROUP BY county, old_new
+					UNION ALL
+					SELECT 'district' as region_type, district as region_name, old_new,
+					       AVG(price)::bigint as avg_price
+					FROM properties WHERE district IS NOT NULL AND district != '' GROUP BY district, old_new
+				`
+				if err := tx.Exec(mvNewBuild).Error; err != nil {
+					return err
+				}
+				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_nbs_unique ON mv_new_build_stats(region_type, region_name, old_new)")
+
+				return nil
+			},
+			Rollback: func(tx *gorm.DB) error {
+				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_district_monthly_stats")
+				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_regional_stats")
+				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_new_build_stats")
+				return nil
+			},
+		},
 	}
 }
