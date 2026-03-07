@@ -1,16 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  beforeLoad: () => {
+    throw redirect({
+      to: "/properties",
+      replace: true,
+    });
+  },
 });
-
-function Index() {
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Property Market AI</h1>
-      <Link to="/properties" className="text-blue-600 hover:underline">
-        View UK Properties
-      </Link>
-    </div>
-  );
-}

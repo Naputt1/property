@@ -231,4 +231,40 @@ export async function DELETE<T = any, TMeta = any>(
   }
 }
 
+export async function PUT<T = any, TError = any, TData = any, TMeta = any>(
+  url: string,
+  data?: TData,
+  config?: AxiosRequestConfig,
+): Promise<ApiResponse<T, TError>> {
+  try {
+    const api = initAxios();
+    const res = await api.put<ApiResponseAxios<T, TError>>(url, data, config);
+    if (res.data.status === false) {
+      return {
+        status: false,
+        err: {
+          status: res.status,
+          data: res.data.data,
+        },
+        header: geHeader(res.headers),
+      };
+    }
+
+    return {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      status: true,
+      ...res.data,
+      header: geHeader(res.headers),
+    };
+  } catch (err) {
+    console.log("axios error", err);
+    if (axios.isAxiosError(err)) {
+      return responseCatch<TError, TMeta>(err);
+    }
+
+    return responseCatch<TError, TMeta>(err as AxiosError);
+  }
+}
+
 export default initAxios;

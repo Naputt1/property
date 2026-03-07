@@ -20,6 +20,14 @@ func (r *propertyRepository) Create(ctx context.Context, property *models.Proper
 	return r.db.WithContext(ctx).Create(property).Error
 }
 
+func (r *propertyRepository) Update(ctx context.Context, property *models.Property) error {
+	return r.db.WithContext(ctx).Save(property).Error
+}
+
+func (r *propertyRepository) Delete(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&models.Property{}, "id = ?", id).Error
+}
+
 func (r *propertyRepository) CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error {
 	return r.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(properties, batchSize).Error
 }

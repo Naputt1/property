@@ -3,12 +3,13 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Property struct {
 	// A unique identifier for each property sale
-	ID        string         `gorm:"primarykey;type:uuid" json:"id"`
+	ID        uuid.UUID      `gorm:"primarykey;type:uuid" json:"id"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
