@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.BaseResponse"
+}

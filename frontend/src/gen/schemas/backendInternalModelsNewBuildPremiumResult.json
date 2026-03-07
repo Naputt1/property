@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "new_avg": { "type": "integer" },
+    "old_avg": { "type": "integer" },
+    "premium_percent": { "type": "number" },
+    "region": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.NewBuildPremiumResult"
+}

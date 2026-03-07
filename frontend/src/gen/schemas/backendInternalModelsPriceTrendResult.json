@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "avg_price": { "type": "integer" },
+    "median_price": { "type": "integer" },
+    "period": { "type": "string" },
+    "transaction_count": { "type": "integer" }
+  },
+  "x-readme-ref-name": "backend_internal_models.PriceTrendResult"
+}

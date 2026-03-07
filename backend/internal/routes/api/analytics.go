@@ -33,10 +33,9 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 // @Accept json
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(county)
-// @Success 200 {object} MedianPriceResponse
+// @Success 200 {array} backend_internal_models.MedianPriceResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/median-price [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "county")
 	results, err := h.svc.GetMedianPriceByRegion(c.Request.Context(), regionType)
@@ -57,10 +56,9 @@ func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param interval query string false "Time interval (month, year)" default(month)
-// @Success 200 {object} PriceTrendResponse
+// @Success 200 {array} backend_internal_models.PriceTrendResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-trend [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
 	interval := c.DefaultQuery("interval", "month")
 	results, err := h.svc.GetPriceTrend(c.Request.Context(), interval)
@@ -80,10 +78,9 @@ func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {object} AffordabilityResponse
+// @Success 200 {array} backend_internal_models.AffordabilityResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/affordability [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 	results, err := h.svc.GetAffordability(c.Request.Context())
 	if err != nil {
@@ -103,10 +100,9 @@ func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param limit query int false "Number of results" default(10)
-// @Success 200 {object} GrowthHotspotResponse
+// @Success 200 {array} backend_internal_models.GrowthHotspotResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/growth-hotspots [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 	limitStr := c.DefaultQuery("limit", "10")
 	limit, _ := strconv.Atoi(limitStr)
@@ -129,10 +125,9 @@ func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(county)
-// @Success 200 {object} NewBuildPremiumResponse
+// @Success 200 {array} backend_internal_models.NewBuildPremiumResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/new-build-premium [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "county")
 	results, err := h.svc.GetNewBuildPremium(c.Request.Context(), regionType)
@@ -152,10 +147,9 @@ func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {object} PropertyTypeDistributionResponse
+// @Success 200 {array} backend_internal_models.PropertyTypeDistributionResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/property-type-distribution [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
 	results, err := h.svc.GetPropertyTypeDistribution(c.Request.Context())
 	if err != nil {
@@ -174,10 +168,9 @@ func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {object} PriceBracketResponse
+// @Success 200 {array} backend_internal_models.PriceBracketResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-bracket-distribution [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
 	results, err := h.svc.GetPriceBracketDistribution(c.Request.Context())
 	if err != nil {
@@ -198,10 +191,9 @@ func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results" default(10)
-// @Success 200 {object} TopActiveAreaResponse
+// @Success 200 {array} backend_internal_models.TopActiveAreaResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/top-active-areas [get]
-// @Security JwtAuth
 func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "district")
 	limitStr := c.DefaultQuery("limit", "10")

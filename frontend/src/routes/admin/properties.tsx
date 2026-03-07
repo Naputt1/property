@@ -1,13 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth";
-import {
-  propertyListQuery,
-  createPropertyMutation,
-  updatePropertyMutation,
-  deletePropertyMutation,
-} from "@/query/property";
+import { useGetProperty, getPropertyQueryKey } from "@/gen/hooks/useGetProperty";
+import { usePostProperty } from "@/gen/hooks/usePostProperty";
+import { usePutPropertyId } from "@/gen/hooks/usePutPropertyId";
+import { useDeletePropertyId } from "@/gen/hooks/useDeletePropertyId";
 import {
   Table,
   TableBody,
@@ -25,7 +23,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { toast } from "sonner";
-import type { IProperty } from "@/types/property";
 
 export const Route = createFileRoute("/admin/properties")({
   component: AdminProperties,
@@ -37,7 +34,7 @@ function AdminProperties() {
   const { user } = useAuthStore();
   const [page, setPage] = useState(1);
   const [editingProperty, setEditingProperty] =
-    useState<Partial<IProperty> | null>(null);
+    useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const pageSize = 10;
@@ -48,63 +45,59 @@ function AdminProperties() {
     }
   }, [user, navigate]);
 
-  const { data, isLoading } = useQuery(
-    propertyListQuery.getOptions({
-      param: { page, pageSize },
-    }),
-  );
+  const { data: result, isLoading } = useGetProperty({ page, pageSize }, { query: { enabled: !!user } });
 
-  const createMutation = useMutation(
-    createPropertyMutation.getOptions({
+  const createMutation = usePostProperty({
+    mutation: {
       onSuccess: () => {
         toast.success("Property created successfully");
         setIsModalOpen(false);
-        queryClient.invalidateQueries({ queryKey: ["property", "list"] });
+        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
       },
       onError: (error: any) => {
         toast.error(error.message || "Failed to create property");
       },
-    }),
-  );
+    }
+  });
 
-  const updateMutation = useMutation(
-    updatePropertyMutation.getOptions({
+  const updateMutation = usePutPropertyId({
+    mutation: {
       onSuccess: () => {
         toast.success("Property updated successfully");
         setIsModalOpen(false);
         setEditingProperty(null);
-        queryClient.invalidateQueries({ queryKey: ["property", "list"] });
+        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
       },
       onError: (error: any) => {
         toast.error(error.message || "Failed to update property");
       },
-    }),
-  );
+    }
+  });
 
-  const deleteMutation = useMutation(
-    deletePropertyMutation.getOptions({
+  const deleteMutation = useDeletePropertyId({
+    mutation: {
       onSuccess: () => {
         toast.success("Property deleted successfully");
-        queryClient.invalidateQueries({ queryKey: ["property", "list"] });
+        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
       },
       onError: (error: any) => {
         toast.error(error.message || "Failed to delete property");
       },
-    }),
-  );
+    }
+  });
 
-  const properties = data?.data || [];
-  const totalItems = data?.total || 0;
+  const properties = result?.data || [];
+  const totalItems = result?.total || 0;
   const totalPages = Math.ceil(totalItems / pageSize);
 
-  const handleEdit = (property: IProperty) => {
+  const handleEdit = (property: any) => {
     setEditingProperty(property);
     setIsModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this property?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate({ id });
     }
   };
 
@@ -129,7 +122,7 @@ function AdminProperties() {
     if (editingProperty?.id) {
       updateMutation.mutate({ id: editingProperty.id, data });
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate({ data });
     }
   };
 
@@ -167,7 +160,7 @@ function AdminProperties() {
                 </TableCell>
               </TableRow>
             ) : properties.length > 0 ? (
-              properties.map((p: IProperty) => (
+              properties.map((p: any) => (
                 <TableRow key={p.id}>
                   <TableCell>
                     <div className="font-medium">

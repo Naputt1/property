@@ -2,9 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { POST } from "@/services/axios";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
+import { usePostAuthLogin } from "@/gen/hooks/usePostAuthLogin";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/login")({
 function Login() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const loginMutation = usePostAuthLogin();
 
   const {
     register,
@@ -30,14 +31,14 @@ function Login() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    const res = await POST("/auth/login", data);
-    if (res.status) {
-      const { user } = res.data;
-      setAuth(user);
+    try {
+      const res = await loginMutation.mutateAsync({ data });
+      // res is now LoginPayload: { token, user }
+      setAuth(res.user as any);
       toast.success("Login successful!");
       navigate({ to: "/admin" });
-    } else {
-      toast.error(res.err.data || "Login failed");
+    } catch (err: any) {
+      toast.error(err.message || "Login failed");
     }
   };
 
@@ -79,10 +80,10 @@ function Login() {
         </div>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || loginMutation.isPending}
           className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
-          {isSubmitting ? "Logging in..." : "Login"}
+          {isSubmitting || loginMutation.isPending ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

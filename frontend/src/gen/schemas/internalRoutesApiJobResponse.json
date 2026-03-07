@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "job_id": { "type": "string" },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.JobResponse"
+}

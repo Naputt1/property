@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["password", "username"],
+  "properties": {
+    "password": { "type": "string" },
+    "username": { "type": "string" }
+  },
+  "x-readme-ref-name": "internal_routes_api.LoginBody"
+}

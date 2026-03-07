@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "current_median": { "type": "integer" },
+    "growth_rate": { "type": "number" },
+    "prev_median": { "type": "integer" },
+    "region": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.GrowthHotspotResult"
+}

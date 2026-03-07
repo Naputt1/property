@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "count": { "type": "integer" },
+    "percentage": { "type": "number" },
+    "property_type": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.PropertyTypeDistributionResult"
+}

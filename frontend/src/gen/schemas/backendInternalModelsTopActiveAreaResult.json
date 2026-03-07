@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "region": { "type": "string" },
+    "total_value": { "type": "integer" },
+    "transaction_count": { "type": "integer" }
+  },
+  "x-readme-ref-name": "backend_internal_models.TopActiveAreaResult"
+}
