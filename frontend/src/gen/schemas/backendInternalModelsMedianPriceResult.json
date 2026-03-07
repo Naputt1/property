@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "median_price": { "type": "integer" },
+    "region": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.MedianPriceResult"
+}

@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "bucket_key": { "type": "string" },
+    "column_mapping": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "file": { "description": "Backward compatibility", "type": "string" },
+    "has_header": { "type": "boolean" },
+    "job_id": { "type": "string" },
+    "path": { "description": "Backward compatibility", "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.CSVConfigPayload"
+}

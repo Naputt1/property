@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "error": { "type": "string" },
+    "status": { "type": "boolean", "example": false }
+  },
+  "x-readme-ref-name": "internal_routes_api.ErrorResponse"
+}

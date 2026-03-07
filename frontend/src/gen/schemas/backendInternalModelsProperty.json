@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "properties": {
+    "county": { "type": "string" },
+    "created_at": { "type": "string" },
+    "date_of_transfer": { "type": "string" },
+    "deleted_at": {
+      "type": "object",
+      "properties": {
+        "time": { "type": "string" },
+        "valid": {
+          "description": "Valid is true if Time is not NULL",
+          "type": "boolean"
+        }
+      },
+      "x-readme-ref-name": "gorm.DeletedAt"
+    },
+    "district": { "type": "string" },
+    "duration": {
+      "description": "F = Freehold, L = Leasehold",
+      "type": "string"
+    },
+    "id": {
+      "description": "A unique identifier for each property sale",
+      "type": "string"
+    },
+    "locality": { "type": "string" },
+    "old_new": {
+      "description": "Y = a newly built property, N = an established residential building",
+      "type": "string"
+    },
+    "paon": {
+      "description": "Primary Addressable Object Name. Typically the house number or name.",
+      "type": "string"
+    },
+    "postcode": { "type": "string" },
+    "ppd_category_type": {
+      "description": "A = Standard Price Paid entry, B = Additional Price Paid entry",
+      "type": "string"
+    },
+    "price": { "description": "In GBP", "type": "integer" },
+    "property_type": {
+      "description": "D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes, O = Other",
+      "type": "string"
+    },
+    "record_status": {
+      "description": "A = Addition, C = Change, D = Delete",
+      "type": "string"
+    },
+    "saon": {
+      "description": "Secondary Addressable Object Name. Where a property has been divided into separate units (for example, flats).",
+      "type": "string"
+    },
+    "street": { "type": "string" },
+    "town_city": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.Property"
+}

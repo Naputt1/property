@@ -24,6 +24,97 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/jobs": {
+            "get": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Get a list of background jobs with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List background jobs",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.JobListPayload"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/stream-upload": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Stream a large CSV file directly from the request body to bucket and queue a migration job",
+                "consumes": [
+                    "application/octet-stream"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Stream upload CSV file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Original filename",
+                        "name": "filename",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/upload": {
             "post": {
                 "security": [
@@ -49,7 +140,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CSVConfigPayload"
+                            "$ref": "#/definitions/backend_internal_models.CSVConfigPayload"
                         }
                     }
                 ],
@@ -57,19 +148,68 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/api.JobResponse"
+                            "$ref": "#/definitions/internal_routes_api.JobResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/upload-file": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Upload a CSV file via multipart/form-data to bucket and queue a migration job",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Upload CSV file directly",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "CSV File",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -77,11 +217,6 @@ const docTemplate = `{
         },
         "/analytics/affordability": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get relative affordability by property type",
                 "consumes": [
                     "application/json"
@@ -99,8 +234,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.AffordabilityResult"
+                                "$ref": "#/definitions/backend_internal_models.AffordabilityResult"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -108,11 +249,6 @@ const docTemplate = `{
         },
         "/analytics/growth-hotspots": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get top districts with highest price growth rate",
                 "consumes": [
                     "application/json"
@@ -139,8 +275,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.GrowthHotspotResult"
+                                "$ref": "#/definitions/backend_internal_models.GrowthHotspotResult"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -148,11 +290,6 @@ const docTemplate = `{
         },
         "/analytics/median-price": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get median price grouped by county, district, or town_city",
                 "consumes": [
                     "application/json"
@@ -179,8 +316,87 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.MedianPriceResult"
+                                "$ref": "#/definitions/backend_internal_models.MedianPriceResult"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/new-build-premium": {
+            "get": {
+                "description": "Get average prices of new builds vs established properties by region",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get new build premium",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "county",
+                        "description": "Region type (county, district, town_city)",
+                        "name": "by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/backend_internal_models.NewBuildPremiumResult"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/price-bracket-distribution": {
+            "get": {
+                "description": "Get distribution of properties by price ranges",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get price bracket distribution",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/backend_internal_models.PriceBracketResult"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -188,11 +404,6 @@ const docTemplate = `{
         },
         "/analytics/price-trend": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get average and median price trends over time",
                 "consumes": [
                     "application/json"
@@ -219,8 +430,94 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.PriceTrendResult"
+                                "$ref": "#/definitions/backend_internal_models.PriceTrendResult"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/property-type-distribution": {
+            "get": {
+                "description": "Get distribution of properties by type (detached, semi, flat, etc.)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get property type distribution",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/backend_internal_models.PropertyTypeDistributionResult"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/top-active-areas": {
+            "get": {
+                "description": "Get regions with highest transaction volume",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get top active areas",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "district",
+                        "description": "Region type (county, district, town_city)",
+                        "name": "by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of results",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/backend_internal_models.TopActiveAreaResult"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -246,7 +543,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.LoginBody"
+                            "$ref": "#/definitions/internal_routes_api.LoginBody"
                         }
                     }
                 ],
@@ -254,13 +551,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.LoginResponse"
+                            "$ref": "#/definitions/internal_routes_api.LoginPayload"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -283,7 +580,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.BaseResponse"
+                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
                         }
                     }
                 }
@@ -291,11 +588,6 @@ const docTemplate = `{
         },
         "/property": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get a list of UK housing properties with pagination and filtering",
                 "consumes": [
                     "application/json"
@@ -307,11 +599,118 @@ const docTemplate = `{
                     "property"
                 ],
                 "summary": "List properties",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Town/City",
+                        "name": "town_city",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "District",
+                        "name": "district",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "County",
+                        "name": "county",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property Type",
+                        "name": "property_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Minimum Price",
+                        "name": "min_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Maximum Price",
+                        "name": "max_price",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.PropertyListResponse"
+                            "$ref": "#/definitions/internal_routes_api.PropertyListPayload"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Create a new property record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "property"
+                ],
+                "summary": "Create property",
+                "parameters": [
+                    {
+                        "description": "Property object",
+                        "name": "property",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend_internal_models.Property"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/backend_internal_models.Property"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -319,11 +718,6 @@ const docTemplate = `{
         },
         "/property/{id}": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get detailed information for a specific property",
                 "consumes": [
                     "application/json"
@@ -337,7 +731,7 @@ const docTemplate = `{
                 "summary": "Get property by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Property ID",
                         "name": "id",
                         "in": "path",
@@ -348,13 +742,122 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.PropertyResponse"
+                            "$ref": "#/definitions/backend_internal_models.Property"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Update an existing property record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "property"
+                ],
+                "summary": "Update property",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Property object",
+                        "name": "property",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend_internal_models.Property"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/backend_internal_models.Property"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Delete a property record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "property"
+                ],
+                "summary": "Delete property",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     }
                 }
@@ -362,102 +865,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.BaseResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "api.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": false
-                }
-            }
-        },
-        "api.JobResponse": {
-            "type": "object",
-            "properties": {
-                "job_id": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "api.LoginBody": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.PropertyListResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {}
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "api.PropertyResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "models.AffordabilityResult": {
+        "backend_internal_models.AffordabilityResult": {
             "type": "object",
             "properties": {
                 "avg_price": {
@@ -471,27 +879,35 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CSVConfigPayload": {
+        "backend_internal_models.CSVConfigPayload": {
             "type": "object",
-            "required": [
-                "file_path"
-            ],
             "properties": {
+                "bucket_key": {
+                    "type": "string"
+                },
                 "column_mapping": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
-                "file_path": {
+                "file": {
+                    "description": "Backward compatibility",
                     "type": "string"
                 },
                 "has_header": {
                     "type": "boolean"
+                },
+                "job_id": {
+                    "type": "string"
+                },
+                "path": {
+                    "description": "Backward compatibility",
+                    "type": "string"
                 }
             }
         },
-        "models.GrowthHotspotResult": {
+        "backend_internal_models.GrowthHotspotResult": {
             "type": "object",
             "properties": {
                 "current_median": {
@@ -508,7 +924,69 @@ const docTemplate = `{
                 }
             }
         },
-        "models.MedianPriceResult": {
+        "backend_internal_models.Job": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "description": "For error messages or success info",
+                    "type": "string"
+                },
+                "payload": {
+                    "description": "Custom data the job was initiated with",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "result": {
+                    "description": "Data resulting from completion/failure",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/backend_internal_models.JobStatus"
+                },
+                "task_type": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "backend_internal_models.JobStatus": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "RUNNING",
+                "SUCCESS",
+                "FAILED"
+            ],
+            "x-enum-varnames": [
+                "JobStatusPending",
+                "JobStatusRunning",
+                "JobStatusSuccess",
+                "JobStatusFailed"
+            ]
+        },
+        "backend_internal_models.MedianPriceResult": {
             "type": "object",
             "properties": {
                 "median_price": {
@@ -519,7 +997,38 @@ const docTemplate = `{
                 }
             }
         },
-        "models.PriceTrendResult": {
+        "backend_internal_models.NewBuildPremiumResult": {
+            "type": "object",
+            "properties": {
+                "new_avg": {
+                    "type": "integer"
+                },
+                "old_avg": {
+                    "type": "integer"
+                },
+                "premium_percent": {
+                    "type": "number"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "backend_internal_models.PriceBracketResult": {
+            "type": "object",
+            "properties": {
+                "bracket": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "percentage": {
+                    "type": "number"
+                }
+            }
+        },
+        "backend_internal_models.PriceTrendResult": {
             "type": "object",
             "properties": {
                 "avg_price": {
@@ -532,6 +1041,239 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "transaction_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend_internal_models.Property": {
+            "type": "object",
+            "properties": {
+                "county": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "date_of_transfer": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "F = Freehold, L = Leasehold",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "A unique identifier for each property sale",
+                    "type": "string"
+                },
+                "locality": {
+                    "type": "string"
+                },
+                "old_new": {
+                    "description": "Y = a newly built property, N = an established residential building",
+                    "type": "string"
+                },
+                "paon": {
+                    "description": "Primary Addressable Object Name. Typically the house number or name.",
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "ppd_category_type": {
+                    "description": "A = Standard Price Paid entry, B = Additional Price Paid entry",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "In GBP",
+                    "type": "integer"
+                },
+                "property_type": {
+                    "description": "D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes, O = Other",
+                    "type": "string"
+                },
+                "record_status": {
+                    "description": "A = Addition, C = Change, D = Delete",
+                    "type": "string"
+                },
+                "saon": {
+                    "description": "Secondary Addressable Object Name. Where a property has been divided into separate units (for example, flats).",
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "town_city": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "backend_internal_models.PropertyTypeDistributionResult": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "property_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "backend_internal_models.TopActiveAreaResult": {
+            "type": "object",
+            "properties": {
+                "region": {
+                    "type": "string"
+                },
+                "total_value": {
+                    "type": "integer"
+                },
+                "transaction_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend_internal_models.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "refresh_version": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_routes_api.BaseResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "internal_routes_api.JobListPayload": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.Job"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_routes_api.JobResponse": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.LoginBody": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_routes_api.LoginPayload": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/backend_internal_models.User"
+                }
+            }
+        },
+        "internal_routes_api.PropertyListPayload": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.Property"
+                    }
+                },
+                "total": {
                     "type": "integer"
                 }
             }

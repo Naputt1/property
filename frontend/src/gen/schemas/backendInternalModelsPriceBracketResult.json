@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "bracket": { "type": "string" },
+    "count": { "type": "integer" },
+    "percentage": { "type": "number" }
+  },
+  "x-readme-ref-name": "backend_internal_models.PriceBracketResult"
+}

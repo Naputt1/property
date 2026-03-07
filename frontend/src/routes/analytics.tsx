@@ -15,17 +15,14 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import {
-  medianPriceQuery,
-  priceTrendQuery,
-  affordabilityQuery,
-  growthHotspotsQuery,
-  newBuildPremiumQuery,
-  propertyTypeDistributionQuery,
-  priceBracketDistributionQuery,
-  topActiveAreasQuery,
-} from "@/query/analytics";
-import { useQuery } from "@tanstack/react-query";
+import { useGetAnalyticsMedianPrice } from "@/gen/hooks/useGetAnalyticsMedianPrice";
+import { useGetAnalyticsPriceTrend } from "@/gen/hooks/useGetAnalyticsPriceTrend";
+import { useGetAnalyticsAffordability } from "@/gen/hooks/useGetAnalyticsAffordability";
+import { useGetAnalyticsGrowthHotspots } from "@/gen/hooks/useGetAnalyticsGrowthHotspots";
+import { useGetAnalyticsNewBuildPremium } from "@/gen/hooks/useGetAnalyticsNewBuildPremium";
+import { useGetAnalyticsPropertyTypeDistribution } from "@/gen/hooks/useGetAnalyticsPropertyTypeDistribution";
+import { useGetAnalyticsPriceBracketDistribution } from "@/gen/hooks/useGetAnalyticsPriceBracketDistribution";
+import { useGetAnalyticsTopActiveAreas } from "@/gen/hooks/useGetAnalyticsTopActiveAreas";
 
 export const Route = createFileRoute("/analytics")({
   component: Analytics,
@@ -40,37 +37,22 @@ const COLORS = [
 ];
 
 function Analytics() {
-  const [regionType, setRegionType] = useState("county");
-  const [trendInterval, setTrendInterval] = useState("month");
-  const [premiumRegion, setPremiumRegion] = useState("county");
-  const [activeAreaRegion, setActiveAreaRegion] = useState("district");
+  const [regionType, setRegionType] = useState<any>("county");
+  const [trendInterval, setTrendInterval] = useState<any>("month");
+  const [premiumRegion, setPremiumRegion] = useState<any>("county");
+  const [activeAreaRegion, setActiveAreaRegion] = useState<any>("district");
 
-  const { data: medianPrices, isLoading: loadingMedian } = useQuery(
-    medianPriceQuery.getOptions({ param: { by: regionType } }),
-  );
-  const { data: priceTrends, isLoading: loadingTrends } = useQuery(
-    priceTrendQuery.getOptions({ param: { interval: trendInterval } }),
-  );
-  const { data: affordability, isLoading: loadingAffordability } = useQuery(
-    affordabilityQuery.getOptions({}),
-  );
-  const { data: hotspots, isLoading: loadingHotspots } = useQuery(
-    growthHotspotsQuery.getOptions({ param: { limit: 10 } }),
-  );
-  const { data: newBuildPremium, isLoading: loadingPremium } = useQuery(
-    newBuildPremiumQuery.getOptions({ param: { by: premiumRegion } }),
-  );
-  const { data: typeDistribution, isLoading: loadingTypeDist } = useQuery(
-    propertyTypeDistributionQuery.getOptions({}),
-  );
-  const { data: bracketDistribution, isLoading: loadingBracketDist } = useQuery(
-    priceBracketDistributionQuery.getOptions({}),
-  );
-  const { data: activeAreas, isLoading: loadingActiveAreas } = useQuery(
-    topActiveAreasQuery.getOptions({
-      param: { by: activeAreaRegion, limit: 10 },
-    }),
-  );
+  const { data: medianPrices, isLoading: loadingMedian } = useGetAnalyticsMedianPrice({ by: regionType });
+  const { data: priceTrends, isLoading: loadingTrends } = useGetAnalyticsPriceTrend({ interval: trendInterval });
+  const { data: affordability, isLoading: loadingAffordability } = useGetAnalyticsAffordability();
+  const { data: hotspots, isLoading: loadingHotspots } = useGetAnalyticsGrowthHotspots({ limit: 10 });
+  const { data: newBuildPremium, isLoading: loadingPremium } = useGetAnalyticsNewBuildPremium({ by: premiumRegion });
+  const { data: typeDistribution, isLoading: loadingTypeDist } = useGetAnalyticsPropertyTypeDistribution();
+  const { data: bracketDistribution, isLoading: loadingBracketDist } = useGetAnalyticsPriceBracketDistribution();
+  const { data: activeAreas, isLoading: loadingActiveAreas } = useGetAnalyticsTopActiveAreas({
+    by: activeAreaRegion,
+    limit: 10,
+  });
 
   const formatPrice = (value: number | undefined) => {
     if (value === undefined) return "£0";
@@ -282,11 +264,11 @@ function Analytics() {
               </thead>
               <tbody className="divide-y divide-border">
                 {!loadingActiveAreas ? (
-                  activeAreas?.map((area, i) => (
+                  activeAreas?.map((area: any, i: number) => (
                     <tr key={i} className="hover:bg-muted/50 transition-colors">
                       <td className="px-4 py-3 font-medium">{area.region}</td>
                       <td className="px-4 py-3 text-right font-mono">
-                        {area.transaction_count.toLocaleString()}
+                        {area.transaction_count?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3 text-right font-mono">
                         {formatPrice(area.total_value)}
@@ -329,7 +311,7 @@ function Analytics() {
                     nameKey="property_type"
                     label={({ name }) => getPropertyTypeName(name)}
                   >
-                    {typeDistribution?.map((_, index) => (
+                    {typeDistribution?.map((_, index: number) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -444,7 +426,7 @@ function Analytics() {
                       <td className="px-4 py-3 font-medium">{h.region}</td>
                       <td className="px-4 py-3">
                         <span className="text-chart-2 font-semibold">
-                          +{h.growth_rate.toFixed(1)}%
+                          +{h.growth_rate?.toFixed(1)}%
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-mono">

@@ -26,7 +26,7 @@ type LoginBody struct {
 // @Accept json
 // @Produce json
 // @Param body body LoginBody true "User login credentials"
-// @Success 200 {object} LoginResponse
+// @Success 200 {object} LoginPayload
 // @Failure 401 {object} ErrorResponse
 // @Router /auth/login [post]
 func Login(c *gin.Context) {

@@ -38,10 +38,15 @@ func RegisterPropertyRoutes(r *gin.RouterGroup, cfg *config.Config, svc services
 // @Tags property
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param page query int false "Page number" default(1)
 // @Param pageSize query int false "Page size" default(10)
-// @Success 200 {object} PropertyListResponse
+// @Param town_city query string false "Town/City"
+// @Param district query string false "District"
+// @Param county query string false "County"
+// @Param property_type query string false "Property Type"
+// @Param min_price query int false "Minimum Price"
+// @Param max_price query int false "Maximum Price"
+// @Success 200 {object} PropertyListPayload
 // @Failure 500 {object} ErrorResponse
 // @Router /property [get]
 func (h *PropertyHandler) ListProperties(c *gin.Context) {
@@ -101,14 +106,13 @@ func (h *PropertyHandler) ListProperties(c *gin.Context) {
 // @Tags property
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param id path string true "Property ID"
-// @Success 200 {object} PropertyResponse
+// @Success 200 {object} models.Property
 // @Failure 404 {object} ErrorResponse
 // @Router /property/{id} [get]
 func (h *PropertyHandler) GetProperty(c *gin.Context) {
 	id := c.Param("id")
-	
+
 	property, err := h.svc.GetPropertyByID(c.Request.Context(), id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{Status: false, Error: "property not found"})
@@ -129,7 +133,7 @@ func (h *PropertyHandler) GetProperty(c *gin.Context) {
 // @Produce json
 // @Security JwtAuth
 // @Param property body models.Property true "Property object"
-// @Success 201 {object} PropertyResponse
+// @Success 201 {object} models.Property
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /property [post]
@@ -160,7 +164,7 @@ func (h *PropertyHandler) CreateProperty(c *gin.Context) {
 // @Security JwtAuth
 // @Param id path string true "Property ID"
 // @Param property body models.Property true "Property object"
-// @Success 200 {object} PropertyResponse
+// @Success 200 {object} models.Property
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse

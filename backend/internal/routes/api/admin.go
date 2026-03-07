@@ -201,7 +201,7 @@ func UploadCSV(c *gin.Context) {
 // @Security JwtAuth
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} JobListResponse
+// @Success 200 {object} JobListPayload
 // @Router /admin/jobs [get]
 func ListJobs(c *gin.Context) {
 	svc := c.MustGet("jobService").(services.JobService)

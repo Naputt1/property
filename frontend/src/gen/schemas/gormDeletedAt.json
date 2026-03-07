@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "time": { "type": "string" },
+    "valid": {
+      "description": "Valid is true if Time is not NULL",
+      "type": "boolean"
+    }
+  },
+  "x-readme-ref-name": "gorm.DeletedAt"
+}

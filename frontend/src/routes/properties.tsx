@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { propertyListQuery } from "@/query/property";
+import { useGetProperty } from "@/gen/hooks/useGetProperty";
 import {
   Table,
   TableBody,
@@ -36,19 +35,15 @@ function PropertiesPage() {
 
   const pageSize = 10;
 
-  const { data, isLoading, error } = useQuery(
-    propertyListQuery.getOptions({
-      param: {
-        page,
-        pageSize,
-        town_city: town || undefined,
-        county: county || undefined,
-        property_type: propertyType || undefined,
-        min_price: minPrice ? parseInt(minPrice) : undefined,
-        max_price: maxPrice ? parseInt(maxPrice) : undefined,
-      },
-    }),
-  );
+  const { data, isLoading } = useGetProperty({
+    page,
+    pageSize,
+    town_city: town || undefined,
+    county: county || undefined,
+    property_type: propertyType || undefined,
+    min_price: minPrice ? parseInt(minPrice) : undefined,
+    max_price: maxPrice ? parseInt(maxPrice) : undefined,
+  });
 
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat("en-GB", {

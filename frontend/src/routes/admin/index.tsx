@@ -3,9 +3,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuthStore } from "@/store/auth";
 import { initAxios } from "@/services/axios";
 import { toast } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { type IJob, JobStatus } from "@/types/job";
+import { useQueryClient } from "@tanstack/react-query";
+import { JobStatus } from "@/types/job";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { useGetAdminJobs, getAdminJobsQueryKey } from "@/gen/hooks/useGetAdminJobs";
 
 export const Route = createFileRoute("/admin/")({
   component: Admin,
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/admin/")({
 
 const Progress = ({ value, label }: { value: number; label?: string }) => (
   <div className="w-full">
-    ks
     <div className="flex justify-between mb-1">
       <span className="text-[10px] font-medium text-blue-700 dark:text-white">
         {label}
@@ -45,15 +45,8 @@ function Admin() {
     }
   }, [user, navigate]);
 
-  const { data: jobs, refetch } = useQuery({
-    queryKey: ["jobs"],
-    queryFn: async () => {
-      const api = initAxios();
-      const res = await api.get("/admin/jobs?limit=10");
-      return res.data.data as IJob[];
-    },
-    enabled: !!user,
-  });
+  const { data: jobsRes, refetch } = useGetAdminJobs({ limit: 10 }, { query: { enabled: !!user } });
+  const jobs = jobsRes?.data || [];
 
   // Handle real-time job updates via WebSocket
   const onWsMessage = useCallback(
@@ -62,20 +55,23 @@ function Admin() {
         const update = msg.data;
 
         // Update the cache directly for immediate UI feedback
-        queryClient.setQueryData(["jobs"], (oldJobs: IJob[] | undefined) => {
-          if (!oldJobs) return oldJobs;
+        queryClient.setQueryData(getAdminJobsQueryKey({ limit: 10 }), (oldData: any) => {
+          if (!oldData || !oldData.data) return oldData;
 
-          return oldJobs.map((job) => {
-            if (job.id === update.id) {
-              return {
-                ...job,
-                status: update.status,
-                progress: update.progress,
-                total: update.total,
-              };
-            }
-            return job;
-          });
+          return {
+            ...oldData,
+            data: oldData.data.map((job: any) => {
+              if (job.id === update.id) {
+                return {
+                  ...job,
+                  status: update.status,
+                  progress: update.progress,
+                  total: update.total,
+                };
+              }
+              return job;
+            })
+          };
         });
 
         // If job finished, refetch to get the latest message/result
@@ -228,7 +224,7 @@ function Admin() {
               </thead>
               <tbody className="divide-y">
                 {jobs && jobs.length > 0 ? (
-                  jobs.map((job) => (
+                  jobs.map((job: any) => (
                     <tr key={job.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 font-mono text-xs truncate max-w-30">
                         {job.id}
@@ -252,11 +248,11 @@ function Admin() {
                         {job.status === JobStatus.RUNNING ? (
                           <Progress
                             value={job.progress}
-                            label={`${job.total.toLocaleString()} records`}
+                            label={`${job.total?.toLocaleString()} records`}
                           />
                         ) : job.status === JobStatus.SUCCESS ? (
                           <div className="text-xs text-green-600 font-medium">
-                            Completed: {job.total.toLocaleString()} records
+                            Completed: {job.total?.toLocaleString()} records
                           </div>
                         ) : job.message ? (
                           <div

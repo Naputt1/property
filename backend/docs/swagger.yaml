@@ -1,70 +1,6 @@
 basePath: /api
 definitions:
-  api.BaseResponse:
-    properties:
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  api.ErrorResponse:
-    properties:
-      error:
-        type: string
-      status:
-        example: false
-        type: boolean
-    type: object
-  api.JobResponse:
-    properties:
-      job_id:
-        type: string
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  api.LoginBody:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  api.LoginResponse:
-    properties:
-      status:
-        example: true
-        type: boolean
-      token:
-        type: string
-    type: object
-  api.PropertyListResponse:
-    properties:
-      data:
-        items: {}
-        type: array
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  api.PropertyResponse:
-    properties:
-      data: {}
-      message:
-        type: string
-      status:
-        example: true
-        type: boolean
-    type: object
-  models.AffordabilityResult:
+  backend_internal_models.AffordabilityResult:
     properties:
       avg_price:
         type: integer
@@ -73,20 +9,26 @@ definitions:
       relative_affordability:
         type: number
     type: object
-  models.CSVConfigPayload:
+  backend_internal_models.CSVConfigPayload:
     properties:
+      bucket_key:
+        type: string
       column_mapping:
         additionalProperties:
           type: string
         type: object
-      file_path:
+      file:
+        description: Backward compatibility
         type: string
       has_header:
         type: boolean
-    required:
-    - file_path
+      job_id:
+        type: string
+      path:
+        description: Backward compatibility
+        type: string
     type: object
-  models.GrowthHotspotResult:
+  backend_internal_models.GrowthHotspotResult:
     properties:
       current_median:
         type: integer
@@ -97,14 +39,78 @@ definitions:
       region:
         type: string
     type: object
-  models.MedianPriceResult:
+  backend_internal_models.Job:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: string
+      message:
+        description: For error messages or success info
+        type: string
+      payload:
+        description: Custom data the job was initiated with
+        items:
+          type: integer
+        type: array
+      progress:
+        type: integer
+      result:
+        description: Data resulting from completion/failure
+        items:
+          type: integer
+        type: array
+      status:
+        $ref: '#/definitions/backend_internal_models.JobStatus'
+      task_type:
+        type: string
+      total:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  backend_internal_models.JobStatus:
+    enum:
+    - PENDING
+    - RUNNING
+    - SUCCESS
+    - FAILED
+    type: string
+    x-enum-varnames:
+    - JobStatusPending
+    - JobStatusRunning
+    - JobStatusSuccess
+    - JobStatusFailed
+  backend_internal_models.MedianPriceResult:
     properties:
       median_price:
         type: integer
       region:
         type: string
     type: object
-  models.PriceTrendResult:
+  backend_internal_models.NewBuildPremiumResult:
+    properties:
+      new_avg:
+        type: integer
+      old_avg:
+        type: integer
+      premium_percent:
+        type: number
+      region:
+        type: string
+    type: object
+  backend_internal_models.PriceBracketResult:
+    properties:
+      bracket:
+        type: string
+      count:
+        type: integer
+      percentage:
+        type: number
+    type: object
+  backend_internal_models.PriceTrendResult:
     properties:
       avg_price:
         type: integer
@@ -113,6 +119,165 @@ definitions:
       period:
         type: string
       transaction_count:
+        type: integer
+    type: object
+  backend_internal_models.Property:
+    properties:
+      county:
+        type: string
+      created_at:
+        type: string
+      date_of_transfer:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      district:
+        type: string
+      duration:
+        description: F = Freehold, L = Leasehold
+        type: string
+      id:
+        description: A unique identifier for each property sale
+        type: string
+      locality:
+        type: string
+      old_new:
+        description: Y = a newly built property, N = an established residential building
+        type: string
+      paon:
+        description: Primary Addressable Object Name. Typically the house number or
+          name.
+        type: string
+      postcode:
+        type: string
+      ppd_category_type:
+        description: A = Standard Price Paid entry, B = Additional Price Paid entry
+        type: string
+      price:
+        description: In GBP
+        type: integer
+      property_type:
+        description: D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes,
+          O = Other
+        type: string
+      record_status:
+        description: A = Addition, C = Change, D = Delete
+        type: string
+      saon:
+        description: Secondary Addressable Object Name. Where a property has been
+          divided into separate units (for example, flats).
+        type: string
+      street:
+        type: string
+      town_city:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_models.PropertyTypeDistributionResult:
+    properties:
+      count:
+        type: integer
+      percentage:
+        type: number
+      property_type:
+        type: string
+    type: object
+  backend_internal_models.TopActiveAreaResult:
+    properties:
+      region:
+        type: string
+      total_value:
+        type: integer
+      transaction_count:
+        type: integer
+    type: object
+  backend_internal_models.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      is_admin:
+        type: boolean
+      name:
+        type: string
+      refresh_version:
+        type: integer
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  internal_routes_api.BaseResponse:
+    properties:
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.ErrorResponse:
+    properties:
+      error:
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
+  internal_routes_api.JobListPayload:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.Job'
+        type: array
+      total:
+        type: integer
+    type: object
+  internal_routes_api.JobResponse:
+    properties:
+      job_id:
+        type: string
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.LoginBody:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  internal_routes_api.LoginPayload:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/backend_internal_models.User'
+    type: object
+  internal_routes_api.PropertyListPayload:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.Property'
+        type: array
+      total:
         type: integer
     type: object
 host: localhost:8080
@@ -130,6 +295,64 @@ info:
   title: UK Housing Market & Rental Intelligence API
   version: "1.0"
 paths:
+  /admin/jobs:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of background jobs with pagination
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.JobListPayload'
+      security:
+      - JwtAuth: []
+      summary: List background jobs
+      tags:
+      - admin
+  /admin/stream-upload:
+    post:
+      consumes:
+      - application/octet-stream
+      description: Stream a large CSV file directly from the request body to bucket
+        and queue a migration job
+      parameters:
+      - description: Original filename
+        in: query
+        name: filename
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/internal_routes_api.JobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Stream upload CSV file
+      tags:
+      - admin
   /admin/upload:
     post:
       consumes:
@@ -141,25 +364,57 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.CSVConfigPayload'
+          $ref: '#/definitions/backend_internal_models.CSVConfigPayload'
       produces:
       - application/json
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.JobResponse'
+            $ref: '#/definitions/internal_routes_api.JobResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Upload CSV for migration
+      tags:
+      - admin
+  /admin/upload-file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a CSV file via multipart/form-data to bucket and queue a
+        migration job
+      parameters:
+      - description: CSV File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/internal_routes_api.JobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Upload CSV file directly
       tags:
       - admin
   /analytics/affordability:
@@ -174,10 +429,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.AffordabilityResult'
+              $ref: '#/definitions/backend_internal_models.AffordabilityResult'
             type: array
-      security:
-      - JwtAuth: []
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get affordability index
       tags:
       - analytics
@@ -199,10 +456,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.GrowthHotspotResult'
+              $ref: '#/definitions/backend_internal_models.GrowthHotspotResult'
             type: array
-      security:
-      - JwtAuth: []
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get growth hotspots
       tags:
       - analytics
@@ -224,11 +483,61 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.MedianPriceResult'
+              $ref: '#/definitions/backend_internal_models.MedianPriceResult'
             type: array
-      security:
-      - JwtAuth: []
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get median price by region
+      tags:
+      - analytics
+  /analytics/new-build-premium:
+    get:
+      consumes:
+      - application/json
+      description: Get average prices of new builds vs established properties by region
+      parameters:
+      - default: county
+        description: Region type (county, district, town_city)
+        in: query
+        name: by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/backend_internal_models.NewBuildPremiumResult'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Get new build premium
+      tags:
+      - analytics
+  /analytics/price-bracket-distribution:
+    get:
+      consumes:
+      - application/json
+      description: Get distribution of properties by price ranges
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/backend_internal_models.PriceBracketResult'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Get price bracket distribution
       tags:
       - analytics
   /analytics/price-trend:
@@ -249,11 +558,66 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.PriceTrendResult'
+              $ref: '#/definitions/backend_internal_models.PriceTrendResult'
             type: array
-      security:
-      - JwtAuth: []
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get price trend analysis
+      tags:
+      - analytics
+  /analytics/property-type-distribution:
+    get:
+      consumes:
+      - application/json
+      description: Get distribution of properties by type (detached, semi, flat, etc.)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/backend_internal_models.PropertyTypeDistributionResult'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Get property type distribution
+      tags:
+      - analytics
+  /analytics/top-active-areas:
+    get:
+      consumes:
+      - application/json
+      description: Get regions with highest transaction volume
+      parameters:
+      - default: district
+        description: Region type (county, district, town_city)
+        in: query
+        name: by
+        type: string
+      - default: 10
+        description: Number of results
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/backend_internal_models.TopActiveAreaResult'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Get top active areas
       tags:
       - analytics
   /auth/login:
@@ -267,18 +631,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/api.LoginBody'
+          $ref: '#/definitions/internal_routes_api.LoginBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.LoginResponse'
+            $ref: '#/definitions/internal_routes_api.LoginPayload'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: User login
       tags:
       - auth
@@ -293,7 +657,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
       summary: User logout
       tags:
       - auth
@@ -302,19 +666,117 @@ paths:
       consumes:
       - application/json
       description: Get a list of UK housing properties with pagination and filtering
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: Town/City
+        in: query
+        name: town_city
+        type: string
+      - description: District
+        in: query
+        name: district
+        type: string
+      - description: County
+        in: query
+        name: county
+        type: string
+      - description: Property Type
+        in: query
+        name: property_type
+        type: string
+      - description: Minimum Price
+        in: query
+        name: min_price
+        type: integer
+      - description: Maximum Price
+        in: query
+        name: max_price
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PropertyListResponse'
-      security:
-      - JwtAuth: []
+            $ref: '#/definitions/internal_routes_api.PropertyListPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: List properties
       tags:
       - property
+    post:
+      consumes:
+      - application/json
+      description: Create a new property record
+      parameters:
+      - description: Property object
+        in: body
+        name: property
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_models.Property'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/backend_internal_models.Property'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Create property
+      tags:
+      - property
   /property/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a property record
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Delete property
+      tags:
+      - property
     get:
       consumes:
       - application/json
@@ -324,21 +786,59 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PropertyResponse'
+            $ref: '#/definitions/backend_internal_models.Property'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Get property by ID
+      tags:
+      - property
+    put:
+      consumes:
+      - application/json
+      description: Update an existing property record
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Property object
+        in: body
+        name: property
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_models.Property'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_models.Property'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
-      summary: Get property by ID
+      summary: Update property
       tags:
       - property
 securityDefinitions:
