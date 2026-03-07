@@ -215,6 +215,10 @@ func (s *analyticsService) GetTopActiveAreas(ctx context.Context, regionType str
 	return results, nil
 }
 
+func (s *analyticsService) RefreshMaterializedView(ctx context.Context) error {
+	return s.repo.RefreshMaterializedView(ctx)
+}
+
 func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 	slog.Info("Starting analytics cache pre-computation")
 	start := time.Now()

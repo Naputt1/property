@@ -4,16 +4,19 @@ import (
 	"backend/internal/models"
 	"backend/internal/repository"
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type propertyService struct {
-	repo repository.PropertyRepository
+	repo      repository.PropertyRepository
+	analytics AnalyticsService
+	job       JobService
 }
 
-func NewPropertyService(repo repository.PropertyRepository) PropertyService {
-	return &propertyService{repo: repo}
+func NewPropertyService(repo repository.PropertyRepository, analytics AnalyticsService, job JobService) PropertyService {
+	return &propertyService{repo: repo, analytics: analytics, job: job}
 }
 
 func (s *propertyService) GetProperties(ctx context.Context, filters map[string]interface{}, limit, offset int) ([]models.Property, int64, error) {
@@ -32,14 +35,25 @@ func (s *propertyService) CreateProperty(ctx context.Context, property *models.P
 	if property.ID == uuid.Nil {
 		property.ID = uuid.New()
 	}
-	return s.repo.Create(ctx, property)
+	err := s.repo.Create(ctx, property)
+	if err == nil {
+		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+	}
+	return err
 }
 
-
 func (s *propertyService) UpdateProperty(ctx context.Context, property *models.Property) error {
-	return s.repo.Update(ctx, property)
+	err := s.repo.Update(ctx, property)
+	if err == nil {
+		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+	}
+	return err
 }
 
 func (s *propertyService) DeleteProperty(ctx context.Context, id string) error {
-	return s.repo.Delete(ctx, id)
+	err := s.repo.Delete(ctx, id)
+	if err == nil {
+		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+	}
+	return err
 }

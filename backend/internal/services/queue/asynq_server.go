@@ -40,6 +40,9 @@ func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, 
 	// Register handlers
 	migrationHandler := NewMigrationHandler(svcs, cfg.Bucket)
 	mux.HandleFunc("properties:migrate:csv", migrationHandler.HandleCSVMigrateTask)
+	mux.HandleFunc("analytics:refresh_mvs", func(ctx context.Context, t *asynq.Task) error {
+		return svcs.Analytics.RefreshMaterializedView(ctx)
+	})
 
 	server := &AsynqServer{
 		server: srv,

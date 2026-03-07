@@ -40,6 +40,7 @@ type AnalyticsRepository interface {
 	GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error)
 	GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error)
 	GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error)
+	RefreshMaterializedView(ctx context.Context) error
 }
 
 type SocketService interface {
