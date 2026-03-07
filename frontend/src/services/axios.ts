@@ -70,7 +70,7 @@ export function initAxios() {
 
   const axiosInstance = axios.create({
     baseURL: axiosConfig.baseURL,
-    timeout: 30000,
+    timeout: 120000,
     headers: {
       "Content-Type": "application/json",
     },
@@ -142,21 +142,22 @@ export async function GET<T = any, TMeta = any>(
   const api = initAxios();
   try {
     const res = await api.get<ApiResponse<T>>(url, config);
-    const body = res.data as unknown as IApiResponseDataBase & { error?: string };
-    if (body.status === false) {
+    if (res.data.status === false) {
       return {
         status: false,
         err: {
           status: res.status,
-          data: (body.error || "Unknown Error") as any,
+          data: res.data,
         },
         header: geHeader(res.headers),
       };
     }
 
     return {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       status: true,
-      data: res.data as any,
+      ...res.data,
       header: geHeader(res.headers),
     };
   } catch (err) {
@@ -172,29 +173,61 @@ export async function POST<T = any, TError = any, TData = any, TMeta = any>(
   try {
     const api = initAxios();
     const res = await api.post<ApiResponseAxios<T, TError>>(url, data, config);
-    const body = res.data as unknown as IApiResponseDataBase & { error?: string };
-    if (body.status === false) {
+    if (res.data.status === false) {
       return {
         status: false,
         err: {
           status: res.status,
-          data: (body.error || "Unknown Error") as any,
+          data: res.data.data,
         },
         header: geHeader(res.headers),
       };
     }
 
     return {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       status: true,
-      data: res.data as any,
+      ...res.data,
       header: geHeader(res.headers),
     };
   } catch (err) {
+    console.log("axios error", err);
     if (axios.isAxiosError(err)) {
       return responseCatch<TError, TMeta>(err);
     }
 
     return responseCatch<TError, TMeta>(err as AxiosError);
+  }
+}
+
+export async function DELETE<T = any, TMeta = any>(
+  url: string,
+  config?: AxiosRequestConfig,
+): Promise<ApiResponse<T>> {
+  const api = initAxios();
+  try {
+    const res = await api.delete<ApiResponse<T>>(url, config);
+    if (res.data.status === false) {
+      return {
+        status: false,
+        err: {
+          status: res.status,
+          data: res.data,
+        },
+        header: geHeader(res.headers),
+      };
+    }
+
+    return {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      status: true,
+      ...res.data,
+      header: geHeader(res.headers),
+    };
+  } catch (err) {
+    return responseCatch<T, TMeta>(err as AxiosError);
   }
 }
 

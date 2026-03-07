@@ -73,7 +73,6 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusRunning, "Processing CSV file from bucket")
 	}
 
-	// Open CSV from bucket or local file (backward compatibility)
 	var object io.ReadCloser
 	var totalSize int64
 
@@ -85,6 +84,7 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		}
 		return err
 	}
+
 	defer object.Close()
 
 	reader := csv.NewReader(object)
@@ -238,7 +238,13 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 	}
 
 	// Invalidate analytics cache
-	_ = h.svcs.Analytics.ClearCache(ctx)
+	_ = h.svcs.Analytics.ClearCache(context.Background())
+
+	// Precompute analytics cache in background
+	go func() {
+		// Use a fresh context for background work
+		_ = h.svcs.Analytics.PrecomputeCache(context.Background())
+	}()
 
 	// Update job status to SUCCESS
 	if jobID != "" {

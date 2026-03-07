@@ -143,6 +143,44 @@ func (s *analyticsService) GetGrowthHotspots(ctx context.Context, limit int) ([]
 	return results, nil
 }
 
+func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
+	slog.Info("Starting analytics cache pre-computation")
+	start := time.Now()
+
+	// Precompute median price by region
+	regions := []string{"county", "district", "town_city"}
+	for _, region := range regions {
+		_, err := s.GetMedianPriceByRegion(ctx, region)
+		if err != nil {
+			slog.Error("failed to precompute median price", "region", region, "error", err)
+		}
+	}
+
+	// Precompute price trends
+	intervals := []string{"month", "year"}
+	for _, interval := range intervals {
+		_, err := s.GetPriceTrend(ctx, interval)
+		if err != nil {
+			slog.Error("failed to precompute price trend", "interval", interval, "error", err)
+		}
+	}
+
+	// Precompute affordability
+	_, err := s.GetAffordability(ctx)
+	if err != nil {
+		slog.Error("failed to precompute affordability", "error", err)
+	}
+
+	// Precompute growth hotspots
+	_, err = s.GetGrowthHotspots(ctx, 10)
+	if err != nil {
+		slog.Error("failed to precompute growth hotspots", "error", err)
+	}
+
+	slog.Info("Analytics cache pre-computation completed", "duration", time.Since(start))
+	return nil
+}
+
 func (s *analyticsService) ClearCache(ctx context.Context) error {
 	if s.redis == nil {
 		return nil
