@@ -67,5 +67,28 @@ func migrations() []*gormigrate.Migration {
 				)
 			},
 		},
+		{
+			ID: "2026030602_analytics_indexes",
+			Migrate: func(tx *gorm.DB) error {
+				// Use raw SQL to create indexes concurrently or just standard indexes if concurrent is not supported
+				// Standard indexes for safety across environments
+				if err := tx.Exec("CREATE INDEX IF NOT EXISTS idx_properties_property_type ON properties(property_type)").Error; err != nil {
+					return err
+				}
+				if err := tx.Exec("CREATE INDEX IF NOT EXISTS idx_properties_date_of_transfer ON properties(date_of_transfer)").Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			Rollback: func(tx *gorm.DB) error {
+				if err := tx.Exec("DROP INDEX IF EXISTS idx_properties_property_type").Error; err != nil {
+					return err
+				}
+				if err := tx.Exec("DROP INDEX IF EXISTS idx_properties_date_of_transfer").Error; err != nil {
+					return err
+				}
+				return nil
+			},
+		},
 	}
 }
