@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 )
 
@@ -163,8 +164,14 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		price, _ := strconv.ParseInt(record[1], 10, 64)
 		dateOfTransfer, _ := time.Parse("2006-01-02 15:04", record[2])
 
+		id, err := uuid.Parse(cleanUUID(record[0]))
+		if err != nil {
+			slog.Warn("Invalid UUID in record, generating new one", "record_id", record[0], "error", err)
+			id = uuid.New()
+		}
+
 		property := models.Property{
-			ID:              cleanUUID(record[0]), // Use TUI as ID for idempotency
+			ID:              id, // Use parsed UUID
 			Price:           price,
 			DateOfTransfer:  dateOfTransfer,
 			Postcode:        record[3],

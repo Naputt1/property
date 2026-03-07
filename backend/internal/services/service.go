@@ -14,6 +14,9 @@ type UserService interface {
 type PropertyService interface {
 	GetProperties(ctx context.Context, filters map[string]interface{}, limit, offset int) ([]models.Property, int64, error)
 	GetPropertyByID(ctx context.Context, id string) (*models.Property, error)
+	CreateProperty(ctx context.Context, property *models.Property) error
+	UpdateProperty(ctx context.Context, property *models.Property) error
+	DeleteProperty(ctx context.Context, id string) error
 	CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error
 }
 
