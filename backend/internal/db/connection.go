@@ -90,5 +90,42 @@ func migrations() []*gormigrate.Migration {
 				return nil
 			},
 		},
+		{
+			ID: "2026030703_optimized_indexes",
+			Migrate: func(tx *gorm.DB) error {
+				indexes := []string{
+					"CREATE INDEX IF NOT EXISTS idx_properties_town_city ON properties(town_city)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_district ON properties(district)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_county ON properties(county)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_postcode ON properties(postcode)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_price ON properties(price)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_old_new ON properties(old_new)",
+					"CREATE INDEX IF NOT EXISTS idx_properties_date_price ON properties(date_of_transfer DESC, price DESC)",
+				}
+				for _, q := range indexes {
+					if err := tx.Exec(q).Error; err != nil {
+						return err
+					}
+				}
+				return nil
+			},
+			Rollback: func(tx *gorm.DB) error {
+				indexes := []string{
+					"DROP INDEX IF EXISTS idx_properties_town_city",
+					"DROP INDEX IF EXISTS idx_properties_district",
+					"DROP INDEX IF EXISTS idx_properties_county",
+					"DROP INDEX IF EXISTS idx_properties_postcode",
+					"DROP INDEX IF EXISTS idx_properties_price",
+					"DROP INDEX IF EXISTS idx_properties_old_new",
+					"DROP INDEX IF EXISTS idx_properties_date_price",
+				}
+				for _, q := range indexes {
+					if err := tx.Exec(q).Error; err != nil {
+						return err
+					}
+				}
+				return nil
+			},
+		},
 	}
 }

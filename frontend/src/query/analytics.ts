@@ -139,7 +139,12 @@ export const topActiveAreasQuery = createQueryWrapper<
   { by: string; limit: number },
   { param: { by: string; limit: number } }
 >({
-  queryKey: (params) => ["analytics", "top-active-areas", params.by, params.limit],
+  queryKey: (params) => [
+    "analytics",
+    "top-active-areas",
+    params.by,
+    params.limit,
+  ],
   options: {
     queryFn: defaultQueryFn({
       url: "/analytics/top-active-areas?by=$by&limit=$limit",

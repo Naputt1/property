@@ -18,7 +18,7 @@ type PropertyRepository interface {
 	Create(ctx context.Context, property *models.Property) error
 	CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error
 	GetByID(ctx context.Context, id string) (*models.Property, error)
-	GetProperties(ctx context.Context, limit, offset int) ([]models.Property, int64, error)
+	GetProperties(ctx context.Context, filters map[string]interface{}, limit, offset int) ([]models.Property, int64, error)
 }
 
 type JobRepository interface {

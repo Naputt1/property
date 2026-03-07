@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: number;
@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: () => !!get().user,
     }),
     {
-      name: 'property-auth-storage',
-    }
-  )
+      name: "property-auth-storage",
+    },
+  ),
 );

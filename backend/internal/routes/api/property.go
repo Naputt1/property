@@ -36,6 +36,30 @@ func (h *PropertyHandler) ListProperties(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 
+	filters := make(map[string]interface{})
+	if town := c.Query("town_city"); town != "" {
+		filters["town_city"] = town
+	}
+	if district := c.Query("district"); district != "" {
+		filters["district"] = district
+	}
+	if county := c.Query("county"); county != "" {
+		filters["county"] = county
+	}
+	if ptype := c.Query("property_type"); ptype != "" {
+		filters["property_type"] = ptype
+	}
+	if minPriceStr := c.Query("min_price"); minPriceStr != "" {
+		if minPrice, err := strconv.ParseInt(minPriceStr, 10, 64); err == nil {
+			filters["min_price"] = minPrice
+		}
+	}
+	if maxPriceStr := c.Query("max_price"); maxPriceStr != "" {
+		if maxPrice, err := strconv.ParseInt(maxPriceStr, 10, 64); err == nil {
+			filters["max_price"] = maxPrice
+		}
+	}
+
 	if page < 1 {
 		page = 1
 	}
@@ -46,7 +70,7 @@ func (h *PropertyHandler) ListProperties(c *gin.Context) {
 	offset := (page - 1) * pageSize
 	limit := pageSize
 
-	properties, total, err := h.svc.GetProperties(c.Request.Context(), limit, offset)
+	properties, total, err := h.svc.GetProperties(c.Request.Context(), filters, limit, offset)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to list properties"})
 		return
