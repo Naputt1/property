@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { routeTree } from "./routeTree.gen";
 
 import "./app.css";
+import "leaflet/dist/leaflet.css";
 
 const queryClient = new QueryClient();
 

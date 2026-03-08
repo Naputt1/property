@@ -65,51 +65,52 @@ export type ApiResponse<T = any, TError = any, TMeta = any> =
   | ApiResponseSuccess<T>
   | ApiResponseError<TError, TMeta>;
 
-export function initAxios() {
-  const { clearAuth } = useAuthStore.getState();
+// Create a singleton instance
+const axiosInstance = axios.create({
+  baseURL: axiosConfig.baseURL,
+  timeout: 120000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
 
-  const axiosInstance = axios.create({
-    baseURL: axiosConfig.baseURL,
-    timeout: 120000,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+// Add interceptors to the singleton instance
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error: AxiosError) => {
+    const { clearAuth } = useAuthStore.getState();
 
-  axiosInstance.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error: AxiosError) => {
-      if (error.code === "ERR_NETWORK") {
-        toast.error("Network Error: Please try again later.");
-        return Promise.reject(error);
-      }
-
-      if (error.response) {
-        if (error.response.status === 401) {
-          clearAuth();
-          // Handle unauthorized, maybe redirect to login
-          if (window.location.pathname !== "/login") {
-            window.location.href = "/login";
-          }
-        }
-
-        if (error.response.status >= 500 && error.response.status < 600) {
-          const err: string | undefined = (error.response.data as any)?.error;
-          if (typeof err === "string") {
-            toast.error(err);
-          } else {
-            toast.error("Server Error: Please try again later.");
-          }
-        }
-      }
-
+    if (error.code === "ERR_NETWORK") {
+      toast.error("Network Error: Please try again later.");
       return Promise.reject(error);
-    },
-  );
+    }
 
+    if (error.response) {
+      if (error.response.status === 401) {
+        clearAuth();
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+      }
+
+      if (error.response.status >= 500 && error.response.status < 600) {
+        const err: string | undefined = (error.response.data as any)?.error;
+        if (typeof err === "string") {
+          toast.error(err);
+        } else {
+          toast.error("Server Error: Please try again later.");
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export function initAxios() {
   return axiosInstance;
 }
 
@@ -139,9 +140,8 @@ export async function GET<T = any, TMeta = any>(
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
-  const api = initAxios();
   try {
-    const res = await api.get<ApiResponse<T>>(url, config);
+    const res = await axiosInstance.get<ApiResponse<T>>(url, config);
     if (res.data.status === false) {
       return {
         status: false,
@@ -171,8 +171,7 @@ export async function POST<T = any, TError = any, TData = any, TMeta = any>(
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T, TError>> {
   try {
-    const api = initAxios();
-    const res = await api.post<ApiResponseAxios<T, TError>>(url, data, config);
+    const res = await axiosInstance.post<ApiResponseAxios<T, TError>>(url, data, config);
     if (res.data.status === false) {
       return {
         status: false,
@@ -193,10 +192,6 @@ export async function POST<T = any, TError = any, TData = any, TMeta = any>(
     };
   } catch (err) {
     console.log("axios error", err);
-    if (axios.isAxiosError(err)) {
-      return responseCatch<TError, TMeta>(err);
-    }
-
     return responseCatch<TError, TMeta>(err as AxiosError);
   }
 }
@@ -205,9 +200,8 @@ export async function DELETE<T = any, TMeta = any>(
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
-  const api = initAxios();
   try {
-    const res = await api.delete<ApiResponse<T>>(url, config);
+    const res = await axiosInstance.delete<ApiResponse<T>>(url, config);
     if (res.data.status === false) {
       return {
         status: false,
@@ -237,8 +231,7 @@ export async function PUT<T = any, TError = any, TData = any, TMeta = any>(
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T, TError>> {
   try {
-    const api = initAxios();
-    const res = await api.put<ApiResponseAxios<T, TError>>(url, data, config);
+    const res = await axiosInstance.put<ApiResponseAxios<T, TError>>(url, data, config);
     if (res.data.status === false) {
       return {
         status: false,
@@ -259,12 +252,8 @@ export async function PUT<T = any, TError = any, TData = any, TMeta = any>(
     };
   } catch (err) {
     console.log("axios error", err);
-    if (axios.isAxiosError(err)) {
-      return responseCatch<TError, TMeta>(err);
-    }
-
     return responseCatch<TError, TMeta>(err as AxiosError);
   }
 }
 
-export default initAxios;
+export default axiosInstance;

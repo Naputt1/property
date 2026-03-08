@@ -130,10 +130,7 @@ function AdminProperties() {
       propertyType: data.propertyType,
       oldNew: data.oldNew,
       duration: editingProperty?.duration || "F",
-      paon: data.paon,
-      saon: data.saon || "",
-      street: data.street,
-      locality: data.locality || editingProperty?.locality || "",
+      address: data.address,
       townCity: data.townCity,
       district: data.district || editingProperty?.district || "",
       county: data.county,
@@ -186,7 +183,7 @@ function AdminProperties() {
                 <TableRow key={p.id}>
                   <TableCell>
                     <div className="font-medium">
-                      {p.paon} {p.saon} {p.street}
+                      {p.address}
                     </div>
                     <div className="text-xs text-gray-400 font-mono">
                       {p.postcode}
@@ -284,13 +281,14 @@ function AdminProperties() {
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-2">
                   <label className="text-xs font-bold uppercase text-gray-500">
-                    Street
+                    Full Address
                   </label>
                   <input
-                    name="street"
-                    defaultValue={editingProperty?.street}
+                    name="address"
+                    defaultValue={editingProperty?.address}
+                    placeholder="e.g. FLAT 1, 10 PARK STREET"
                     className="w-full border rounded px-3 py-2"
                     required
                   />
@@ -304,27 +302,6 @@ function AdminProperties() {
                     defaultValue={editingProperty?.postcode}
                     className="w-full border rounded px-3 py-2"
                     required
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase text-gray-500">
-                    PAON (House No)
-                  </label>
-                  <input
-                    name="paon"
-                    defaultValue={editingProperty?.paon}
-                    className="w-full border rounded px-3 py-2"
-                    required
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase text-gray-500">
-                    SAON (Flat/Unit)
-                  </label>
-                  <input
-                    name="saon"
-                    defaultValue={editingProperty?.saon}
-                    className="w-full border rounded px-3 py-2"
                   />
                 </div>
                 <div className="space-y-1">

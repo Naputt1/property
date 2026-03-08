@@ -54,6 +54,9 @@ func (r *propertyRepository) GetProperties(ctx context.Context, filters map[stri
 	if district, ok := filters["district"].(string); ok && district != "" {
 		query = query.Where("district ILIKE ?", district+"%")
 	}
+	if address, ok := filters["address"].(string); ok && address != "" {
+		query = query.Where("address ILIKE ?", "%"+address+"%")
+	}
 	if county, ok := filters["county"].(string); ok && county != "" {
 		query = query.Where("county ILIKE ?", county+"%")
 	}

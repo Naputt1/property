@@ -8,10 +8,7 @@ export interface IProperty {
   property_type: string;
   old_new: string;
   duration: string;
-  paon: string;
-  saon: string;
-  street: string;
-  locality: string;
+  address: string;
   town_city: string;
   district: string;
   county: string;

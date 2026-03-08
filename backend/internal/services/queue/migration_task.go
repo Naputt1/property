@@ -38,6 +38,96 @@ func NewMigrationHandler(svcs *services.Services, bucket repository.BucketServic
 	}
 }
 
+func interpretCounty(ppdCounty, district, town string) string {
+	c := strings.ToUpper(strings.TrimSpace(ppdCounty))
+	d := strings.ToUpper(strings.TrimSpace(district))
+	// t := strings.ToUpper(strings.TrimSpace(town))
+
+	// Common PPD Unitary Authority to Ceremonial County mappings
+	mappings := map[string]string{
+		"BRIGHTON AND HOVE":                 "EAST SUSSEX",
+		"BATH AND NORTH EAST SOMERSET":      "SOMERSET",
+		"NORTH EAST LINCOLNSHIRE":           "LINCOLNSHIRE",
+		"NORTH LINCOLNSHIRE":                "LINCOLNSHIRE",
+		"BOURNEMOUTH, CHRISTCHURCH AND POOLE": "DORSET",
+		"BOURNEMOUTH":                       "DORSET",
+		"POOLE":                             "DORSET",
+		"WEST BERKSHIRE":                    "BERKSHIRE",
+		"WINDSOR AND MAIDENHEAD":            "BERKSHIRE",
+		"WOKINGHAM":                         "BERKSHIRE",
+		"BRACKNELL FOREST":                  "BERKSHIRE",
+		"READING":                           "BERKSHIRE",
+		"SLOUGH":                            "BERKSHIRE",
+		"WOKINGHAM BOROUGH":                 "BERKSHIRE",
+		"WEST NORTHAMPTONSHIRE":             "NORTHAMPTONSHIRE",
+		"NORTH NORTHAMPTONSHIRE":            "NORTHAMPTONSHIRE",
+		"BUCKINGHAMSHIRE":                   "BUCKINGHAMSHIRE",
+		"MILTON KEYNES":                     "BUCKINGHAMSHIRE",
+		"CENTRAL BEDFORDSHIRE":              "BEDFORDSHIRE",
+		"BEDFORD":                           "BEDFORDSHIRE",
+		"CHESHIRE EAST":                     "CHESHIRE",
+		"CHESHIRE WEST AND CHESTER":         "CHESHIRE",
+		"HALTON":                            "CHESHIRE",
+		"WARRINGTON":                        "CHESHIRE",
+		"CUMBERLAND":                        "CUMBRIA",
+		"WESTMORLAND AND FURNESS":           "CUMBRIA",
+		"EAST RIDING OF YORKSHIRE":          "EAST RIDING OF YORKSHIRE",
+		"HULL":                              "EAST RIDING OF YORKSHIRE",
+		"CITY OF KINGSTON UPON HULL":        "EAST RIDING OF YORKSHIRE",
+		"YORK":                              "NORTH YORKSHIRE",
+		"NORTH YORKSHIRE":                   "NORTH YORKSHIRE",
+		"MIDDLESBROUGH":                     "NORTH YORKSHIRE",
+		"REDCAR AND CLEVELAND":              "NORTH YORKSHIRE",
+		"STOCKTON-ON-TEES":                  "DURHAM", // Part in North Yorkshire but usually Durham for ceremonial
+		"DARLINGTON":                        "DURHAM",
+		"HARTLEPOOL":                        "DURHAM",
+		"STOKE-ON-TRENT":                    "STAFFORDSHIRE",
+		"TELFORD AND WREKIN":                "SHROPSHIRE",
+		"HEREFORDSHIRE":                     "HEREFORDSHIRE",
+		"CITY OF HEREFORD":                  "HEREFORDSHIRE",
+		"ISLE OF WIGHT":                     "ISLE OF WIGHT",
+		"MEDWAY":                            "KENT",
+		"SOUTHAMPTON":                       "HAMPSHIRE",
+		"PORTSMOUTH":                        "HAMPSHIRE",
+		"PLYMOUTH":                          "DEVON",
+		"TORBAY":                            "DEVON",
+		"SWINDON":                           "WILTSHIRE",
+		"BRISTOL":                           "BRISTOL",
+		"CITY OF BRISTOL":                   "BRISTOL",
+		"LEICESTER":                         "LEICESTERSHIRE",
+		"RUTLAND":                           "RUTLAND",
+		"NOTTINGHAM":                        "NOTTINGHAMSHIRE",
+		"DERBY":                             "DERBYSHIRE",
+		"PETERBOROUGH":                      "CAMBRIDGESHIRE",
+		"THURROCK":                          "ESSEX",
+		"SOUTHEND-ON-SEA":                   "ESSEX",
+	}
+
+	if ceremonial, ok := mappings[c]; ok {
+		return ceremonial
+	}
+	
+	// Fallback to district check if county is generic or empty
+	if c == "" || c == "UNITARY AUTHORITY" {
+		if ceremonial, ok := mappings[d]; ok {
+			return ceremonial
+		}
+	}
+
+	return c
+}
+
+func formatAddress(paon, saon, street, locality string) string {
+	var parts []string
+	for _, s := range []string{saon, paon, street, locality} {
+		s = strings.TrimSpace(s)
+		if s != "" {
+			parts = append(parts, s)
+		}
+	}
+	return strings.Join(parts, ", ")
+}
+
 func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Task) (err error) {
 	defer func() {
 		if err != nil {
@@ -178,13 +268,10 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 			PropertyType:    record[4],
 			OldNew:          record[5],
 			Duration:        record[6],
-			PAON:            record[7],
-			SAON:            record[8],
-			Street:          record[9],
-			Locality:        record[10],
+			Address:         formatAddress(record[7], record[8], record[9], record[10]),
 			TownCity:        record[11],
 			District:        record[12],
-			County:          record[13],
+			County:          interpretCounty(record[13], record[12], record[11]),
 			PPDCategoryType: record[14],
 			RecordStatus:    record[15],
 		}

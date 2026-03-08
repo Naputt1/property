@@ -11,10 +11,7 @@ type Property {
   propertyType: String!
   oldNew: String!
   duration: String!
-  paon: String!
-  saon: String!
-  street: String!
-  locality: String!
+  address: String!
   townCity: String!
   district: String!
   county: String!
@@ -65,10 +62,7 @@ input PropertyInput {
   propertyType: String!
   oldNew: String!
   duration: String!
-  paon: String!
-  saon: String!
-  street: String!
-  locality: String!
+  address: String!
   townCity: String!
   district: String!
   county: String!

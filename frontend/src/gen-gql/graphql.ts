@@ -61,22 +61,19 @@ export type MutationUpdatePropertyArgs = {
 
 export type Property = {
   __typename?: 'Property';
+  address: Scalars['String']['output'];
   county: Scalars['String']['output'];
   createdAt: Scalars['Time']['output'];
   dateOfTransfer: Scalars['Time']['output'];
   district: Scalars['String']['output'];
   duration: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  locality: Scalars['String']['output'];
   oldNew: Scalars['String']['output'];
-  paon: Scalars['String']['output'];
   postcode: Scalars['String']['output'];
   ppdCategoryType: Scalars['String']['output'];
   price: Scalars['Int']['output'];
   propertyType: Scalars['String']['output'];
   recordStatus: Scalars['String']['output'];
-  saon: Scalars['String']['output'];
-  street: Scalars['String']['output'];
   townCity: Scalars['String']['output'];
   updatedAt: Scalars['Time']['output'];
 };
@@ -88,20 +85,17 @@ export type PropertyConnection = {
 };
 
 export type PropertyInput = {
+  address: Scalars['String']['input'];
   county: Scalars['String']['input'];
   dateOfTransfer: Scalars['Time']['input'];
   district: Scalars['String']['input'];
   duration: Scalars['String']['input'];
-  locality: Scalars['String']['input'];
   oldNew: Scalars['String']['input'];
-  paon: Scalars['String']['input'];
   postcode: Scalars['String']['input'];
   ppdCategoryType: Scalars['String']['input'];
   price: Scalars['Int']['input'];
   propertyType: Scalars['String']['input'];
   recordStatus: Scalars['String']['input'];
-  saon: Scalars['String']['input'];
-  street: Scalars['String']['input'];
   townCity: Scalars['String']['input'];
 };
 
@@ -155,14 +149,14 @@ export type GetPropertiesQueryVariables = Exact<{
 }>;
 
 
-export type GetPropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyConnection', total: number, items: Array<{ __typename?: 'Property', id: string, price: number, dateOfTransfer: any, postcode: string, propertyType: string, oldNew: string, paon: string, saon: string, street: string, townCity: string, county: string }> } };
+export type GetPropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyConnection', total: number, items: Array<{ __typename?: 'Property', id: string, price: number, dateOfTransfer: any, postcode: string, propertyType: string, oldNew: string, address: string, townCity: string, county: string }> } };
 
 export type CreatePropertyMutationVariables = Exact<{
   input: PropertyInput;
 }>;
 
 
-export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, price: number, street: string } };
+export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, price: number, address: string } };
 
 export type UpdatePropertyMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -170,7 +164,7 @@ export type UpdatePropertyMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePropertyMutation = { __typename?: 'Mutation', updateProperty: { __typename?: 'Property', id: string, price: number, street: string } };
+export type UpdatePropertyMutation = { __typename?: 'Mutation', updateProperty: { __typename?: 'Property', id: string, price: number, address: string } };
 
 export type DeletePropertyMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -234,9 +228,7 @@ export const GetPropertiesDocument = `
       postcode
       propertyType
       oldNew
-      paon
-      saon
-      street
+      address
       townCity
       county
     }
@@ -266,7 +258,7 @@ export const CreatePropertyDocument = `
   createProperty(input: $input) {
     id
     price
-    street
+    address
   }
 }
     `;
@@ -289,7 +281,7 @@ export const UpdatePropertyDocument = `
   updateProperty(id: $id, input: $input) {
     id
     price
-    street
+    address
   }
 }
     `;

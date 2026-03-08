@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { Map as MapIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
@@ -24,7 +26,7 @@ import { useGetAnalyticsPropertyTypeDistribution } from "@/gen/hooks/useGetAnaly
 import { useGetAnalyticsPriceBracketDistribution } from "@/gen/hooks/useGetAnalyticsPriceBracketDistribution";
 import { useGetAnalyticsTopActiveAreas } from "@/gen/hooks/useGetAnalyticsTopActiveAreas";
 
-export const Route = createFileRoute("/analytics")({
+export const Route = createFileRoute("/analytics/")({
   component: Analytics,
 });
 
@@ -42,17 +44,25 @@ function Analytics() {
   const [premiumRegion, setPremiumRegion] = useState<any>("county");
   const [activeAreaRegion, setActiveAreaRegion] = useState<any>("district");
 
-  const { data: medianPrices, isLoading: loadingMedian } = useGetAnalyticsMedianPrice({ by: regionType });
-  const { data: priceTrends, isLoading: loadingTrends } = useGetAnalyticsPriceTrend({ interval: trendInterval });
-  const { data: affordability, isLoading: loadingAffordability } = useGetAnalyticsAffordability();
-  const { data: hotspots, isLoading: loadingHotspots } = useGetAnalyticsGrowthHotspots({ limit: 10 });
-  const { data: newBuildPremium, isLoading: loadingPremium } = useGetAnalyticsNewBuildPremium({ by: premiumRegion });
-  const { data: typeDistribution, isLoading: loadingTypeDist } = useGetAnalyticsPropertyTypeDistribution();
-  const { data: bracketDistribution, isLoading: loadingBracketDist } = useGetAnalyticsPriceBracketDistribution();
-  const { data: activeAreas, isLoading: loadingActiveAreas } = useGetAnalyticsTopActiveAreas({
-    by: activeAreaRegion,
-    limit: 10,
-  });
+  const { data: medianPrices, isLoading: loadingMedian } =
+    useGetAnalyticsMedianPrice({ by: regionType });
+  const { data: priceTrends, isLoading: loadingTrends } =
+    useGetAnalyticsPriceTrend({ interval: trendInterval });
+  const { data: affordability, isLoading: loadingAffordability } =
+    useGetAnalyticsAffordability();
+  const { data: hotspots, isLoading: loadingHotspots } =
+    useGetAnalyticsGrowthHotspots({ limit: 10 });
+  const { data: newBuildPremium, isLoading: loadingPremium } =
+    useGetAnalyticsNewBuildPremium({ by: premiumRegion });
+  const { data: typeDistribution, isLoading: loadingTypeDist } =
+    useGetAnalyticsPropertyTypeDistribution();
+  const { data: bracketDistribution, isLoading: loadingBracketDist } =
+    useGetAnalyticsPriceBracketDistribution();
+  const { data: activeAreas, isLoading: loadingActiveAreas } =
+    useGetAnalyticsTopActiveAreas({
+      by: activeAreaRegion,
+      limit: 10,
+    });
 
   const formatPrice = (value: number | undefined) => {
     if (value === undefined) return "£0";
@@ -77,11 +87,19 @@ function Analytics() {
 
   return (
     <div className="space-y-12 pb-12">
-      <header>
-        <h1 className="text-3xl font-bold">UK Housing Market Analytics</h1>
-        <p className="text-muted-foreground">
-          Comprehensive data insights and market trends.
-        </p>
+      <header className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">UK Housing Market Analytics</h1>
+          <p className="text-muted-foreground">
+            Comprehensive data insights and market trends.
+          </p>
+        </div>
+        <Link to="/analytics/map">
+          <Button className="gap-2">
+            <MapIcon className="h-4 w-4" />
+            View on Map
+          </Button>
+        </Link>
       </header>
 
       {/* Main Trends Grid */}
