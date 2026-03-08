@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AnalyticsRouteRouteImport } from './routes/analytics/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyticsIndexRouteImport } from './routes/analytics/index'
@@ -28,6 +29,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRouteRoute = AnalyticsRouteRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -39,9 +45,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsIndexRoute = AnalyticsIndexRouteImport.update({
-  id: '/analytics/',
-  path: '/analytics/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AnalyticsRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -49,9 +55,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AnalyticsMapRoute = AnalyticsMapRouteImport.update({
-  id: '/analytics/map',
-  path: '/analytics/map',
-  getParentRoute: () => rootRouteImport,
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AnalyticsRouteRoute,
 } as any)
 const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
   id: '/properties',
@@ -62,6 +68,7 @@ const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/analytics': typeof AnalyticsRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/properties': typeof PropertiesRoute
   '/admin/properties': typeof AdminPropertiesRoute
@@ -82,6 +89,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/analytics': typeof AnalyticsRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/properties': typeof PropertiesRoute
   '/admin/properties': typeof AdminPropertiesRoute
@@ -94,6 +102,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/analytics'
     | '/login'
     | '/properties'
     | '/admin/properties'
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/analytics'
     | '/login'
     | '/properties'
     | '/admin/properties'
@@ -124,10 +134,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AnalyticsRouteRoute: typeof AnalyticsRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   PropertiesRoute: typeof PropertiesRoute
-  AnalyticsMapRoute: typeof AnalyticsMapRoute
-  AnalyticsIndexRoute: typeof AnalyticsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -146,6 +155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -162,10 +178,10 @@ declare module '@tanstack/react-router' {
     }
     '/analytics/': {
       id: '/analytics/'
-      path: '/analytics'
+      path: '/'
       fullPath: '/analytics/'
       preLoaderRoute: typeof AnalyticsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AnalyticsRouteRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -176,10 +192,10 @@ declare module '@tanstack/react-router' {
     }
     '/analytics/map': {
       id: '/analytics/map'
-      path: '/analytics/map'
+      path: '/map'
       fullPath: '/analytics/map'
       preLoaderRoute: typeof AnalyticsMapRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AnalyticsRouteRoute
     }
     '/admin/properties': {
       id: '/admin/properties'
@@ -205,13 +221,26 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface AnalyticsRouteRouteChildren {
+  AnalyticsMapRoute: typeof AnalyticsMapRoute
+  AnalyticsIndexRoute: typeof AnalyticsIndexRoute
+}
+
+const AnalyticsRouteRouteChildren: AnalyticsRouteRouteChildren = {
+  AnalyticsMapRoute: AnalyticsMapRoute,
+  AnalyticsIndexRoute: AnalyticsIndexRoute,
+}
+
+const AnalyticsRouteRouteWithChildren = AnalyticsRouteRoute._addFileChildren(
+  AnalyticsRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  AnalyticsRouteRoute: AnalyticsRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   PropertiesRoute: PropertiesRoute,
-  AnalyticsMapRoute: AnalyticsMapRoute,
-  AnalyticsIndexRoute: AnalyticsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
