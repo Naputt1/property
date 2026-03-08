@@ -1,6 +1,3 @@
-export type { DeletePropertyIdMutationKey } from "./hooks/useDeletePropertyId.ts";
-export type { GetAdminJobsQueryKey } from "./hooks/useGetAdminJobs.ts";
-export type { GetAdminJobsSuspenseQueryKey } from "./hooks/useGetAdminJobsSuspense.ts";
 export type { GetAnalyticsAffordabilityQueryKey } from "./hooks/useGetAnalyticsAffordability.ts";
 export type { GetAnalyticsAffordabilitySuspenseQueryKey } from "./hooks/useGetAnalyticsAffordabilitySuspense.ts";
 export type { GetAnalyticsGrowthHotspotsQueryKey } from "./hooks/useGetAnalyticsGrowthHotspots.ts";
@@ -17,31 +14,11 @@ export type { GetAnalyticsPropertyTypeDistributionQueryKey } from "./hooks/useGe
 export type { GetAnalyticsPropertyTypeDistributionSuspenseQueryKey } from "./hooks/useGetAnalyticsPropertyTypeDistributionSuspense.ts";
 export type { GetAnalyticsTopActiveAreasQueryKey } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
 export type { GetAnalyticsTopActiveAreasSuspenseQueryKey } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
-export type { GetPropertyQueryKey } from "./hooks/useGetProperty.ts";
-export type { GetPropertyIdQueryKey } from "./hooks/useGetPropertyId.ts";
-export type { GetPropertyIdSuspenseQueryKey } from "./hooks/useGetPropertyIdSuspense.ts";
-export type { GetPropertySuspenseQueryKey } from "./hooks/useGetPropertySuspense.ts";
 export type { PostAdminStreamUploadMutationKey } from "./hooks/usePostAdminStreamUpload.ts";
 export type { PostAdminUploadMutationKey } from "./hooks/usePostAdminUpload.ts";
-export type { PostAdminUploadFileMutationKey } from "./hooks/usePostAdminUploadFile.ts";
+export type { PostApiQueryMutationKey } from "./hooks/usePostApiQuery.ts";
 export type { PostAuthLoginMutationKey } from "./hooks/usePostAuthLogin.ts";
 export type { PostAuthLogoutMutationKey } from "./hooks/usePostAuthLogout.ts";
-export type { PostPropertyMutationKey } from "./hooks/usePostProperty.ts";
-export type { PutPropertyIdMutationKey } from "./hooks/usePutPropertyId.ts";
-export type {
-  DeletePropertyId200,
-  DeletePropertyId404,
-  DeletePropertyId500,
-  DeletePropertyIdMutation,
-  DeletePropertyIdMutationResponse,
-  DeletePropertyIdPathParams,
-} from "./models/DeletePropertyId.ts";
-export type {
-  GetAdminJobs200,
-  GetAdminJobsQuery,
-  GetAdminJobsQueryParams,
-  GetAdminJobsQueryResponse,
-} from "./models/GetAdminJobs.ts";
 export type {
   GetAnalyticsAffordability200,
   GetAnalyticsAffordability500,
@@ -96,20 +73,6 @@ export type {
   GetAnalyticsTopActiveAreasQueryResponse,
 } from "./models/GetAnalyticsTopActiveAreas.ts";
 export type {
-  GetProperty200,
-  GetProperty500,
-  GetPropertyQuery,
-  GetPropertyQueryParams,
-  GetPropertyQueryResponse,
-} from "./models/GetProperty.ts";
-export type {
-  GetPropertyId200,
-  GetPropertyId404,
-  GetPropertyIdPathParams,
-  GetPropertyIdQuery,
-  GetPropertyIdQueryResponse,
-} from "./models/GetPropertyId.ts";
-export type {
   PostAdminStreamUpload202,
   PostAdminStreamUpload400,
   PostAdminStreamUpload500,
@@ -126,13 +89,13 @@ export type {
   PostAdminUploadMutationResponse,
 } from "./models/PostAdminUpload.ts";
 export type {
-  PostAdminUploadFile202,
-  PostAdminUploadFile400,
-  PostAdminUploadFile500,
-  PostAdminUploadFileMutation,
-  PostAdminUploadFileMutationRequest,
-  PostAdminUploadFileMutationResponse,
-} from "./models/PostAdminUploadFile.ts";
+  PostApiQuery200,
+  PostApiQuery400,
+  PostApiQuery401,
+  PostApiQueryMutation,
+  PostApiQueryMutationRequest,
+  PostApiQueryMutationResponse,
+} from "./models/PostApiQuery.ts";
 export type {
   PostAuthLogin200,
   PostAuthLogin401,
@@ -145,50 +108,25 @@ export type {
   PostAuthLogoutMutation,
   PostAuthLogoutMutationResponse,
 } from "./models/PostAuthLogout.ts";
-export type {
-  PostProperty201,
-  PostProperty400,
-  PostProperty500,
-  PostPropertyMutation,
-  PostPropertyMutationRequest,
-  PostPropertyMutationResponse,
-} from "./models/PostProperty.ts";
-export type {
-  PutPropertyId200,
-  PutPropertyId400,
-  PutPropertyId404,
-  PutPropertyId500,
-  PutPropertyIdMutation,
-  PutPropertyIdMutationRequest,
-  PutPropertyIdMutationResponse,
-  PutPropertyIdPathParams,
-} from "./models/PutPropertyId.ts";
 export type { BackendInternalModelsAffordabilityResult } from "./models/backendInternalModels/AffordabilityResult.ts";
-export type { BackendInternalModelsCSVConfigPayload } from "./models/backendInternalModels/CSVConfigPayload.ts";
 export type { BackendInternalModelsGrowthHotspotResult } from "./models/backendInternalModels/GrowthHotspotResult.ts";
-export type { BackendInternalModelsJob } from "./models/backendInternalModels/Job.ts";
-export type {
-  BackendInternalModelsJobStatus,
-  BackendInternalModelsJobStatusEnumKey,
-} from "./models/backendInternalModels/JobStatus.ts";
 export type { BackendInternalModelsMedianPriceResult } from "./models/backendInternalModels/MedianPriceResult.ts";
 export type { BackendInternalModelsNewBuildPremiumResult } from "./models/backendInternalModels/NewBuildPremiumResult.ts";
 export type { BackendInternalModelsPriceBracketResult } from "./models/backendInternalModels/PriceBracketResult.ts";
 export type { BackendInternalModelsPriceTrendResult } from "./models/backendInternalModels/PriceTrendResult.ts";
-export type { BackendInternalModelsProperty } from "./models/backendInternalModels/Property.ts";
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./models/backendInternalModels/PropertyTypeDistributionResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./models/backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./models/backendInternalModels/User.ts";
 export type { GormDeletedAt } from "./models/gorm/DeletedAt.ts";
 export type { InternalRoutesApiBaseResponse } from "./models/internalRoutesApi/BaseResponse.ts";
 export type { InternalRoutesApiErrorResponse } from "./models/internalRoutesApi/ErrorResponse.ts";
-export type { InternalRoutesApiJobListPayload } from "./models/internalRoutesApi/JobListPayload.ts";
+export type { InternalRoutesApiGraphQLError } from "./models/internalRoutesApi/GraphQLError.ts";
+export type { InternalRoutesApiGraphQLLocation } from "./models/internalRoutesApi/GraphQLLocation.ts";
+export type { InternalRoutesApiGraphQLRequest } from "./models/internalRoutesApi/GraphQLRequest.ts";
+export type { InternalRoutesApiGraphQLResponse } from "./models/internalRoutesApi/GraphQLResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./models/internalRoutesApi/JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./models/internalRoutesApi/LoginBody.ts";
 export type { InternalRoutesApiLoginPayload } from "./models/internalRoutesApi/LoginPayload.ts";
-export type { InternalRoutesApiPropertyListPayload } from "./models/internalRoutesApi/PropertyListPayload.ts";
-export { deletePropertyId } from "./clients/deletePropertyId.ts";
-export { getAdminJobs } from "./clients/getAdminJobs.ts";
 export { getAnalyticsAffordability } from "./clients/getAnalyticsAffordability.ts";
 export { getAnalyticsGrowthHotspots } from "./clients/getAnalyticsGrowthHotspots.ts";
 export { getAnalyticsMedianPrice } from "./clients/getAnalyticsMedianPrice.ts";
@@ -197,24 +135,11 @@ export { getAnalyticsPriceBracketDistribution } from "./clients/getAnalyticsPric
 export { getAnalyticsPriceTrend } from "./clients/getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./clients/getAnalyticsPropertyTypeDistribution.ts";
 export { getAnalyticsTopActiveAreas } from "./clients/getAnalyticsTopActiveAreas.ts";
-export { getProperty } from "./clients/getProperty.ts";
-export { getPropertyId } from "./clients/getPropertyId.ts";
 export { postAdminStreamUpload } from "./clients/postAdminStreamUpload.ts";
 export { postAdminUpload } from "./clients/postAdminUpload.ts";
-export { postAdminUploadFile } from "./clients/postAdminUploadFile.ts";
+export { postApiQuery } from "./clients/postApiQuery.ts";
 export { postAuthLogin } from "./clients/postAuthLogin.ts";
 export { postAuthLogout } from "./clients/postAuthLogout.ts";
-export { postProperty } from "./clients/postProperty.ts";
-export { putPropertyId } from "./clients/putPropertyId.ts";
-export { deletePropertyIdMutationKey } from "./hooks/useDeletePropertyId.ts";
-export { deletePropertyIdMutationOptions } from "./hooks/useDeletePropertyId.ts";
-export { useDeletePropertyId } from "./hooks/useDeletePropertyId.ts";
-export { getAdminJobsQueryKey } from "./hooks/useGetAdminJobs.ts";
-export { getAdminJobsQueryOptions } from "./hooks/useGetAdminJobs.ts";
-export { useGetAdminJobs } from "./hooks/useGetAdminJobs.ts";
-export { getAdminJobsSuspenseQueryKey } from "./hooks/useGetAdminJobsSuspense.ts";
-export { getAdminJobsSuspenseQueryOptions } from "./hooks/useGetAdminJobsSuspense.ts";
-export { useGetAdminJobsSuspense } from "./hooks/useGetAdminJobsSuspense.ts";
 export { getAnalyticsAffordabilityQueryKey } from "./hooks/useGetAnalyticsAffordability.ts";
 export { getAnalyticsAffordabilityQueryOptions } from "./hooks/useGetAnalyticsAffordability.ts";
 export { useGetAnalyticsAffordability } from "./hooks/useGetAnalyticsAffordability.ts";
@@ -263,65 +188,30 @@ export { useGetAnalyticsTopActiveAreas } from "./hooks/useGetAnalyticsTopActiveA
 export { getAnalyticsTopActiveAreasSuspenseQueryKey } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
 export { getAnalyticsTopActiveAreasSuspenseQueryOptions } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
 export { useGetAnalyticsTopActiveAreasSuspense } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
-export { getPropertyQueryKey } from "./hooks/useGetProperty.ts";
-export { getPropertyQueryOptions } from "./hooks/useGetProperty.ts";
-export { useGetProperty } from "./hooks/useGetProperty.ts";
-export { getPropertyIdQueryKey } from "./hooks/useGetPropertyId.ts";
-export { getPropertyIdQueryOptions } from "./hooks/useGetPropertyId.ts";
-export { useGetPropertyId } from "./hooks/useGetPropertyId.ts";
-export { getPropertyIdSuspenseQueryKey } from "./hooks/useGetPropertyIdSuspense.ts";
-export { getPropertyIdSuspenseQueryOptions } from "./hooks/useGetPropertyIdSuspense.ts";
-export { useGetPropertyIdSuspense } from "./hooks/useGetPropertyIdSuspense.ts";
-export { getPropertySuspenseQueryKey } from "./hooks/useGetPropertySuspense.ts";
-export { getPropertySuspenseQueryOptions } from "./hooks/useGetPropertySuspense.ts";
-export { useGetPropertySuspense } from "./hooks/useGetPropertySuspense.ts";
 export { postAdminStreamUploadMutationKey } from "./hooks/usePostAdminStreamUpload.ts";
 export { postAdminStreamUploadMutationOptions } from "./hooks/usePostAdminStreamUpload.ts";
 export { usePostAdminStreamUpload } from "./hooks/usePostAdminStreamUpload.ts";
 export { postAdminUploadMutationKey } from "./hooks/usePostAdminUpload.ts";
 export { postAdminUploadMutationOptions } from "./hooks/usePostAdminUpload.ts";
 export { usePostAdminUpload } from "./hooks/usePostAdminUpload.ts";
-export { postAdminUploadFileMutationKey } from "./hooks/usePostAdminUploadFile.ts";
-export { postAdminUploadFileMutationOptions } from "./hooks/usePostAdminUploadFile.ts";
-export { usePostAdminUploadFile } from "./hooks/usePostAdminUploadFile.ts";
+export { postApiQueryMutationKey } from "./hooks/usePostApiQuery.ts";
+export { postApiQueryMutationOptions } from "./hooks/usePostApiQuery.ts";
+export { usePostApiQuery } from "./hooks/usePostApiQuery.ts";
 export { postAuthLoginMutationKey } from "./hooks/usePostAuthLogin.ts";
 export { postAuthLoginMutationOptions } from "./hooks/usePostAuthLogin.ts";
 export { usePostAuthLogin } from "./hooks/usePostAuthLogin.ts";
 export { postAuthLogoutMutationKey } from "./hooks/usePostAuthLogout.ts";
 export { postAuthLogoutMutationOptions } from "./hooks/usePostAuthLogout.ts";
 export { usePostAuthLogout } from "./hooks/usePostAuthLogout.ts";
-export { postPropertyMutationKey } from "./hooks/usePostProperty.ts";
-export { postPropertyMutationOptions } from "./hooks/usePostProperty.ts";
-export { usePostProperty } from "./hooks/usePostProperty.ts";
-export { putPropertyIdMutationKey } from "./hooks/usePutPropertyId.ts";
-export { putPropertyIdMutationOptions } from "./hooks/usePutPropertyId.ts";
-export { usePutPropertyId } from "./hooks/usePutPropertyId.ts";
-export { backendInternalModelsJobStatus } from "./models/backendInternalModels/JobStatus.ts";
-export { backendInternalModelsCSVConfigPayloadSchema } from "./zod/backendInternalModels/CSVConfigPayloadSchema.ts";
 export { backendInternalModelsAffordabilityResultSchema } from "./zod/backendInternalModels/affordabilityResultSchema.ts";
 export { backendInternalModelsGrowthHotspotResultSchema } from "./zod/backendInternalModels/growthHotspotResultSchema.ts";
-export { backendInternalModelsJobSchema } from "./zod/backendInternalModels/jobSchema.ts";
-export { backendInternalModelsJobStatusSchema } from "./zod/backendInternalModels/jobStatusSchema.ts";
 export { backendInternalModelsMedianPriceResultSchema } from "./zod/backendInternalModels/medianPriceResultSchema.ts";
 export { backendInternalModelsNewBuildPremiumResultSchema } from "./zod/backendInternalModels/newBuildPremiumResultSchema.ts";
 export { backendInternalModelsPriceBracketResultSchema } from "./zod/backendInternalModels/priceBracketResultSchema.ts";
 export { backendInternalModelsPriceTrendResultSchema } from "./zod/backendInternalModels/priceTrendResultSchema.ts";
-export { backendInternalModelsPropertySchema } from "./zod/backendInternalModels/propertySchema.ts";
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./zod/backendInternalModels/propertyTypeDistributionResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./zod/backendInternalModels/topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserSchema } from "./zod/backendInternalModels/userSchema.ts";
-export {
-  deletePropertyId200Schema,
-  deletePropertyId404Schema,
-  deletePropertyId500Schema,
-  deletePropertyIdMutationResponseSchema,
-  deletePropertyIdPathParamsSchema,
-} from "./zod/deletePropertyIdSchema.ts";
-export {
-  getAdminJobs200Schema,
-  getAdminJobsQueryParamsSchema,
-  getAdminJobsQueryResponseSchema,
-} from "./zod/getAdminJobsSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
   getAnalyticsAffordability500Schema,
@@ -367,26 +257,16 @@ export {
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
 } from "./zod/getAnalyticsTopActiveAreasSchema.ts";
-export {
-  getPropertyId200Schema,
-  getPropertyId404Schema,
-  getPropertyIdPathParamsSchema,
-  getPropertyIdQueryResponseSchema,
-} from "./zod/getPropertyIdSchema.ts";
-export {
-  getProperty200Schema,
-  getProperty500Schema,
-  getPropertyQueryParamsSchema,
-  getPropertyQueryResponseSchema,
-} from "./zod/getPropertySchema.ts";
 export { gormDeletedAtSchema } from "./zod/gorm/deletedAtSchema.ts";
 export { internalRoutesApiBaseResponseSchema } from "./zod/internalRoutesApi/baseResponseSchema.ts";
 export { internalRoutesApiErrorResponseSchema } from "./zod/internalRoutesApi/errorResponseSchema.ts";
-export { internalRoutesApiJobListPayloadSchema } from "./zod/internalRoutesApi/jobListPayloadSchema.ts";
+export { internalRoutesApiGraphQLErrorSchema } from "./zod/internalRoutesApi/graphQLErrorSchema.ts";
+export { internalRoutesApiGraphQLLocationSchema } from "./zod/internalRoutesApi/graphQLLocationSchema.ts";
+export { internalRoutesApiGraphQLRequestSchema } from "./zod/internalRoutesApi/graphQLRequestSchema.ts";
+export { internalRoutesApiGraphQLResponseSchema } from "./zod/internalRoutesApi/graphQLResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./zod/internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./zod/internalRoutesApi/loginBodySchema.ts";
 export { internalRoutesApiLoginPayloadSchema } from "./zod/internalRoutesApi/loginPayloadSchema.ts";
-export { internalRoutesApiPropertyListPayloadSchema } from "./zod/internalRoutesApi/propertyListPayloadSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,
@@ -395,19 +275,19 @@ export {
   postAdminStreamUploadQueryParamsSchema,
 } from "./zod/postAdminStreamUploadSchema.ts";
 export {
-  postAdminUploadFile202Schema,
-  postAdminUploadFile400Schema,
-  postAdminUploadFile500Schema,
-  postAdminUploadFileMutationRequestSchema,
-  postAdminUploadFileMutationResponseSchema,
-} from "./zod/postAdminUploadFileSchema.ts";
-export {
   postAdminUpload202Schema,
   postAdminUpload400Schema,
   postAdminUpload500Schema,
   postAdminUploadMutationRequestSchema,
   postAdminUploadMutationResponseSchema,
 } from "./zod/postAdminUploadSchema.ts";
+export {
+  postApiQuery200Schema,
+  postApiQuery400Schema,
+  postApiQuery401Schema,
+  postApiQueryMutationRequestSchema,
+  postApiQueryMutationResponseSchema,
+} from "./zod/postApiQuerySchema.ts";
 export {
   postAuthLogin200Schema,
   postAuthLogin401Schema,
@@ -418,19 +298,3 @@ export {
   postAuthLogout200Schema,
   postAuthLogoutMutationResponseSchema,
 } from "./zod/postAuthLogoutSchema.ts";
-export {
-  postProperty201Schema,
-  postProperty400Schema,
-  postProperty500Schema,
-  postPropertyMutationRequestSchema,
-  postPropertyMutationResponseSchema,
-} from "./zod/postPropertySchema.ts";
-export {
-  putPropertyId200Schema,
-  putPropertyId400Schema,
-  putPropertyId404Schema,
-  putPropertyId500Schema,
-  putPropertyIdMutationRequestSchema,
-  putPropertyIdMutationResponseSchema,
-  putPropertyIdPathParamsSchema,
-} from "./zod/putPropertyIdSchema.ts";

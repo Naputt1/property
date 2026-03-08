@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -29,12 +28,12 @@ import (
 func StreamUploadCSV(c *gin.Context) {
 	svc := c.MustGet("jobService").(services.JobService)
 	cfg := c.MustGet("config").(*config.Config)
-	
+
 	originalFilename := c.DefaultQuery("filename", "upload.csv")
 
 	// Create unique key for the bucket
 	bucketKey := fmt.Sprintf("uploads/%s-%s", uuid.New().String(), originalFilename)
-	
+
 	slog.Info("Starting to stream upload to bucket", "filename", originalFilename, "bucketKey", bucketKey)
 
 	// Stream directly from request body to bucket
@@ -85,7 +84,7 @@ func StreamUploadCSV(c *gin.Context) {
 	})
 }
 
-// UploadCSVFile godoc
+// UploadCSV godoc
 // @Summary Upload CSV file directly
 // @Description Upload a CSV file via multipart/form-data to bucket and queue a migration job
 // @Tags admin
@@ -96,8 +95,8 @@ func StreamUploadCSV(c *gin.Context) {
 // @Success 202 {object} JobResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /admin/upload-file [post]
-func UploadCSVFile(c *gin.Context) {
+// @Router /admin/upload [post]
+func UploadCSV(c *gin.Context) {
 	svc := c.MustGet("jobService").(services.JobService)
 	cfg := c.MustGet("config").(*config.Config)
 
@@ -138,6 +137,7 @@ func UploadCSVFile(c *gin.Context) {
 
 	job, err := svc.CreateJob(c.Request.Context(), "properties:migrate:csv", payloadBytes)
 	if err != nil {
+		slog.Error("Failed to create migration job", "error", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create migration job"})
 		return
 	}
@@ -148,76 +148,6 @@ func UploadCSVFile(c *gin.Context) {
 			Message: "Migration job queued successfully",
 		},
 		JobID: job.ID,
-	})
-}
-
-// UploadCSV godoc
-// @Summary Upload CSV for migration
-// @Description Queue a background job to migrate properties from a CSV file
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Security JwtAuth
-// @Param body body models.CSVConfigPayload true "CSV Migration Configuration"
-// @Success 202 {object} JobResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Router /admin/upload [post]
-func UploadCSV(c *gin.Context) {
-	svc := c.MustGet("jobService").(services.JobService)
-	var req models.CSVConfigPayload
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Status: false, Error: err.Error()})
-		return
-	}
-
-	payloadBytes, err := json.Marshal(req)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to encode payload"})
-		return
-	}
-
-	job, err := svc.CreateJob(c.Request.Context(), "properties:migrate:csv", payloadBytes)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create migration job"})
-		return
-	}
-
-	c.JSON(http.StatusAccepted, JobResponse{
-		BaseResponse: BaseResponse{
-			Status:  true,
-			Message: "Migration job queued successfully",
-		},
-		JobID: job.ID,
-	})
-}
-
-// ListJobs godoc
-// @Summary List background jobs
-// @Description Get a list of background jobs with pagination
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Security JwtAuth
-// @Param limit query int false "Limit"
-// @Param offset query int false "Offset"
-// @Success 200 {object} JobListPayload
-// @Router /admin/jobs [get]
-func ListJobs(c *gin.Context) {
-	svc := c.MustGet("jobService").(services.JobService)
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
-	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
-
-	jobs, total, err := svc.GetJobs(c.Request.Context(), limit, offset)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to list jobs"})
-		return
-	}
-
-	c.JSON(http.StatusOK, JobListResponse{
-		BaseResponse: BaseResponse{Status: true},
-		Data:         jobs,
-		Total:        total,
 	})
 }
 
@@ -227,7 +157,5 @@ func RegisterAdminRoutes(r *gin.RouterGroup, cfg *config.Config, svc services.Jo
 		c.Next()
 	})
 	r.POST("/upload", UploadCSV)
-	r.POST("/upload-file", UploadCSVFile)
 	r.POST("/stream-upload", StreamUploadCSV)
-	r.GET("/jobs", ListJobs)
 }

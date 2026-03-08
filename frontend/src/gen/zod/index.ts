@@ -1,28 +1,12 @@
-export { backendInternalModelsCSVConfigPayloadSchema } from "./backendInternalModels/CSVConfigPayloadSchema.ts";
 export { backendInternalModelsAffordabilityResultSchema } from "./backendInternalModels/affordabilityResultSchema.ts";
 export { backendInternalModelsGrowthHotspotResultSchema } from "./backendInternalModels/growthHotspotResultSchema.ts";
-export { backendInternalModelsJobSchema } from "./backendInternalModels/jobSchema.ts";
-export { backendInternalModelsJobStatusSchema } from "./backendInternalModels/jobStatusSchema.ts";
 export { backendInternalModelsMedianPriceResultSchema } from "./backendInternalModels/medianPriceResultSchema.ts";
 export { backendInternalModelsNewBuildPremiumResultSchema } from "./backendInternalModels/newBuildPremiumResultSchema.ts";
 export { backendInternalModelsPriceBracketResultSchema } from "./backendInternalModels/priceBracketResultSchema.ts";
 export { backendInternalModelsPriceTrendResultSchema } from "./backendInternalModels/priceTrendResultSchema.ts";
-export { backendInternalModelsPropertySchema } from "./backendInternalModels/propertySchema.ts";
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./backendInternalModels/propertyTypeDistributionResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./backendInternalModels/topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
-export {
-  deletePropertyId200Schema,
-  deletePropertyId404Schema,
-  deletePropertyId500Schema,
-  deletePropertyIdMutationResponseSchema,
-  deletePropertyIdPathParamsSchema,
-} from "./deletePropertyIdSchema.ts";
-export {
-  getAdminJobs200Schema,
-  getAdminJobsQueryParamsSchema,
-  getAdminJobsQueryResponseSchema,
-} from "./getAdminJobsSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
   getAnalyticsAffordability500Schema,
@@ -68,26 +52,16 @@ export {
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
 } from "./getAnalyticsTopActiveAreasSchema.ts";
-export {
-  getPropertyId200Schema,
-  getPropertyId404Schema,
-  getPropertyIdPathParamsSchema,
-  getPropertyIdQueryResponseSchema,
-} from "./getPropertyIdSchema.ts";
-export {
-  getProperty200Schema,
-  getProperty500Schema,
-  getPropertyQueryParamsSchema,
-  getPropertyQueryResponseSchema,
-} from "./getPropertySchema.ts";
 export { gormDeletedAtSchema } from "./gorm/deletedAtSchema.ts";
 export { internalRoutesApiBaseResponseSchema } from "./internalRoutesApi/baseResponseSchema.ts";
 export { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
-export { internalRoutesApiJobListPayloadSchema } from "./internalRoutesApi/jobListPayloadSchema.ts";
+export { internalRoutesApiGraphQLErrorSchema } from "./internalRoutesApi/graphQLErrorSchema.ts";
+export { internalRoutesApiGraphQLLocationSchema } from "./internalRoutesApi/graphQLLocationSchema.ts";
+export { internalRoutesApiGraphQLRequestSchema } from "./internalRoutesApi/graphQLRequestSchema.ts";
+export { internalRoutesApiGraphQLResponseSchema } from "./internalRoutesApi/graphQLResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./internalRoutesApi/loginBodySchema.ts";
 export { internalRoutesApiLoginPayloadSchema } from "./internalRoutesApi/loginPayloadSchema.ts";
-export { internalRoutesApiPropertyListPayloadSchema } from "./internalRoutesApi/propertyListPayloadSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,
@@ -96,19 +70,19 @@ export {
   postAdminStreamUploadQueryParamsSchema,
 } from "./postAdminStreamUploadSchema.ts";
 export {
-  postAdminUploadFile202Schema,
-  postAdminUploadFile400Schema,
-  postAdminUploadFile500Schema,
-  postAdminUploadFileMutationRequestSchema,
-  postAdminUploadFileMutationResponseSchema,
-} from "./postAdminUploadFileSchema.ts";
-export {
   postAdminUpload202Schema,
   postAdminUpload400Schema,
   postAdminUpload500Schema,
   postAdminUploadMutationRequestSchema,
   postAdminUploadMutationResponseSchema,
 } from "./postAdminUploadSchema.ts";
+export {
+  postApiQuery200Schema,
+  postApiQuery400Schema,
+  postApiQuery401Schema,
+  postApiQueryMutationRequestSchema,
+  postApiQueryMutationResponseSchema,
+} from "./postApiQuerySchema.ts";
 export {
   postAuthLogin200Schema,
   postAuthLogin401Schema,
@@ -119,19 +93,3 @@ export {
   postAuthLogout200Schema,
   postAuthLogoutMutationResponseSchema,
 } from "./postAuthLogoutSchema.ts";
-export {
-  postProperty201Schema,
-  postProperty400Schema,
-  postProperty500Schema,
-  postPropertyMutationRequestSchema,
-  postPropertyMutationResponseSchema,
-} from "./postPropertySchema.ts";
-export {
-  putPropertyId200Schema,
-  putPropertyId400Schema,
-  putPropertyId404Schema,
-  putPropertyId500Schema,
-  putPropertyIdMutationRequestSchema,
-  putPropertyIdMutationResponseSchema,
-  putPropertyIdPathParamsSchema,
-} from "./putPropertyIdSchema.ts";

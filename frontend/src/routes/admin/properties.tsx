@@ -2,10 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth";
-import { useGetProperty, getPropertyQueryKey } from "@/gen/hooks/useGetProperty";
-import { usePostProperty } from "@/gen/hooks/usePostProperty";
-import { usePutPropertyId } from "@/gen/hooks/usePutPropertyId";
-import { useDeletePropertyId } from "@/gen/hooks/useDeletePropertyId";
+import { 
+  useGetPropertiesQuery, 
+  useCreatePropertyMutation, 
+  useUpdatePropertyMutation, 
+  useDeletePropertyMutation 
+} from "@/gen-gql/graphql";
 import {
   Table,
   TableBody,
@@ -45,49 +47,49 @@ function AdminProperties() {
     }
   }, [user, navigate]);
 
-  const { data: result, isLoading } = useGetProperty({ page, pageSize }, { query: { enabled: !!user } });
+  const { data: result, isLoading } = useGetPropertiesQuery(
+    { 
+      limit: pageSize, 
+      offset: (page - 1) * pageSize 
+    }, 
+    { enabled: !!user }
+  );
 
-  const createMutation = usePostProperty({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Property created successfully");
-        setIsModalOpen(false);
-        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
-      },
-      onError: (error: any) => {
-        toast.error(error.message || "Failed to create property");
-      },
-    }
+  const createMutation = useCreatePropertyMutation({
+    onSuccess: () => {
+      toast.success("Property created successfully");
+      setIsModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['GetProperties'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to create property");
+    },
   });
 
-  const updateMutation = usePutPropertyId({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Property updated successfully");
-        setIsModalOpen(false);
-        setEditingProperty(null);
-        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
-      },
-      onError: (error: any) => {
-        toast.error(error.message || "Failed to update property");
-      },
-    }
+  const updateMutation = useUpdatePropertyMutation({
+    onSuccess: () => {
+      toast.success("Property updated successfully");
+      setIsModalOpen(false);
+      setEditingProperty(null);
+      queryClient.invalidateQueries({ queryKey: ['GetProperties'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to update property");
+    },
   });
 
-  const deleteMutation = useDeletePropertyId({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Property deleted successfully");
-        queryClient.invalidateQueries({ queryKey: getPropertyQueryKey({ page, pageSize }) });
-      },
-      onError: (error: any) => {
-        toast.error(error.message || "Failed to delete property");
-      },
-    }
+  const deleteMutation = useDeletePropertyMutation({
+    onSuccess: () => {
+      toast.success("Property deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ['GetProperties'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to delete property");
+    },
   });
 
-  const properties = result?.data || [];
-  const totalItems = result?.total || 0;
+  const properties = result?.properties.items || [];
+  const totalItems = result?.properties.total || 0;
   const totalPages = Math.ceil(totalItems / pageSize);
 
   const handleEdit = (property: any) => {
@@ -103,10 +105,14 @@ function AdminProperties() {
 
   const handleAddNew = () => {
     setEditingProperty({
-      date_of_transfer: new Date().toISOString(),
-      property_type: "D",
-      old_new: "N",
+      dateOfTransfer: new Date().toISOString(),
+      propertyType: "D",
+      oldNew: "N",
       duration: "F",
+      ppdCategoryType: "A",
+      recordStatus: "A",
+      locality: "",
+      district: "",
     });
     setIsModalOpen(true);
   };
@@ -116,13 +122,29 @@ function AdminProperties() {
     const formData = new FormData(e.currentTarget);
     const data: any = Object.fromEntries(formData.entries());
 
-    // Convert price to number
-    data.price = parseInt(data.price);
+    // Prepare input for GraphQL
+    const input = {
+      price: parseInt(data.price),
+      dateOfTransfer: editingProperty?.dateOfTransfer || new Date().toISOString(),
+      postcode: data.postcode,
+      propertyType: data.propertyType,
+      oldNew: data.oldNew,
+      duration: editingProperty?.duration || "F",
+      paon: data.paon,
+      saon: data.saon || "",
+      street: data.street,
+      locality: data.locality || editingProperty?.locality || "",
+      townCity: data.townCity,
+      district: data.district || editingProperty?.district || "",
+      county: data.county,
+      ppdCategoryType: editingProperty?.ppdCategoryType || "A",
+      recordStatus: editingProperty?.recordStatus || "A",
+    };
 
     if (editingProperty?.id) {
-      updateMutation.mutate({ id: editingProperty.id, data });
+      updateMutation.mutate({ id: editingProperty.id, input });
     } else {
-      createMutation.mutate({ data });
+      createMutation.mutate({ input });
     }
   };
 
@@ -170,7 +192,7 @@ function AdminProperties() {
                       {p.postcode}
                     </div>
                   </TableCell>
-                  <TableCell>{p.town_city}</TableCell>
+                  <TableCell>{p.townCity}</TableCell>
                   <TableCell className="text-right font-semibold">
                     £{p.price.toLocaleString()}
                   </TableCell>
@@ -310,8 +332,8 @@ function AdminProperties() {
                     Town/City
                   </label>
                   <input
-                    name="town_city"
-                    defaultValue={editingProperty?.town_city}
+                    name="townCity"
+                    defaultValue={editingProperty?.townCity}
                     className="w-full border rounded px-3 py-2"
                     required
                   />
@@ -355,8 +377,8 @@ function AdminProperties() {
                     Property Type
                   </label>
                   <select
-                    name="property_type"
-                    defaultValue={editingProperty?.property_type}
+                    name="propertyType"
+                    defaultValue={editingProperty?.propertyType}
                     className="w-full border rounded px-3 py-2"
                   >
                     <option value="D">Detached</option>
@@ -371,8 +393,8 @@ function AdminProperties() {
                     New Build?
                   </label>
                   <select
-                    name="old_new"
-                    defaultValue={editingProperty?.old_new}
+                    name="oldNew"
+                    defaultValue={editingProperty?.oldNew}
                     className="w-full border rounded px-3 py-2"
                   >
                     <option value="Y">Yes</option>
@@ -404,3 +426,4 @@ function AdminProperties() {
     </div>
   );
 }
+

@@ -3,7 +3,6 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsCSVConfigPayloadSchema } from "./backendInternalModels/CSVConfigPayloadSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
 import { internalRoutesApiJobResponseSchema } from "./internalRoutesApi/jobResponseSchema.ts";
 import { z } from "zod/v4";
@@ -29,12 +28,9 @@ export const postAdminUpload500Schema = z.lazy(
   () => internalRoutesApiErrorResponseSchema,
 );
 
-/**
- * @description CSV Migration Configuration
- */
-export const postAdminUploadMutationRequestSchema = z.lazy(
-  () => backendInternalModelsCSVConfigPayloadSchema,
-);
+export const postAdminUploadMutationRequestSchema = z.object({
+  file: z.instanceof(File).describe("CSV File"),
+});
 
 export const postAdminUploadMutationResponseSchema = z.lazy(
   () => postAdminUpload202Schema,

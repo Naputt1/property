@@ -1,5 +1,3 @@
-export { deletePropertyId } from "./deletePropertyId.ts";
-export { getAdminJobs } from "./getAdminJobs.ts";
 export { getAnalyticsAffordability } from "./getAnalyticsAffordability.ts";
 export { getAnalyticsGrowthHotspots } from "./getAnalyticsGrowthHotspots.ts";
 export { getAnalyticsMedianPrice } from "./getAnalyticsMedianPrice.ts";
@@ -8,12 +6,8 @@ export { getAnalyticsPriceBracketDistribution } from "./getAnalyticsPriceBracket
 export { getAnalyticsPriceTrend } from "./getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./getAnalyticsPropertyTypeDistribution.ts";
 export { getAnalyticsTopActiveAreas } from "./getAnalyticsTopActiveAreas.ts";
-export { getProperty } from "./getProperty.ts";
-export { getPropertyId } from "./getPropertyId.ts";
 export { postAdminStreamUpload } from "./postAdminStreamUpload.ts";
 export { postAdminUpload } from "./postAdminUpload.ts";
-export { postAdminUploadFile } from "./postAdminUploadFile.ts";
+export { postApiQuery } from "./postApiQuery.ts";
 export { postAuthLogin } from "./postAuthLogin.ts";
 export { postAuthLogout } from "./postAuthLogout.ts";
-export { postProperty } from "./postProperty.ts";
-export { putPropertyId } from "./putPropertyId.ts";

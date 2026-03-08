@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "properties": {
+    "data": { "description": "The requested data" },
+    "errors": {
+      "description": "Any errors encountered during execution",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "extensions": { "type": "object", "additionalProperties": true },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "column": { "type": "integer" },
+                "line": { "type": "integer" }
+              },
+              "x-readme-ref-name": "internal_routes_api.GraphQLLocation"
+            }
+          },
+          "message": { "type": "string" },
+          "path": { "type": "array", "items": {} }
+        },
+        "x-readme-ref-name": "internal_routes_api.GraphQLError"
+      }
+    }
+  },
+  "x-readme-ref-name": "internal_routes_api.GraphQLResponse"
+}

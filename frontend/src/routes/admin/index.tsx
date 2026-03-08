@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { JobStatus } from "@/types/job";
 import { useWebSocket } from "@/hooks/useWebSocket";
-import { useGetAdminJobs, getAdminJobsQueryKey } from "@/gen/hooks/useGetAdminJobs";
+import { useGetAdminJobsQuery } from "@/gen-gql/graphql";
 
 export const Route = createFileRoute("/admin/")({
   component: Admin,
@@ -45,8 +45,11 @@ function Admin() {
     }
   }, [user, navigate]);
 
-  const { data: jobsRes, refetch } = useGetAdminJobs({ limit: 10 }, { query: { enabled: !!user } });
-  const jobs = jobsRes?.data || [];
+  const { data: jobsRes, refetch } = useGetAdminJobsQuery(
+    { limit: 10, offset: 0 }, 
+    { enabled: !!user }
+  );
+  const jobs = jobsRes?.jobs.items || [];
 
   // Handle real-time job updates via WebSocket
   const onWsMessage = useCallback(
@@ -55,22 +58,25 @@ function Admin() {
         const update = msg.data;
 
         // Update the cache directly for immediate UI feedback
-        queryClient.setQueryData(getAdminJobsQueryKey({ limit: 10 }), (oldData: any) => {
-          if (!oldData || !oldData.data) return oldData;
+        queryClient.setQueryData(['GetAdminJobs', { limit: 10, offset: 0 }], (oldData: any) => {
+          if (!oldData || !oldData.jobs) return oldData;
 
           return {
             ...oldData,
-            data: oldData.data.map((job: any) => {
-              if (job.id === update.id) {
-                return {
-                  ...job,
-                  status: update.status,
-                  progress: update.progress,
-                  total: update.total,
-                };
-              }
-              return job;
-            })
+            jobs: {
+              ...oldData.jobs,
+              items: oldData.jobs.items.map((job: any) => {
+                if (job.id === update.id) {
+                  return {
+                    ...job,
+                    status: update.status,
+                    progress: update.progress,
+                    total: update.total,
+                  };
+                }
+                return job;
+              })
+            }
           };
         });
 
@@ -266,10 +272,10 @@ function Admin() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-gray-500">
-                        {job.task_type}
+                        {job.taskType}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-400 text-xs">
-                        {new Date(job.created_at).toLocaleString()}
+                        {new Date(job.createdAt).toLocaleString()}
                       </td>
                     </tr>
                   ))

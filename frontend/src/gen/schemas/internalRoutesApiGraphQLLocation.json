@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "column": { "type": "integer" },
+    "line": { "type": "integer" }
+  },
+  "x-readme-ref-name": "internal_routes_api.GraphQLLocation"
+}

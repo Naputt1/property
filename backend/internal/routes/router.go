@@ -1,11 +1,12 @@
 package routes
 
 import (
+	_ "backend/docs"
 	"backend/internal/config"
+	"backend/internal/graph"
 	"backend/internal/routes/api"
 	"backend/internal/routes/middlewares"
 	"backend/internal/services"
-	_ "backend/docs"
 	"net/http"
 	"time"
 
@@ -48,6 +49,10 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 		svcs.Socket.ServeWS(c)
 	})
 
+	// GraphQL routes
+	r.POST("/api/query", middlewares.OptionalJwtAuth(cfg), graph.GinContextToContextMiddleware(), api.GraphQLHandler(svcs))
+	r.GET("/playground", api.PlaygroundHandler())
+
 	// Auth routes
 	authGroup := r.Group("/api/auth")
 	api.RegisterAuthRoutes(authGroup, cfg)
@@ -56,9 +61,6 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middlewares.JwtAuth(cfg))
 	{
-		propertyGroup := apiGroup.Group("/property")
-		api.RegisterPropertyRoutes(propertyGroup, cfg, svcs.Property)
-
 		analyticsGroup := apiGroup.Group("/analytics")
 		api.RegisterAnalyticsRoutes(analyticsGroup, cfg, svcs.Analytics)
 
