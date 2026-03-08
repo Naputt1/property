@@ -37,7 +37,10 @@ func (s *propertyService) CreateProperty(ctx context.Context, property *models.P
 	}
 	err := s.repo.Create(ctx, property)
 	if err == nil {
-		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		go func() {
+			_ = s.analytics.ClearCache(context.Background())
+			_ = s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		}()
 	}
 	return err
 }
@@ -45,7 +48,10 @@ func (s *propertyService) CreateProperty(ctx context.Context, property *models.P
 func (s *propertyService) UpdateProperty(ctx context.Context, property *models.Property) error {
 	err := s.repo.Update(ctx, property)
 	if err == nil {
-		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		go func() {
+			_ = s.analytics.ClearCache(context.Background())
+			_ = s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		}()
 	}
 	return err
 }
@@ -53,7 +59,10 @@ func (s *propertyService) UpdateProperty(ctx context.Context, property *models.P
 func (s *propertyService) DeleteProperty(ctx context.Context, id string) error {
 	err := s.repo.Delete(ctx, id)
 	if err == nil {
-		go s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		go func() {
+			_ = s.analytics.ClearCache(context.Background())
+			_ = s.job.EnqueueAnalyticsRefresh(context.Background(), 30*time.Second)
+		}()
 	}
 	return err
 }
