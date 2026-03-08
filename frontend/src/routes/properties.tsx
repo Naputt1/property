@@ -314,8 +314,8 @@ function PropertiesPage() {
                   className="group hover:bg-muted/50 transition-colors"
                 >
                   <TableCell>
-                    <div className="font-medium text-gray-900">
-                      {property.paon} {property.saon} {property.street}
+                    <div className="font-medium text-gray-900 line-clamp-1">
+                      {property.address}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono">
                       {property.postcode}

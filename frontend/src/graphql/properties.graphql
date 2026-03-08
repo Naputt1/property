@@ -7,9 +7,7 @@ query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $
       postcode
       propertyType
       oldNew
-      paon
-      saon
-      street
+      address
       townCity
       county
     }
@@ -21,7 +19,7 @@ mutation CreateProperty($input: PropertyInput!) {
   createProperty(input: $input) {
     id
     price
-    street
+    address
   }
 }
 
@@ -29,7 +27,7 @@ mutation UpdateProperty($id: ID!, $input: PropertyInput!) {
   updateProperty(id: $id, input: $input) {
     id
     price
-    street
+    address
   }
 }
 

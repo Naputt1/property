@@ -17,7 +17,7 @@ func NewAnalyticsRepository(db *gorm.DB) AnalyticsRepository {
 }
 
 func (r *analyticsRepository) GetMedianPriceByRegion(ctx context.Context, regionType string) ([]models.MedianPriceResult, error) {
-	var results []models.MedianPriceResult
+	results := []models.MedianPriceResult{}
 
 	validRegions := map[string]bool{"county": true, "district": true, "town_city": true}
 	if !validRegions[regionType] {
@@ -25,7 +25,7 @@ func (r *analyticsRepository) GetMedianPriceByRegion(ctx context.Context, region
 	}
 
 	query := `
-		SELECT region_name as region, median_price
+		SELECT TRIM(UPPER(region_name)) as region, median_price
 		FROM mv_regional_stats
 		WHERE region_type = ?
 		ORDER BY median_price DESC
@@ -36,7 +36,7 @@ func (r *analyticsRepository) GetMedianPriceByRegion(ctx context.Context, region
 }
 
 func (r *analyticsRepository) GetPriceTrend(ctx context.Context, interval string) ([]models.PriceTrendResult, error) {
-	var results []models.PriceTrendResult
+	results := []models.PriceTrendResult{}
 
 	if interval == "year" {
 		query := `
@@ -68,7 +68,7 @@ func (r *analyticsRepository) GetPriceTrend(ctx context.Context, interval string
 }
 
 func (r *analyticsRepository) GetAffordability(ctx context.Context) ([]models.AffordabilityResult, error) {
-	var results []models.AffordabilityResult
+	results := []models.AffordabilityResult{}
 
 	// Relative affordability is calculated as (AvgPrice of type / Overall AvgPrice)
 	// Lower value means more affordable compared to average.
@@ -89,7 +89,7 @@ func (r *analyticsRepository) GetAffordability(ctx context.Context) ([]models.Af
 }
 
 func (r *analyticsRepository) GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error) {
-	var results []models.GrowthHotspotResult
+	results := []models.GrowthHotspotResult{}
 
 	query := `
 		WITH yearly_stats AS (
@@ -128,7 +128,7 @@ func (r *analyticsRepository) RefreshMaterializedView(ctx context.Context) error
 }
 
 func (r *analyticsRepository) GetNewBuildPremium(ctx context.Context, regionType string) ([]models.NewBuildPremiumResult, error) {
-	var results []models.NewBuildPremiumResult
+	results := []models.NewBuildPremiumResult{}
 
 	validRegions := map[string]bool{"county": true, "district": true}
 	if !validRegions[regionType] {
@@ -136,7 +136,7 @@ func (r *analyticsRepository) GetNewBuildPremium(ctx context.Context, regionType
 	}
 
 	query := `
-		SELECT n.region_name as region,
+		SELECT TRIM(UPPER(n.region_name)) as region,
 		       n.avg_price as new_avg,
 		       o.avg_price as old_avg,
 		       ((n.avg_price - o.avg_price)::float / o.avg_price::float) * 100 as premium_percent
@@ -152,7 +152,7 @@ func (r *analyticsRepository) GetNewBuildPremium(ctx context.Context, regionType
 }
 
 func (r *analyticsRepository) GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error) {
-	var results []models.PropertyTypeDistributionResult
+	results := []models.PropertyTypeDistributionResult{}
 
 	query := `
 		SELECT property_type,
@@ -168,7 +168,7 @@ func (r *analyticsRepository) GetPropertyTypeDistribution(ctx context.Context) (
 }
 
 func (r *analyticsRepository) GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error) {
-	var results []models.PriceBracketResult
+	results := []models.PriceBracketResult{}
 
 	query := `
 		SELECT 
@@ -191,10 +191,10 @@ func (r *analyticsRepository) GetPriceBracketDistribution(ctx context.Context) (
 }
 
 func (r *analyticsRepository) GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error) {
-	var results []models.TopActiveAreaResult
-
+	results := []models.TopActiveAreaResult{}
+	
 	query := `
-		SELECT region_name as region, transaction_count, (transaction_count * avg_price)::bigint as total_value
+		SELECT TRIM(UPPER(region_name)) as region, transaction_count, (transaction_count * avg_price)::bigint as total_value
 		FROM mv_regional_stats
 		WHERE region_type = ?
 		ORDER BY transaction_count DESC

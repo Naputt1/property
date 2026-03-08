@@ -27,14 +27,9 @@ type Property struct {
 	// F = Freehold, L = Leasehold
 	Duration string `json:"duration"`
 
-	// Primary Addressable Object Name. Typically the house number or name.
-	PAON string `json:"paon"`
+	// Combined address string
+	Address string `json:"address"`
 
-	// Secondary Addressable Object Name. Where a property has been divided into separate units (for example, flats).
-	SAON string `json:"saon"`
-
-	Street   string `json:"street"`
-	Locality string `json:"locality"`
 	TownCity string `gorm:"index" json:"town_city"`
 	District string `gorm:"index" json:"district"`
 	County   string `gorm:"index" json:"county"`

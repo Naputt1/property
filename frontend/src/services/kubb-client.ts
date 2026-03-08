@@ -24,10 +24,14 @@ export async function client<TData = any, TError = any, TVariables = any>(
 ): Promise<AxiosResponse<TData>> {
   const response = await axiosInstance.request<BackendResponse<TData>>(config);
 
-  const { status, message, error, ...payload } = response.data;
+  // If response.data is missing or not an object, return raw response
+  if (!response.data || typeof response.data !== 'object') {
+    return response as any;
+  }
+
+  const { status, data, message, error, ...rest } = response.data;
 
   if (status === false) {
-    // If the backend says status is false, treat it as an error
     const errorMessage = error || message || "Unknown API error";
     const axiosError = new Error(errorMessage) as any;
     axiosError.response = response;
@@ -37,17 +41,18 @@ export async function client<TData = any, TError = any, TVariables = any>(
     throw axiosError;
   }
 
-  // Smart unwrapping
-  // If 'data' is the only field left in payload, return just the data
-  // Otherwise return the whole payload (e.g. { data, total })
-  const keys = Object.keys(payload);
-  let resultData = payload;
+  // Robust unwrapping:
+  // 1. If 'data' field exists, use it (even if it's null or empty array)
+  // 2. If 'data' is missing but we have other fields in 'rest', use 'rest'
+  // 3. Fallback to the whole response body (excluding status)
+  let resultData: any;
   
-  if (keys.length === 1 && keys[0] === 'data') {
-    resultData = payload.data as any;
-  } else if (keys.length === 0 && 'data' in response.data === false) {
-    // Fallback if the body didn't even have data/status (shouldn't happen with our API)
-    resultData = response.data as any;
+  if (response.data && 'data' in response.data) {
+    resultData = data;
+  } else if (Object.keys(rest).length > 0) {
+    resultData = rest;
+  } else {
+    resultData = response.data;
   }
 
   return {
