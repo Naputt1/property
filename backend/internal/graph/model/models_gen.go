@@ -23,14 +23,12 @@ type PropertyConnection struct {
 type PropertyInput struct {
 	Price           int       `json:"price"`
 	DateOfTransfer  time.Time `json:"dateOfTransfer"`
-	Postcode        string    `json:"postcode"`
+	PostcodeOutward string    `json:"postcodeOutward"`
+	PostcodeInward  string    `json:"postcodeInward"`
 	PropertyType    string    `json:"propertyType"`
 	OldNew          string    `json:"oldNew"`
 	Duration        string    `json:"duration"`
-	Paon            string    `json:"paon"`
-	Saon            string    `json:"saon"`
-	Street          string    `json:"street"`
-	Locality        string    `json:"locality"`
+	Address         string    `json:"address"`
 	TownCity        string    `json:"townCity"`
 	District        string    `json:"district"`
 	County          string    `json:"county"`

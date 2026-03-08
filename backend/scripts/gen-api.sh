@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Running background API generation..."
-swag init -g cmd/main.go --parseDependency --parseInternal
+swag init -g cmd/main.go --parseDependency --parseInternal > /dev/null
 cd ../frontend
-pnpm generate:api
+pnpm --silent generate:api > /dev/null
 echo "API generation complete."

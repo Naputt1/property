@@ -1,10 +1,11 @@
-query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $postcode: String, $townCity: String, $county: String, $propertyType: String) {
-  properties(limit: $limit, offset: $offset, minPrice: $minPrice, maxPrice: $maxPrice, postcode: $postcode, townCity: $townCity, county: $county, propertyType: $propertyType) {
+query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $postcodeOutward: String, $postcodeInward: String, $townCity: String, $county: String, $propertyType: String) {
+  properties(limit: $limit, offset: $offset, minPrice: $minPrice, maxPrice: $maxPrice, postcodeOutward: $postcodeOutward, postcodeInward: $postcodeInward, townCity: $townCity, county: $county, propertyType: $propertyType) {
     items {
       id
       price
       dateOfTransfer
-      postcode
+      postcodeOutward
+      postcodeInward
       propertyType
       oldNew
       address

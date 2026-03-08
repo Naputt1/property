@@ -69,7 +69,8 @@ export type Property = {
   duration: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   oldNew: Scalars['String']['output'];
-  postcode: Scalars['String']['output'];
+  postcodeInward: Scalars['String']['output'];
+  postcodeOutward: Scalars['String']['output'];
   ppdCategoryType: Scalars['String']['output'];
   price: Scalars['Int']['output'];
   propertyType: Scalars['String']['output'];
@@ -91,7 +92,8 @@ export type PropertyInput = {
   district: Scalars['String']['input'];
   duration: Scalars['String']['input'];
   oldNew: Scalars['String']['input'];
-  postcode: Scalars['String']['input'];
+  postcodeInward: Scalars['String']['input'];
+  postcodeOutward: Scalars['String']['input'];
   ppdCategoryType: Scalars['String']['input'];
   price: Scalars['Int']['input'];
   propertyType: Scalars['String']['input'];
@@ -119,7 +121,8 @@ export type QueryPropertiesArgs = {
   maxPrice?: InputMaybe<Scalars['Int']['input']>;
   minPrice?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  postcode?: InputMaybe<Scalars['String']['input']>;
+  postcodeInward?: InputMaybe<Scalars['String']['input']>;
+  postcodeOutward?: InputMaybe<Scalars['String']['input']>;
   propertyType?: InputMaybe<Scalars['String']['input']>;
   townCity?: InputMaybe<Scalars['String']['input']>;
 };
@@ -142,14 +145,15 @@ export type GetPropertiesQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']['input']>;
   minPrice?: InputMaybe<Scalars['Int']['input']>;
   maxPrice?: InputMaybe<Scalars['Int']['input']>;
-  postcode?: InputMaybe<Scalars['String']['input']>;
+  postcodeOutward?: InputMaybe<Scalars['String']['input']>;
+  postcodeInward?: InputMaybe<Scalars['String']['input']>;
   townCity?: InputMaybe<Scalars['String']['input']>;
   county?: InputMaybe<Scalars['String']['input']>;
   propertyType?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetPropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyConnection', total: number, items: Array<{ __typename?: 'Property', id: string, price: number, dateOfTransfer: any, postcode: string, propertyType: string, oldNew: string, address: string, townCity: string, county: string }> } };
+export type GetPropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyConnection', total: number, items: Array<{ __typename?: 'Property', id: string, price: number, dateOfTransfer: any, postcodeOutward: string, postcodeInward: string, propertyType: string, oldNew: string, address: string, townCity: string, county: string }> } };
 
 export type CreatePropertyMutationVariables = Exact<{
   input: PropertyInput;
@@ -210,13 +214,14 @@ export const useGetAdminJobsQuery = <
     )};
 
 export const GetPropertiesDocument = `
-    query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $postcode: String, $townCity: String, $county: String, $propertyType: String) {
+    query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $postcodeOutward: String, $postcodeInward: String, $townCity: String, $county: String, $propertyType: String) {
   properties(
     limit: $limit
     offset: $offset
     minPrice: $minPrice
     maxPrice: $maxPrice
-    postcode: $postcode
+    postcodeOutward: $postcodeOutward
+    postcodeInward: $postcodeInward
     townCity: $townCity
     county: $county
     propertyType: $propertyType
@@ -225,7 +230,8 @@ export const GetPropertiesDocument = `
       id
       price
       dateOfTransfer
-      postcode
+      postcodeOutward
+      postcodeInward
       propertyType
       oldNew
       address

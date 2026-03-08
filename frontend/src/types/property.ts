@@ -4,7 +4,8 @@ export interface IProperty {
   updated_at: string;
   price: number;
   date_of_transfer: string;
-  postcode: string;
+  postcode_outward: string;
+  postcode_inward: string;
   property_type: string;
   old_new: string;
   duration: string;

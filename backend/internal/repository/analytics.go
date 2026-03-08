@@ -25,7 +25,7 @@ func (r *analyticsRepository) GetMedianPriceByRegion(ctx context.Context, region
 	}
 
 	query := `
-		SELECT TRIM(UPPER(region_name)) as region, median_price
+		SELECT TRIM(region_name) as region, median_price
 		FROM mv_regional_stats
 		WHERE region_type = ?
 		ORDER BY median_price DESC
@@ -136,7 +136,7 @@ func (r *analyticsRepository) GetNewBuildPremium(ctx context.Context, regionType
 	}
 
 	query := `
-		SELECT TRIM(UPPER(n.region_name)) as region,
+		SELECT TRIM(n.region_name) as region,
 		       n.avg_price as new_avg,
 		       o.avg_price as old_avg,
 		       ((n.avg_price - o.avg_price)::float / o.avg_price::float) * 100 as premium_percent
@@ -194,7 +194,7 @@ func (r *analyticsRepository) GetTopActiveAreas(ctx context.Context, regionType 
 	results := []models.TopActiveAreaResult{}
 	
 	query := `
-		SELECT TRIM(UPPER(region_name)) as region, transaction_count, (transaction_count * avg_price)::bigint as total_value
+		SELECT TRIM(region_name) as region, transaction_count, (transaction_count * avg_price)::bigint as total_value
 		FROM mv_regional_stats
 		WHERE region_type = ?
 		ORDER BY transaction_count DESC

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,25 +44,41 @@ function Analytics() {
   const [premiumRegion, setPremiumRegion] = useState<any>("county");
   const [activeAreaRegion, setActiveAreaRegion] = useState<any>("district");
 
+  const queryOptions = useMemo(
+    () => ({
+      query: {
+        staleTime: 10 * 60 * 1000, // 10 minutes
+        gcTime: 15 * 60 * 1000, // 15 minutes
+        retry: false,
+        refetchOnWindowFocus: false,
+      },
+    }),
+    [],
+  );
+
+  // Stabilize all parameter objects
+  const medianParams = useMemo(() => ({ by: regionType }), [regionType]);
+  const trendParams = useMemo(() => ({ interval: trendInterval }), [trendInterval]);
+  const growthParams = useMemo(() => ({ limit: 10 }), []);
+  const premiumParams = useMemo(() => ({ by: premiumRegion }), [premiumRegion]);
+  const activeParams = useMemo(() => ({ by: activeAreaRegion, limit: 10 }), [activeAreaRegion]);
+
   const { data: medianPrices, isLoading: loadingMedian } =
-    useGetAnalyticsMedianPrice({ by: regionType });
+    useGetAnalyticsMedianPrice(medianParams, queryOptions);
   const { data: priceTrends, isLoading: loadingTrends } =
-    useGetAnalyticsPriceTrend({ interval: trendInterval });
+    useGetAnalyticsPriceTrend(trendParams, queryOptions);
   const { data: affordability, isLoading: loadingAffordability } =
-    useGetAnalyticsAffordability();
+    useGetAnalyticsAffordability(queryOptions);
   const { data: hotspots, isLoading: loadingHotspots } =
-    useGetAnalyticsGrowthHotspots({ limit: 10 });
+    useGetAnalyticsGrowthHotspots(growthParams, queryOptions);
   const { data: newBuildPremium, isLoading: loadingPremium } =
-    useGetAnalyticsNewBuildPremium({ by: premiumRegion });
+    useGetAnalyticsNewBuildPremium(premiumParams, queryOptions);
   const { data: typeDistribution, isLoading: loadingTypeDist } =
-    useGetAnalyticsPropertyTypeDistribution();
+    useGetAnalyticsPropertyTypeDistribution(queryOptions);
   const { data: bracketDistribution, isLoading: loadingBracketDist } =
-    useGetAnalyticsPriceBracketDistribution();
+    useGetAnalyticsPriceBracketDistribution(queryOptions);
   const { data: activeAreas, isLoading: loadingActiveAreas } =
-    useGetAnalyticsTopActiveAreas({
-      by: activeAreaRegion,
-      limit: 10,
-    });
+    useGetAnalyticsTopActiveAreas(activeParams, queryOptions);
 
   const formatPrice = (value: number | undefined) => {
     if (value === undefined) return "£0";

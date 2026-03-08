@@ -126,7 +126,8 @@ function AdminProperties() {
     const input = {
       price: parseInt(data.price),
       dateOfTransfer: editingProperty?.dateOfTransfer || new Date().toISOString(),
-      postcode: data.postcode,
+      postcodeOutward: data.postcodeOutward,
+      postcodeInward: data.postcodeInward,
       propertyType: data.propertyType,
       oldNew: data.oldNew,
       duration: editingProperty?.duration || "F",
@@ -186,7 +187,7 @@ function AdminProperties() {
                       {p.address}
                     </div>
                     <div className="text-xs text-gray-400 font-mono">
-                      {p.postcode}
+                      {p.postcodeOutward} {p.postcodeInward}
                     </div>
                   </TableCell>
                   <TableCell>{p.townCity}</TableCell>
@@ -295,11 +296,24 @@ function AdminProperties() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold uppercase text-gray-500">
-                    Postcode
+                    Postcode (Outward)
                   </label>
                   <input
-                    name="postcode"
-                    defaultValue={editingProperty?.postcode}
+                    name="postcodeOutward"
+                    defaultValue={editingProperty?.postcodeOutward}
+                    placeholder="e.g. SW1A"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase text-gray-500">
+                    Postcode (Inward)
+                  </label>
+                  <input
+                    name="postcodeInward"
+                    defaultValue={editingProperty?.postcodeInward}
+                    placeholder="e.g. 1AA"
                     className="w-full border rounded px-3 py-2"
                     required
                   />
