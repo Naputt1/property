@@ -7,7 +7,8 @@ type Property {
   updatedAt: Time!
   price: Int!
   dateOfTransfer: Time!
-  postcode: String!
+  postcodeOutward: String!
+  postcodeInward: String!
   propertyType: String!
   oldNew: String!
   duration: String!
@@ -46,7 +47,8 @@ type Query {
     offset: Int
     minPrice: Int
     maxPrice: Int
-    postcode: String
+    postcodeOutward: String
+    postcodeInward: String
     townCity: String
     county: String
     propertyType: String
@@ -58,7 +60,8 @@ type Query {
 input PropertyInput {
   price: Int!
   dateOfTransfer: Time!
-  postcode: String!
+  postcodeOutward: String!
+  postcodeInward: String!
   propertyType: String!
   oldNew: String!
   duration: String!

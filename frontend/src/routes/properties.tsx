@@ -318,7 +318,7 @@ function PropertiesPage() {
                       {property.address}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono">
-                      {property.postcode}
+                      {property.postcodeOutward} {property.postcodeInward}
                     </div>
                   </TableCell>
                   <TableCell>

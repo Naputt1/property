@@ -16,7 +16,9 @@ type Property struct {
 
 	Price          int64     `json:"price"` // In GBP
 	DateOfTransfer time.Time `json:"date_of_transfer"`
-	Postcode       string    `gorm:"index" json:"postcode"`
+	
+	PostcodeOutward string `gorm:"index" json:"postcode_outward"`
+	PostcodeInward  string `gorm:"index" json:"postcode_inward"`
 
 	// D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes, O = Other
 	PropertyType string `json:"property_type"`

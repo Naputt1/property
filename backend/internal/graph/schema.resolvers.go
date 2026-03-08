@@ -27,7 +27,8 @@ func (r *mutationResolver) CreateProperty(ctx context.Context, input model.Prope
 	prop := &models.Property{
 		Price:           int64(input.Price),
 		DateOfTransfer:  input.DateOfTransfer,
-		Postcode:        input.Postcode,
+		PostcodeOutward: input.PostcodeOutward,
+		PostcodeInward:  input.PostcodeInward,
 		PropertyType:    input.PropertyType,
 		OldNew:          input.OldNew,
 		Duration:        input.Duration,
@@ -57,7 +58,8 @@ func (r *mutationResolver) UpdateProperty(ctx context.Context, id string, input 
 		ID:              uid,
 		Price:           int64(input.Price),
 		DateOfTransfer:  input.DateOfTransfer,
-		Postcode:        input.Postcode,
+		PostcodeOutward: input.PostcodeOutward,
+		PostcodeInward:  input.PostcodeInward,
 		PropertyType:    input.PropertyType,
 		OldNew:          input.OldNew,
 		Duration:        input.Duration,
@@ -88,7 +90,7 @@ func (r *propertyResolver) ID(ctx context.Context, obj *models.Property) (string
 }
 
 // Properties is the resolver for the properties field.
-func (r *queryResolver) Properties(ctx context.Context, limit *int, offset *int, minPrice *int, maxPrice *int, postcode *string, townCity *string, county *string, propertyType *string) (*model.PropertyConnection, error) {
+func (r *queryResolver) Properties(ctx context.Context, limit *int, offset *int, minPrice *int, maxPrice *int, postcodeOutward *string, postcodeInward *string, townCity *string, county *string, propertyType *string) (*model.PropertyConnection, error) {
 	var l int = 10
 	if limit != nil {
 		l = *limit
@@ -105,8 +107,11 @@ func (r *queryResolver) Properties(ctx context.Context, limit *int, offset *int,
 	if maxPrice != nil {
 		filters["max_price"] = *maxPrice
 	}
-	if postcode != nil {
-		filters["postcode"] = *postcode
+	if postcodeOutward != nil {
+		filters["postcode_outward"] = *postcodeOutward
+	}
+	if postcodeInward != nil {
+		filters["postcode_inward"] = *postcodeInward
 	}
 	if townCity != nil {
 		filters["town_city"] = *townCity

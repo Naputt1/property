@@ -3,6 +3,7 @@ package repository
 import (
 	"backend/internal/models"
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -53,6 +54,12 @@ func (r *propertyRepository) GetProperties(ctx context.Context, filters map[stri
 	}
 	if district, ok := filters["district"].(string); ok && district != "" {
 		query = query.Where("district ILIKE ?", district+"%")
+	}
+	if pOut, ok := filters["postcode_outward"].(string); ok && pOut != "" {
+		query = query.Where("postcode_outward = ?", strings.ToUpper(pOut))
+	}
+	if pIn, ok := filters["postcode_inward"].(string); ok && pIn != "" {
+		query = query.Where("postcode_inward = ?", strings.ToUpper(pIn))
 	}
 	if address, ok := filters["address"].(string); ok && address != "" {
 		query = query.Where("address ILIKE ?", "%"+address+"%")

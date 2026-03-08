@@ -63,22 +63,20 @@ type ComplexityRoot struct {
 	}
 
 	Property struct {
+		Address         func(childComplexity int) int
 		County          func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		DateOfTransfer  func(childComplexity int) int
 		District        func(childComplexity int) int
 		Duration        func(childComplexity int) int
 		ID              func(childComplexity int) int
-		Locality        func(childComplexity int) int
 		OldNew          func(childComplexity int) int
-		PAON            func(childComplexity int) int
 		PPDCategoryType func(childComplexity int) int
-		Postcode        func(childComplexity int) int
+		PostcodeInward  func(childComplexity int) int
+		PostcodeOutward func(childComplexity int) int
 		Price           func(childComplexity int) int
 		PropertyType    func(childComplexity int) int
 		RecordStatus    func(childComplexity int) int
-		SAON            func(childComplexity int) int
-		Street          func(childComplexity int) int
 		TownCity        func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
 	}
@@ -90,7 +88,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Jobs       func(childComplexity int, limit *int, offset *int) int
-		Properties func(childComplexity int, limit *int, offset *int, minPrice *int, maxPrice *int, postcode *string, townCity *string, county *string, propertyType *string) int
+		Properties func(childComplexity int, limit *int, offset *int, minPrice *int, maxPrice *int, postcodeOutward *string, postcodeInward *string, townCity *string, county *string, propertyType *string) int
 		Property   func(childComplexity int, id string) int
 	}
 }
@@ -107,7 +105,7 @@ type PropertyResolver interface {
 	ID(ctx context.Context, obj *models.Property) (string, error)
 }
 type QueryResolver interface {
-	Properties(ctx context.Context, limit *int, offset *int, minPrice *int, maxPrice *int, postcode *string, townCity *string, county *string, propertyType *string) (*model.PropertyConnection, error)
+	Properties(ctx context.Context, limit *int, offset *int, minPrice *int, maxPrice *int, postcodeOutward *string, postcodeInward *string, townCity *string, county *string, propertyType *string) (*model.PropertyConnection, error)
 	Property(ctx context.Context, id string) (*models.Property, error)
 	Jobs(ctx context.Context, limit *int, offset *int) (*model.JobConnection, error)
 }
@@ -222,6 +220,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Mutation.UpdateProperty(childComplexity, args["id"].(string), args["input"].(model.PropertyInput)), true
 
+	case "Property.address":
+		if e.ComplexityRoot.Property.Address == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Property.Address(childComplexity), true
 	case "Property.county":
 		if e.ComplexityRoot.Property.County == nil {
 			break
@@ -258,36 +262,30 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Property.ID(childComplexity), true
-	case "Property.locality":
-		if e.ComplexityRoot.Property.Locality == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Property.Locality(childComplexity), true
 	case "Property.oldNew":
 		if e.ComplexityRoot.Property.OldNew == nil {
 			break
 		}
 
 		return e.ComplexityRoot.Property.OldNew(childComplexity), true
-	case "Property.paon":
-		if e.ComplexityRoot.Property.PAON == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Property.PAON(childComplexity), true
 	case "Property.ppdCategoryType":
 		if e.ComplexityRoot.Property.PPDCategoryType == nil {
 			break
 		}
 
 		return e.ComplexityRoot.Property.PPDCategoryType(childComplexity), true
-	case "Property.postcode":
-		if e.ComplexityRoot.Property.Postcode == nil {
+	case "Property.postcodeInward":
+		if e.ComplexityRoot.Property.PostcodeInward == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Property.Postcode(childComplexity), true
+		return e.ComplexityRoot.Property.PostcodeInward(childComplexity), true
+	case "Property.postcodeOutward":
+		if e.ComplexityRoot.Property.PostcodeOutward == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Property.PostcodeOutward(childComplexity), true
 	case "Property.price":
 		if e.ComplexityRoot.Property.Price == nil {
 			break
@@ -306,18 +304,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Property.RecordStatus(childComplexity), true
-	case "Property.saon":
-		if e.ComplexityRoot.Property.SAON == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Property.SAON(childComplexity), true
-	case "Property.street":
-		if e.ComplexityRoot.Property.Street == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Property.Street(childComplexity), true
 	case "Property.townCity":
 		if e.ComplexityRoot.Property.TownCity == nil {
 			break
@@ -365,7 +351,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Properties(childComplexity, args["limit"].(*int), args["offset"].(*int), args["minPrice"].(*int), args["maxPrice"].(*int), args["postcode"].(*string), args["townCity"].(*string), args["county"].(*string), args["propertyType"].(*string)), true
+		return e.ComplexityRoot.Query.Properties(childComplexity, args["limit"].(*int), args["offset"].(*int), args["minPrice"].(*int), args["maxPrice"].(*int), args["postcodeOutward"].(*string), args["postcodeInward"].(*string), args["townCity"].(*string), args["county"].(*string), args["propertyType"].(*string)), true
 	case "Query.property":
 		if e.ComplexityRoot.Query.Property == nil {
 			break
@@ -569,26 +555,31 @@ func (ec *executionContext) field_Query_properties_args(ctx context.Context, raw
 		return nil, err
 	}
 	args["maxPrice"] = arg3
-	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "postcode", ec.unmarshalOString2ᚖstring)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "postcodeOutward", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["postcode"] = arg4
-	arg5, err := graphql.ProcessArgField(ctx, rawArgs, "townCity", ec.unmarshalOString2ᚖstring)
+	args["postcodeOutward"] = arg4
+	arg5, err := graphql.ProcessArgField(ctx, rawArgs, "postcodeInward", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["townCity"] = arg5
-	arg6, err := graphql.ProcessArgField(ctx, rawArgs, "county", ec.unmarshalOString2ᚖstring)
+	args["postcodeInward"] = arg5
+	arg6, err := graphql.ProcessArgField(ctx, rawArgs, "townCity", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["county"] = arg6
-	arg7, err := graphql.ProcessArgField(ctx, rawArgs, "propertyType", ec.unmarshalOString2ᚖstring)
+	args["townCity"] = arg6
+	arg7, err := graphql.ProcessArgField(ctx, rawArgs, "county", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["propertyType"] = arg7
+	args["county"] = arg7
+	arg8, err := graphql.ProcessArgField(ctx, rawArgs, "propertyType", ec.unmarshalOString2ᚖstring)
+	if err != nil {
+		return nil, err
+	}
+	args["propertyType"] = arg8
 	return args, nil
 }
 
@@ -998,22 +989,18 @@ func (ec *executionContext) fieldContext_Mutation_createProperty(ctx context.Con
 				return ec.fieldContext_Property_price(ctx, field)
 			case "dateOfTransfer":
 				return ec.fieldContext_Property_dateOfTransfer(ctx, field)
-			case "postcode":
-				return ec.fieldContext_Property_postcode(ctx, field)
+			case "postcodeOutward":
+				return ec.fieldContext_Property_postcodeOutward(ctx, field)
+			case "postcodeInward":
+				return ec.fieldContext_Property_postcodeInward(ctx, field)
 			case "propertyType":
 				return ec.fieldContext_Property_propertyType(ctx, field)
 			case "oldNew":
 				return ec.fieldContext_Property_oldNew(ctx, field)
 			case "duration":
 				return ec.fieldContext_Property_duration(ctx, field)
-			case "paon":
-				return ec.fieldContext_Property_paon(ctx, field)
-			case "saon":
-				return ec.fieldContext_Property_saon(ctx, field)
-			case "street":
-				return ec.fieldContext_Property_street(ctx, field)
-			case "locality":
-				return ec.fieldContext_Property_locality(ctx, field)
+			case "address":
+				return ec.fieldContext_Property_address(ctx, field)
 			case "townCity":
 				return ec.fieldContext_Property_townCity(ctx, field)
 			case "district":
@@ -1077,22 +1064,18 @@ func (ec *executionContext) fieldContext_Mutation_updateProperty(ctx context.Con
 				return ec.fieldContext_Property_price(ctx, field)
 			case "dateOfTransfer":
 				return ec.fieldContext_Property_dateOfTransfer(ctx, field)
-			case "postcode":
-				return ec.fieldContext_Property_postcode(ctx, field)
+			case "postcodeOutward":
+				return ec.fieldContext_Property_postcodeOutward(ctx, field)
+			case "postcodeInward":
+				return ec.fieldContext_Property_postcodeInward(ctx, field)
 			case "propertyType":
 				return ec.fieldContext_Property_propertyType(ctx, field)
 			case "oldNew":
 				return ec.fieldContext_Property_oldNew(ctx, field)
 			case "duration":
 				return ec.fieldContext_Property_duration(ctx, field)
-			case "paon":
-				return ec.fieldContext_Property_paon(ctx, field)
-			case "saon":
-				return ec.fieldContext_Property_saon(ctx, field)
-			case "street":
-				return ec.fieldContext_Property_street(ctx, field)
-			case "locality":
-				return ec.fieldContext_Property_locality(ctx, field)
+			case "address":
+				return ec.fieldContext_Property_address(ctx, field)
 			case "townCity":
 				return ec.fieldContext_Property_townCity(ctx, field)
 			case "district":
@@ -1307,14 +1290,14 @@ func (ec *executionContext) fieldContext_Property_dateOfTransfer(_ context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Property_postcode(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
+func (ec *executionContext) _Property_postcodeOutward(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Property_postcode,
+		ec.fieldContext_Property_postcodeOutward,
 		func(ctx context.Context) (any, error) {
-			return obj.Postcode, nil
+			return obj.PostcodeOutward, nil
 		},
 		nil,
 		ec.marshalNString2string,
@@ -1323,7 +1306,36 @@ func (ec *executionContext) _Property_postcode(ctx context.Context, field graphq
 	)
 }
 
-func (ec *executionContext) fieldContext_Property_postcode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Property_postcodeOutward(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Property",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Property_postcodeInward(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Property_postcodeInward,
+		func(ctx context.Context) (any, error) {
+			return obj.PostcodeInward, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Property_postcodeInward(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Property",
 		Field:      field,
@@ -1423,14 +1435,14 @@ func (ec *executionContext) fieldContext_Property_duration(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Property_paon(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
+func (ec *executionContext) _Property_address(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Property_paon,
+		ec.fieldContext_Property_address,
 		func(ctx context.Context) (any, error) {
-			return obj.PAON, nil
+			return obj.Address, nil
 		},
 		nil,
 		ec.marshalNString2string,
@@ -1439,94 +1451,7 @@ func (ec *executionContext) _Property_paon(ctx context.Context, field graphql.Co
 	)
 }
 
-func (ec *executionContext) fieldContext_Property_paon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Property",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Property_saon(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Property_saon,
-		func(ctx context.Context) (any, error) {
-			return obj.SAON, nil
-		},
-		nil,
-		ec.marshalNString2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Property_saon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Property",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Property_street(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Property_street,
-		func(ctx context.Context) (any, error) {
-			return obj.Street, nil
-		},
-		nil,
-		ec.marshalNString2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Property_street(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Property",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Property_locality(ctx context.Context, field graphql.CollectedField, obj *models.Property) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Property_locality,
-		func(ctx context.Context) (any, error) {
-			return obj.Locality, nil
-		},
-		nil,
-		ec.marshalNString2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Property_locality(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Property_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Property",
 		Field:      field,
@@ -1718,22 +1643,18 @@ func (ec *executionContext) fieldContext_PropertyConnection_items(_ context.Cont
 				return ec.fieldContext_Property_price(ctx, field)
 			case "dateOfTransfer":
 				return ec.fieldContext_Property_dateOfTransfer(ctx, field)
-			case "postcode":
-				return ec.fieldContext_Property_postcode(ctx, field)
+			case "postcodeOutward":
+				return ec.fieldContext_Property_postcodeOutward(ctx, field)
+			case "postcodeInward":
+				return ec.fieldContext_Property_postcodeInward(ctx, field)
 			case "propertyType":
 				return ec.fieldContext_Property_propertyType(ctx, field)
 			case "oldNew":
 				return ec.fieldContext_Property_oldNew(ctx, field)
 			case "duration":
 				return ec.fieldContext_Property_duration(ctx, field)
-			case "paon":
-				return ec.fieldContext_Property_paon(ctx, field)
-			case "saon":
-				return ec.fieldContext_Property_saon(ctx, field)
-			case "street":
-				return ec.fieldContext_Property_street(ctx, field)
-			case "locality":
-				return ec.fieldContext_Property_locality(ctx, field)
+			case "address":
+				return ec.fieldContext_Property_address(ctx, field)
 			case "townCity":
 				return ec.fieldContext_Property_townCity(ctx, field)
 			case "district":
@@ -1788,7 +1709,7 @@ func (ec *executionContext) _Query_properties(ctx context.Context, field graphql
 		ec.fieldContext_Query_properties,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Properties(ctx, fc.Args["limit"].(*int), fc.Args["offset"].(*int), fc.Args["minPrice"].(*int), fc.Args["maxPrice"].(*int), fc.Args["postcode"].(*string), fc.Args["townCity"].(*string), fc.Args["county"].(*string), fc.Args["propertyType"].(*string))
+			return ec.Resolvers.Query().Properties(ctx, fc.Args["limit"].(*int), fc.Args["offset"].(*int), fc.Args["minPrice"].(*int), fc.Args["maxPrice"].(*int), fc.Args["postcodeOutward"].(*string), fc.Args["postcodeInward"].(*string), fc.Args["townCity"].(*string), fc.Args["county"].(*string), fc.Args["propertyType"].(*string))
 		},
 		nil,
 		ec.marshalNPropertyConnection2ᚖbackendᚋinternalᚋgraphᚋmodelᚐPropertyConnection,
@@ -1862,22 +1783,18 @@ func (ec *executionContext) fieldContext_Query_property(ctx context.Context, fie
 				return ec.fieldContext_Property_price(ctx, field)
 			case "dateOfTransfer":
 				return ec.fieldContext_Property_dateOfTransfer(ctx, field)
-			case "postcode":
-				return ec.fieldContext_Property_postcode(ctx, field)
+			case "postcodeOutward":
+				return ec.fieldContext_Property_postcodeOutward(ctx, field)
+			case "postcodeInward":
+				return ec.fieldContext_Property_postcodeInward(ctx, field)
 			case "propertyType":
 				return ec.fieldContext_Property_propertyType(ctx, field)
 			case "oldNew":
 				return ec.fieldContext_Property_oldNew(ctx, field)
 			case "duration":
 				return ec.fieldContext_Property_duration(ctx, field)
-			case "paon":
-				return ec.fieldContext_Property_paon(ctx, field)
-			case "saon":
-				return ec.fieldContext_Property_saon(ctx, field)
-			case "street":
-				return ec.fieldContext_Property_street(ctx, field)
-			case "locality":
-				return ec.fieldContext_Property_locality(ctx, field)
+			case "address":
+				return ec.fieldContext_Property_address(ctx, field)
 			case "townCity":
 				return ec.fieldContext_Property_townCity(ctx, field)
 			case "district":
@@ -3514,7 +3431,7 @@ func (ec *executionContext) unmarshalInputPropertyInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"price", "dateOfTransfer", "postcode", "propertyType", "oldNew", "duration", "paon", "saon", "street", "locality", "townCity", "district", "county", "ppdCategoryType", "recordStatus"}
+	fieldsInOrder := [...]string{"price", "dateOfTransfer", "postcodeOutward", "postcodeInward", "propertyType", "oldNew", "duration", "address", "townCity", "district", "county", "ppdCategoryType", "recordStatus"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3535,13 +3452,20 @@ func (ec *executionContext) unmarshalInputPropertyInput(ctx context.Context, obj
 				return it, err
 			}
 			it.DateOfTransfer = data
-		case "postcode":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postcode"))
+		case "postcodeOutward":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postcodeOutward"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Postcode = data
+			it.PostcodeOutward = data
+		case "postcodeInward":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postcodeInward"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PostcodeInward = data
 		case "propertyType":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("propertyType"))
 			data, err := ec.unmarshalNString2string(ctx, v)
@@ -3563,34 +3487,13 @@ func (ec *executionContext) unmarshalInputPropertyInput(ctx context.Context, obj
 				return it, err
 			}
 			it.Duration = data
-		case "paon":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("paon"))
+		case "address":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Paon = data
-		case "saon":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saon"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Saon = data
-		case "street":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("street"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Street = data
-		case "locality":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("locality"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Locality = data
+			it.Address = data
 		case "townCity":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("townCity"))
 			data, err := ec.unmarshalNString2string(ctx, v)
@@ -3918,8 +3821,13 @@ func (ec *executionContext) _Property(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "postcode":
-			out.Values[i] = ec._Property_postcode(ctx, field, obj)
+		case "postcodeOutward":
+			out.Values[i] = ec._Property_postcodeOutward(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "postcodeInward":
+			out.Values[i] = ec._Property_postcodeInward(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -3938,23 +3846,8 @@ func (ec *executionContext) _Property(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "paon":
-			out.Values[i] = ec._Property_paon(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "saon":
-			out.Values[i] = ec._Property_saon(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "street":
-			out.Values[i] = ec._Property_street(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "locality":
-			out.Values[i] = ec._Property_locality(ctx, field, obj)
+		case "address":
+			out.Values[i] = ec._Property_address(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
