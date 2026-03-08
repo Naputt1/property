@@ -29,6 +29,7 @@ type JobRepository interface {
 	UpdateProgress(ctx context.Context, id string, progress, total int) error
 	GetByID(ctx context.Context, id string) (*models.Job, error)
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
+	GetPendingOrRunningJobsCount(ctx context.Context, taskType string) (int64, error)
 }
 
 type AnalyticsRepository interface {

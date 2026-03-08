@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"sync"
 
 	"encoding/csv"
 	"io"
@@ -418,14 +419,36 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 
 	var object io.ReadCloser
 	var totalSize int64
+	var getErr error
 
-	object, totalSize, err = h.bucket.GetObject(ctx, payload.BucketKey)
-	if err != nil {
-		slog.Error("Failed to get object from bucket", "error", err)
-		if jobID != "" {
-			_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to open bucket object: %v", err))
+	// Retry logic for GetObject with exponential backoff
+	// S3-compatible backends might have eventual consistency or the job might start
+	// before the upload is fully finalized/visible.
+	maxRetries := 5
+	backoff := 1 * time.Second
+
+	for i := 0; i < maxRetries; i++ {
+		object, totalSize, getErr = h.bucket.GetObject(ctx, payload.BucketKey)
+		if getErr == nil {
+			break
 		}
-		return err
+
+		slog.Warn("Failed to get object from bucket, retrying...", "error", getErr, "attempt", i+1, "backoff", backoff)
+		
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(backoff):
+			backoff *= 2
+		}
+	}
+
+	if getErr != nil {
+		slog.Error("Failed to get object from bucket after retries", "error", getErr)
+		if jobID != "" {
+			_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to open bucket object after %d attempts: %v", maxRetries, getErr))
+		}
+		return getErr
 	}
 
 	defer object.Close()
@@ -458,27 +481,51 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		}
 	}
 
-	var batch []models.Property
-	batchSize := 1000
+	// Optimization: Use worker pool for DB writes
+	numWorkers := 4
+	batchSize := 3000
+	batchChan := make(chan []models.Property, numWorkers)
+	
+	var wg sync.WaitGroup
+	var workerErr error
+	var errOnce sync.Once
+
+	workerCtx, cancelWorkers := context.WithCancel(ctx)
+	defer cancelWorkers()
+
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			for batch := range batchChan {
+				if err := h.svcs.Property.CreateBatch(workerCtx, batch, batchSize); err != nil {
+					slog.Error("Worker failed to process batch", "worker_id", id, "error", err)
+					errOnce.Do(func() {
+						workerErr = err
+						cancelWorkers()
+					})
+					return
+				}
+			}
+		}(i)
+	}
+
 	totalProcessed := processedCount
 	lastProgressUpdate := time.Now()
-	// We can't easily track bytesRead accurately when skipping rows without a custom reader
-	// but we can estimate or just start from 0 for the remainder.
-	// For better accuracy, we'll just use row count for progress if we resumed.
 	bytesRead := int64(0)
 
+	var currentBatch []models.Property
+
+readerLoop:
 	for {
-		// Respect context cancellation
 		select {
-		case <-ctx.Done():
-			slog.Warn("Task cancelled by context")
-			if len(batch) > 0 {
-				_ = h.svcs.Property.CreateBatch(context.Background(), batch, len(batch))
+		case <-workerCtx.Done():
+			if workerErr != nil {
+				err = workerErr
+			} else {
+				err = workerCtx.Err()
 			}
-			if jobID != "" {
-				_ = h.svcs.Job.UpdateJobStatus(context.Background(), jobID, models.JobStatusFailed, "Task cancelled or timed out")
-			}
-			return ctx.Err()
+			break readerLoop
 		default:
 		}
 
@@ -491,42 +538,40 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 			continue
 		}
 
-		// Estimate bytes read (very rough estimate based on record content)
 		for _, s := range record {
-			bytesRead += int64(len(s)) + 1 // +1 for comma
+			bytesRead += int64(len(s)) + 1
 		}
-		bytesRead += 1 // for newline
+		bytesRead += 1
 
-		// Use the new mapping function that handles both 16 and 17 column formats
 		property, err := mapRecordToProperty(record)
 		if err != nil {
 			slog.Warn("Skipping invalid record", "error", err, "record", record)
 			continue
 		}
 
-		batch = append(batch, *property)
+		currentBatch = append(currentBatch, *property)
 		totalProcessed++
 
-		if len(batch) >= batchSize {
-			if err := h.svcs.Property.CreateBatch(ctx, batch, batchSize); err != nil {
-				slog.Error("Failed to process batch", "error", err)
-				if jobID != "" {
-					_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to save batch: %v", err))
+		if len(currentBatch) >= batchSize {
+			select {
+			case batchChan <- currentBatch:
+				currentBatch = make([]models.Property, 0, batchSize)
+			case <-workerCtx.Done():
+				if workerErr != nil {
+					err = workerErr
+				} else {
+					err = workerCtx.Err()
 				}
-				return err
+				break readerLoop
 			}
-			batch = batch[:0] // clear batch
 
 			// Update progress every 5 seconds
 			if time.Since(lastProgressUpdate) >= 5*time.Second {
 				progress := 0
 				if totalSize > 0 {
-					// Note: bytesRead is only accurate if we didn't resume.
-					// If we resumed, we might want a better way to calculate progress.
-					// For now, let's just use it as is.
 					progress = int((float64(bytesRead) / float64(totalSize)) * 100)
 					if progress > 100 {
-						progress = 99 // Cap at 99 until finish
+						progress = 99
 					}
 				}
 
@@ -548,15 +593,33 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 		}
 	}
 
-	// Final batch
-	if len(batch) > 0 {
-		if err := h.svcs.Property.CreateBatch(ctx, batch, len(batch)); err != nil {
-			slog.Error("Failed to process final batch", "error", err)
-			if jobID != "" {
-				_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to save final batch: %v", err))
+	if err == nil {
+		if len(currentBatch) > 0 {
+			select {
+			case batchChan <- currentBatch:
+			case <-workerCtx.Done():
+				err = workerErr
 			}
-			return err
 		}
+	}
+
+	close(batchChan)
+	wg.Wait()
+
+	if err == nil && workerErr != nil {
+		err = workerErr
+	}
+
+	if err != nil {
+		if jobID != "" {
+			_ = h.svcs.Job.UpdateJobStatus(context.Background(), jobID, models.JobStatusFailed, fmt.Sprintf("Migration failed: %v", err))
+		}
+		return err
+	}
+
+	// Update progress to 100% before success
+	if jobID != "" {
+		_ = h.svcs.Job.UpdateJobProgress(ctx, jobID, 100, totalProcessed)
 	}
 
 	// Refresh materialized view for analytics via queue with short delay

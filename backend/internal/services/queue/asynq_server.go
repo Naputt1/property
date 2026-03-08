@@ -11,8 +11,9 @@ import (
 )
 
 type AsynqServer struct {
-	server *asynq.Server
-	mux    *asynq.ServeMux
+	mainServer      *asynq.Server
+	migrationServer *asynq.Server
+	mux             *asynq.ServeMux
 }
 
 func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, error) {
@@ -22,7 +23,7 @@ func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, 
 		DB:       cfg.Opt.Redis.DB,
 	}
 
-	srv := asynq.NewServer(
+	mainSrv := asynq.NewServer(
 		redisConnOpt,
 		asynq.Config{
 			Concurrency: 5,
@@ -30,6 +31,16 @@ func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, 
 				"critical": 6,
 				"default":  3,
 				"low":      1,
+			},
+		},
+	)
+
+	migrationSrv := asynq.NewServer(
+		redisConnOpt,
+		asynq.Config{
+			Concurrency: 1, // Strictly 1 at a time for migrations
+			Queues: map[string]int{
+				"migration": 1,
 			},
 		},
 	)
@@ -45,19 +56,24 @@ func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, 
 	})
 
 	server := &AsynqServer{
-		server: srv,
-		mux:    mux,
+		mainServer:      mainSrv,
+		migrationServer: migrationSrv,
+		mux:             mux,
 	}
 
 	return server, nil
 }
 
 func (s *AsynqServer) Start() error {
-	return s.server.Start(s.mux)
+	if err := s.mainServer.Start(s.mux); err != nil {
+		return err
+	}
+	return s.migrationServer.Start(s.mux)
 }
 
 func (s *AsynqServer) Stop() {
-	s.server.Stop()
+	s.mainServer.Stop()
+	s.migrationServer.Stop()
 }
 
 func loggingMiddleware(h asynq.Handler) asynq.Handler {

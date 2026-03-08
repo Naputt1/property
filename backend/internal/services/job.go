@@ -30,6 +30,7 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 
 	// If it's a CSV migration, we need to inject the JobID into the payload
 	// so the handler can update the job status later.
+	var opts []asynq.Option
 	if taskType == "properties:migrate:csv" {
 		var csvPayload models.CSVConfigPayload
 		if err := json.Unmarshal(payload, &csvPayload); err == nil {
@@ -37,6 +38,7 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 			newPayload, _ := json.Marshal(csvPayload)
 			payload = newPayload
 		}
+		opts = append(opts, asynq.Timeout(2*time.Hour), asynq.Queue("migration"))
 	}
 
 	job := &models.Job{
@@ -52,11 +54,6 @@ func (s *jobService) CreateJob(ctx context.Context, taskType string, payload []b
 
 	// Enqueue to asynq
 	task := asynq.NewTask(taskType, payload)
-
-	var opts []asynq.Option
-	if taskType == "properties:migrate:csv" {
-		opts = append(opts, asynq.Timeout(2*time.Hour))
-	}
 
 	info, err := s.asynqClient.Enqueue(task, opts...)
 	if err != nil {

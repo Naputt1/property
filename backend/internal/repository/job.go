@@ -55,3 +55,11 @@ func (r *jobRepository) GetJobs(ctx context.Context, limit, offset int) ([]model
 
 	return jobs, count, nil
 }
+
+func (r *jobRepository) GetPendingOrRunningJobsCount(ctx context.Context, taskType string) (int64, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&models.Job{}).
+		Where("task_type = ? AND status IN (?, ?)", taskType, models.JobStatusPending, models.JobStatusRunning).
+		Count(&count).Error
+	return count, err
+}
