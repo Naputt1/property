@@ -9,25 +9,6 @@ definitions:
       relative_affordability:
         type: number
     type: object
-  backend_internal_models.CSVConfigPayload:
-    properties:
-      bucket_key:
-        type: string
-      column_mapping:
-        additionalProperties:
-          type: string
-        type: object
-      file:
-        description: Backward compatibility
-        type: string
-      has_header:
-        type: boolean
-      job_id:
-        type: string
-      path:
-        description: Backward compatibility
-        type: string
-    type: object
   backend_internal_models.GrowthHotspotResult:
     properties:
       current_median:
@@ -39,50 +20,6 @@ definitions:
       region:
         type: string
     type: object
-  backend_internal_models.Job:
-    properties:
-      created_at:
-        type: string
-      deleted_at:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: string
-      message:
-        description: For error messages or success info
-        type: string
-      payload:
-        description: Custom data the job was initiated with
-        items:
-          type: integer
-        type: array
-      progress:
-        type: integer
-      result:
-        description: Data resulting from completion/failure
-        items:
-          type: integer
-        type: array
-      status:
-        $ref: '#/definitions/backend_internal_models.JobStatus'
-      task_type:
-        type: string
-      total:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  backend_internal_models.JobStatus:
-    enum:
-    - PENDING
-    - RUNNING
-    - SUCCESS
-    - FAILED
-    type: string
-    x-enum-varnames:
-    - JobStatusPending
-    - JobStatusRunning
-    - JobStatusSuccess
-    - JobStatusFailed
   backend_internal_models.MedianPriceResult:
     properties:
       median_price:
@@ -120,59 +57,6 @@ definitions:
         type: string
       transaction_count:
         type: integer
-    type: object
-  backend_internal_models.Property:
-    properties:
-      county:
-        type: string
-      created_at:
-        type: string
-      date_of_transfer:
-        type: string
-      deleted_at:
-        $ref: '#/definitions/gorm.DeletedAt'
-      district:
-        type: string
-      duration:
-        description: F = Freehold, L = Leasehold
-        type: string
-      id:
-        description: A unique identifier for each property sale
-        type: string
-      locality:
-        type: string
-      old_new:
-        description: Y = a newly built property, N = an established residential building
-        type: string
-      paon:
-        description: Primary Addressable Object Name. Typically the house number or
-          name.
-        type: string
-      postcode:
-        type: string
-      ppd_category_type:
-        description: A = Standard Price Paid entry, B = Additional Price Paid entry
-        type: string
-      price:
-        description: In GBP
-        type: integer
-      property_type:
-        description: D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes,
-          O = Other
-        type: string
-      record_status:
-        description: A = Addition, C = Change, D = Delete
-        type: string
-      saon:
-        description: Secondary Addressable Object Name. Where a property has been
-          divided into separate units (for example, flats).
-        type: string
-      street:
-        type: string
-      town_city:
-        type: string
-      updated_at:
-        type: string
     type: object
   backend_internal_models.PropertyTypeDistributionResult:
     properties:
@@ -235,14 +119,51 @@ definitions:
         example: false
         type: boolean
     type: object
-  internal_routes_api.JobListPayload:
+  internal_routes_api.GraphQLError:
+    properties:
+      extensions:
+        additionalProperties: true
+        type: object
+      locations:
+        items:
+          $ref: '#/definitions/internal_routes_api.GraphQLLocation'
+        type: array
+      message:
+        type: string
+      path:
+        items: {}
+        type: array
+    type: object
+  internal_routes_api.GraphQLLocation:
+    properties:
+      column:
+        type: integer
+      line:
+        type: integer
+    type: object
+  internal_routes_api.GraphQLRequest:
+    properties:
+      operationName:
+        description: Optional operation name if multiple are defined in the query
+        type: string
+      query:
+        description: The GraphQL query or mutation string
+        example: 'query { properties(limit: 5) { items { id price street } } }'
+        type: string
+      variables:
+        additionalProperties: true
+        description: Optional variables for the operation
+        type: object
+    type: object
+  internal_routes_api.GraphQLResponse:
     properties:
       data:
+        description: The requested data
+      errors:
+        description: Any errors encountered during execution
         items:
-          $ref: '#/definitions/backend_internal_models.Job'
+          $ref: '#/definitions/internal_routes_api.GraphQLError'
         type: array
-      total:
-        type: integer
     type: object
   internal_routes_api.JobResponse:
     properties:
@@ -271,15 +192,6 @@ definitions:
       user:
         $ref: '#/definitions/backend_internal_models.User'
     type: object
-  internal_routes_api.PropertyListPayload:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/backend_internal_models.Property'
-        type: array
-      total:
-        type: integer
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -295,32 +207,6 @@ info:
   title: UK Housing Market & Rental Intelligence API
   version: "1.0"
 paths:
-  /admin/jobs:
-    get:
-      consumes:
-      - application/json
-      description: Get a list of background jobs with pagination
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/internal_routes_api.JobListPayload'
-      security:
-      - JwtAuth: []
-      summary: List background jobs
-      tags:
-      - admin
   /admin/stream-upload:
     post:
       consumes:
@@ -354,38 +240,6 @@ paths:
       tags:
       - admin
   /admin/upload:
-    post:
-      consumes:
-      - application/json
-      description: Queue a background job to migrate properties from a CSV file
-      parameters:
-      - description: CSV Migration Configuration
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/backend_internal_models.CSVConfigPayload'
-      produces:
-      - application/json
-      responses:
-        "202":
-          description: Accepted
-          schema:
-            $ref: '#/definitions/internal_routes_api.JobResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      security:
-      - JwtAuth: []
-      summary: Upload CSV for migration
-      tags:
-      - admin
-  /admin/upload-file:
     post:
       consumes:
       - multipart/form-data
@@ -620,6 +474,118 @@ paths:
       summary: Get top active areas
       tags:
       - analytics
+  /api/query:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Execute complex queries and mutations for properties and background jobs.
+
+        This endpoint provides a flexible way to fetch exactly the data you need.
+        It supports filtering, pagination, and nested data structures.
+
+        ### Authentication
+        This endpoint uses Optional JWT Authentication.
+        - Public users can query property listings.
+        - Authenticated users can access additional details.
+        - Admin users (identified by JWT) can perform mutations like creating, updating, or deleting properties.
+
+        ### Example Property Query
+        ```graphql
+        query {
+        properties(limit: 10, minPrice: 200000, townCity: "London") {
+        items {
+        id
+        price
+        street
+        postcode
+        }
+        total
+        }
+        }
+        ```
+
+        ### Example Job Query (Admin only)
+        ```graphql
+        query {
+        jobs(limit: 5) {
+        items {
+        id
+        status
+        progress
+        taskType
+        }
+        total
+        }
+        }
+        ```
+
+        ### Example Mutations (Admin only)
+
+        **Create Property:**
+        ```graphql
+        mutation {
+        createProperty(input: {
+        price: 250000,
+        dateOfTransfer: "2024-03-07T00:00:00Z",
+        postcode: "SW1A 1AA",
+        propertyType: "D",
+        oldNew: "N",
+        duration: "F",
+        paon: "10",
+        saon: "",
+        street: "Downing Street",
+        locality: "Westminster",
+        townCity: "London",
+        district: "Greater London",
+        county: "London",
+        ppdCategoryType: "A",
+        recordStatus: "A"
+        }) { id price street }
+        }
+        ```
+
+        **Update Property:**
+        ```graphql
+        mutation {
+        updateProperty(id: "UUID-HERE", input: {
+        price: 260000,
+        # ... other fields
+        }) { id price }
+        }
+        ```
+
+        **Delete Property:**
+        ```graphql
+        mutation {
+        deleteProperty(id: "UUID-HERE")
+        }
+        ```
+      parameters:
+      - description: GraphQL Operation (Query or Mutation)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_routes_api.GraphQLRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.GraphQLResponse'
+        "400":
+          description: Invalid GraphQL request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized (if authentication is required for specific operation)
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      summary: Unified GraphQL API
+      tags:
+      - GraphQL
   /auth/login:
     post:
       consumes:
@@ -661,186 +627,6 @@ paths:
       summary: User logout
       tags:
       - auth
-  /property:
-    get:
-      consumes:
-      - application/json
-      description: Get a list of UK housing properties with pagination and filtering
-      parameters:
-      - default: 1
-        description: Page number
-        in: query
-        name: page
-        type: integer
-      - default: 10
-        description: Page size
-        in: query
-        name: pageSize
-        type: integer
-      - description: Town/City
-        in: query
-        name: town_city
-        type: string
-      - description: District
-        in: query
-        name: district
-        type: string
-      - description: County
-        in: query
-        name: county
-        type: string
-      - description: Property Type
-        in: query
-        name: property_type
-        type: string
-      - description: Minimum Price
-        in: query
-        name: min_price
-        type: integer
-      - description: Maximum Price
-        in: query
-        name: max_price
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/internal_routes_api.PropertyListPayload'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      summary: List properties
-      tags:
-      - property
-    post:
-      consumes:
-      - application/json
-      description: Create a new property record
-      parameters:
-      - description: Property object
-        in: body
-        name: property
-        required: true
-        schema:
-          $ref: '#/definitions/backend_internal_models.Property'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/backend_internal_models.Property'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      security:
-      - JwtAuth: []
-      summary: Create property
-      tags:
-      - property
-  /property/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a property record
-      parameters:
-      - description: Property ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/internal_routes_api.BaseResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      security:
-      - JwtAuth: []
-      summary: Delete property
-      tags:
-      - property
-    get:
-      consumes:
-      - application/json
-      description: Get detailed information for a specific property
-      parameters:
-      - description: Property ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/backend_internal_models.Property'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      summary: Get property by ID
-      tags:
-      - property
-    put:
-      consumes:
-      - application/json
-      description: Update an existing property record
-      parameters:
-      - description: Property ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Property object
-        in: body
-        name: property
-        required: true
-        schema:
-          $ref: '#/definitions/backend_internal_models.Property'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/backend_internal_models.Property'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_routes_api.ErrorResponse'
-      security:
-      - JwtAuth: []
-      summary: Update property
-      tags:
-      - property
 securityDefinitions:
   JwtAuth:
     in: header

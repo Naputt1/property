@@ -3,7 +3,6 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsCSVConfigPayload } from "./backendInternalModels/CSVConfigPayload.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
 import type { InternalRoutesApiJobResponse } from "./internalRoutesApi/JobResponse.ts";
 
@@ -22,11 +21,13 @@ export type PostAdminUpload400 = InternalRoutesApiErrorResponse;
  */
 export type PostAdminUpload500 = InternalRoutesApiErrorResponse;
 
-/**
- * @description CSV Migration Configuration
- */
-export type PostAdminUploadMutationRequest =
-  BackendInternalModelsCSVConfigPayload;
+export type PostAdminUploadMutationRequest = {
+  /**
+   * @description CSV File
+   * @type string, binary
+   */
+  file: Blob;
+};
 
 export type PostAdminUploadMutationResponse = PostAdminUpload202;
 

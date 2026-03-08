@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useGetProperty } from "@/gen/hooks/useGetProperty";
+import { useGetPropertiesQuery } from "@/gen-gql/graphql";
 import {
   Table,
   TableBody,
@@ -35,14 +35,14 @@ function PropertiesPage() {
 
   const pageSize = 10;
 
-  const { data, isLoading } = useGetProperty({
-    page,
-    pageSize,
-    town_city: town || undefined,
+  const { data, isLoading } = useGetPropertiesQuery({
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+    townCity: town || undefined,
     county: county || undefined,
-    property_type: propertyType || undefined,
-    min_price: minPrice ? parseInt(minPrice) : undefined,
-    max_price: maxPrice ? parseInt(maxPrice) : undefined,
+    propertyType: propertyType || undefined,
+    minPrice: minPrice ? parseInt(minPrice) : undefined,
+    maxPrice: maxPrice ? parseInt(maxPrice) : undefined,
   });
 
   const formatPrice = (value: number) => {
@@ -68,8 +68,8 @@ function PropertiesPage() {
     setPage(1); // Reset to first page on filter change
   };
 
-  const properties = data?.data || [];
-  const totalItems = data?.total || 0;
+  const properties = data?.properties.items || [];
+  const totalItems = data?.properties.total || 0;
   const totalPages = Math.ceil(totalItems / pageSize);
 
   const renderPaginationItems = () => {
@@ -322,7 +322,7 @@ function PropertiesPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="text-sm">{property.town_city}</div>
+                    <div className="text-sm">{property.townCity}</div>
                     <div className="text-xs text-muted-foreground">
                       {property.county}
                     </div>
@@ -330,16 +330,16 @@ function PropertiesPage() {
                   <TableCell>
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                        property.property_type === "D"
+                        property.propertyType === "D"
                           ? "bg-primary/10 text-primary"
-                          : property.property_type === "F"
+                          : property.propertyType === "F"
                             ? "bg-accent text-accent-foreground"
                             : "bg-secondary text-secondary-foreground"
                       }`}
                     >
-                      {getPropertyTypeLabel(property.property_type)}
+                      {getPropertyTypeLabel(property.propertyType)}
                     </span>
-                    {property.old_new === "Y" && (
+                    {property.oldNew === "Y" && (
                       <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-chart-2/10 text-chart-2">
                         New Build
                       </span>
@@ -349,7 +349,7 @@ function PropertiesPage() {
                     {formatPrice(property.price)}
                   </TableCell>
                   <TableCell className="text-right text-sm text-muted-foreground">
-                    {new Date(property.date_of_transfer).toLocaleDateString(
+                    {new Date(property.dateOfTransfer).toLocaleDateString(
                       "en-GB",
                       {
                         day: "2-digit",

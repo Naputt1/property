@@ -1,0 +1,15 @@
+query GetAdminJobs($limit: Int, $offset: Int) {
+  jobs(limit: $limit, offset: $offset) {
+    items {
+      id
+      createdAt
+      updatedAt
+      taskType
+      status
+      message
+      progress
+      total
+    }
+    total
+  }
+}

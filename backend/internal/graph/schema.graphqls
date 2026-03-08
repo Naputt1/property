@@ -1,0 +1,83 @@
+scalar Time
+scalar Map
+
+type Property {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  price: Int!
+  dateOfTransfer: Time!
+  postcode: String!
+  propertyType: String!
+  oldNew: String!
+  duration: String!
+  paon: String!
+  saon: String!
+  street: String!
+  locality: String!
+  townCity: String!
+  district: String!
+  county: String!
+  ppdCategoryType: String!
+  recordStatus: String!
+}
+
+type PropertyConnection {
+  items: [Property!]!
+  total: Int!
+}
+
+type Job {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  taskType: String!
+  status: String!
+  message: String!
+  progress: Int!
+  total: Int!
+}
+
+type JobConnection {
+  items: [Job!]!
+  total: Int!
+}
+
+type Query {
+  properties(
+    limit: Int
+    offset: Int
+    minPrice: Int
+    maxPrice: Int
+    postcode: String
+    townCity: String
+    county: String
+    propertyType: String
+  ): PropertyConnection!
+  property(id: ID!): Property
+  jobs(limit: Int, offset: Int): JobConnection!
+}
+
+input PropertyInput {
+  price: Int!
+  dateOfTransfer: Time!
+  postcode: String!
+  propertyType: String!
+  oldNew: String!
+  duration: String!
+  paon: String!
+  saon: String!
+  street: String!
+  locality: String!
+  townCity: String!
+  district: String!
+  county: String!
+  ppdCategoryType: String!
+  recordStatus: String!
+}
+
+type Mutation {
+  createProperty(input: PropertyInput!): Property!
+  updateProperty(id: ID!, input: PropertyInput!): Property!
+  deleteProperty(id: ID!): Boolean!
+}

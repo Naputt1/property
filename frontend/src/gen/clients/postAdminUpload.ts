@@ -15,6 +15,7 @@ import type {
   PostAdminUpload400,
   PostAdminUpload500,
 } from "../models/PostAdminUpload.ts";
+import { buildFormData } from "../.kubb/config.ts";
 
 function getPostAdminUploadUrl() {
   const res = { method: "POST", url: `/admin/upload` as const };
@@ -22,8 +23,8 @@ function getPostAdminUploadUrl() {
 }
 
 /**
- * @description Queue a background job to migrate properties from a CSV file
- * @summary Upload CSV for migration
+ * @description Upload a CSV file via multipart/form-data to bucket and queue a migration job
+ * @summary Upload CSV file directly
  * {@link /admin/upload}
  */
 export async function postAdminUpload(
@@ -35,7 +36,7 @@ export async function postAdminUpload(
   const { client: request = fetch, ...requestConfig } = config;
 
   const requestData = data;
-
+  const formData = buildFormData(requestData);
   const res = await request<
     PostAdminUploadMutationResponse,
     ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
@@ -43,7 +44,7 @@ export async function postAdminUpload(
   >({
     method: "POST",
     url: getPostAdminUploadUrl().url.toString(),
-    data: requestData,
+    data: formData as FormData,
     ...requestConfig,
   });
   return res.data;

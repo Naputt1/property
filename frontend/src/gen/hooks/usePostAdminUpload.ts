@@ -49,8 +49,8 @@ export function postAdminUploadMutationOptions<TContext = unknown>(
 }
 
 /**
- * @description Queue a background job to migrate properties from a CSV file
- * @summary Upload CSV for migration
+ * @description Upload a CSV file via multipart/form-data to bucket and queue a migration job
+ * @summary Upload CSV file directly
  * {@link /admin/upload}
  */
 export function usePostAdminUpload<TContext>(

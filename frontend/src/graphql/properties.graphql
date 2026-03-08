@@ -1,0 +1,38 @@
+query GetProperties($limit: Int, $offset: Int, $minPrice: Int, $maxPrice: Int, $postcode: String, $townCity: String, $county: String, $propertyType: String) {
+  properties(limit: $limit, offset: $offset, minPrice: $minPrice, maxPrice: $maxPrice, postcode: $postcode, townCity: $townCity, county: $county, propertyType: $propertyType) {
+    items {
+      id
+      price
+      dateOfTransfer
+      postcode
+      propertyType
+      oldNew
+      paon
+      saon
+      street
+      townCity
+      county
+    }
+    total
+  }
+}
+
+mutation CreateProperty($input: PropertyInput!) {
+  createProperty(input: $input) {
+    id
+    price
+    street
+  }
+}
+
+mutation UpdateProperty($id: ID!, $input: PropertyInput!) {
+  updateProperty(id: $id, input: $input) {
+    id
+    price
+    street
+  }
+}
+
+mutation DeleteProperty($id: ID!) {
+  deleteProperty(id: $id)
+}

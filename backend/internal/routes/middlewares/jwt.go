@@ -27,58 +27,46 @@ func bNeedRefresh[T any](claim *token.RefreshTokenClaims[T]) bool {
 }
 
 func JwtAuth(cfg *config.Config) func(*gin.Context) {
+	return jwtAuthImpl(cfg, true)
+}
+
+func OptionalJwtAuth(cfg *config.Config) func(*gin.Context) {
+	return jwtAuthImpl(cfg, false)
+}
+
+func jwtAuthImpl(cfg *config.Config, mustAuth bool) func(*gin.Context) {
 	return func(c *gin.Context) {
 		if claim, ok := token.GetClaim[models.UserJwt](c, &token.AccessTokenClaims[models.UserJwt]{}, token.ACCESS_TOKEN_NAME, []byte(cfg.Opt.SecretKey)); ok {
 			if uint(claim.Version) != uint(cfg.Opt.TokenVersion) {
-				ReturnUnauth(c, cfg)
+				if mustAuth {
+					ReturnUnauth(c, cfg)
+					return
+				}
+				// Skip identification but continue for public access
+				c.Next()
 				return
 			}
 
 			// check if refresh token need to be rotated
 			cookie, err := c.Cookie(token.REFRESH_TOKEN_NAME)
-			if err != nil {
-				log.Println("Failed login check cookie: ", err.Error())
-				ReturnUnauth(c, cfg)
-				return
-			}
-
-			refreshClaim, err := token.ValidateToken[models.UserJwtRefresh]([]byte(cfg.Opt.SecretKey), cookie, &token.RefreshTokenClaims[models.UserJwtRefresh]{})
-			if err != nil {
-				ReturnUnauth(c, cfg)
-				return
-			}
-
-			if bNeedRefresh(refreshClaim) {
-				var result struct {
-					RefreshVersion int64 `json:"refresh_version"`
-				}
-				err = cfg.DB.Model(&models.User{}).
-					Select(`refresh_version`).
-					Where("id = ?", refreshClaim.Data.Id).
-					First(&result).Error
-				if err != nil {
-					if errors.Is(err, gorm.ErrRecordNotFound) {
-						ReturnUnauth(c, cfg)
-						return
+			if err == nil {
+				refreshClaim, err := token.ValidateToken[models.UserJwtRefresh]([]byte(cfg.Opt.SecretKey), cookie, &token.RefreshTokenClaims[models.UserJwtRefresh]{})
+				if err == nil && bNeedRefresh(refreshClaim) {
+					var result struct {
+						RefreshVersion int64 `json:"refresh_version"`
 					}
-
-					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "Database error"})
-					return
+					err = cfg.DB.Model(&models.User{}).
+						Select(`refresh_version`).
+						Where("id = ?", refreshClaim.Data.Id).
+						First(&result).Error
+					if err == nil && refreshClaim.RefreshVersion == uint(result.RefreshVersion) {
+						refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.NewRefreshTokenClaim(refreshClaim.Data, refreshClaim.RefreshVersion, uint(cfg.Opt.TokenVersion)))
+						refreshTokenString, err := refreshToken.SignedString([]byte(cfg.Opt.SecretKey))
+						if err == nil {
+							SetCookie(c, token.REFRESH_TOKEN_NAME, refreshTokenString, token.REFRESH_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
+						}
+					}
 				}
-
-				if refreshClaim.RefreshVersion != uint(result.RefreshVersion) {
-					ReturnUnauth(c, cfg)
-					return
-				}
-
-				refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.NewRefreshTokenClaim(refreshClaim.Data, refreshClaim.RefreshVersion, uint(cfg.Opt.TokenVersion)))
-				refreshTokenString, err := refreshToken.SignedString([]byte(cfg.Opt.SecretKey))
-				if err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to sign jwt"})
-					return
-				}
-
-				SetCookie(c, token.REFRESH_TOKEN_NAME, refreshTokenString, token.REFRESH_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 			}
 
 			c.Set(config.CONTEXT_USER, claim.Data)
@@ -88,19 +76,30 @@ func JwtAuth(cfg *config.Config) func(*gin.Context) {
 
 		cookie, err := c.Cookie(token.REFRESH_TOKEN_NAME)
 		if err != nil {
-			log.Println("Failed login check cookie: ", err.Error())
-			ReturnUnauth(c, cfg)
+			if mustAuth {
+				ReturnUnauth(c, cfg)
+				return
+			}
+			c.Next()
 			return
 		}
 
 		refreshClaim, err := token.ValidateToken[models.UserJwtRefresh]([]byte(cfg.Opt.SecretKey), cookie, &token.RefreshTokenClaims[models.UserJwtRefresh]{})
 		if err != nil {
-			ReturnUnauth(c, cfg)
+			if mustAuth {
+				ReturnUnauth(c, cfg)
+				return
+			}
+			c.Next()
 			return
 		}
 
 		if uint(refreshClaim.Version) != uint(cfg.Opt.TokenVersion) {
-			ReturnUnauth(c, cfg)
+			if mustAuth {
+				ReturnUnauth(c, cfg)
+				return
+			}
+			c.Next()
 			return
 		}
 
@@ -112,17 +111,24 @@ func JwtAuth(cfg *config.Config) func(*gin.Context) {
 			Where("id = ?", refreshClaim.Data.Id).
 			First(&result).Error
 		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				ReturnUnauth(c, cfg)
+			if mustAuth {
+				if errors.Is(err, gorm.ErrRecordNotFound) {
+					ReturnUnauth(c, cfg)
+				} else {
+					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "Database error"})
+				}
 				return
 			}
-
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": false, "error": "Database error"})
+			c.Next()
 			return
 		}
 
 		if refreshClaim.RefreshVersion != uint(result.RefreshVersion) {
-			ReturnUnauth(c, cfg)
+			if mustAuth {
+				ReturnUnauth(c, cfg)
+				return
+			}
+			c.Next()
 			return
 		}
 
@@ -130,7 +136,11 @@ func JwtAuth(cfg *config.Config) func(*gin.Context) {
 			Id int64
 		}
 		if err := cfg.DB.Model(&models.User{}).Select("id").Where("id = ?", refreshClaim.Data.Id).First(&user).Error; err != nil {
-			ReturnUnauth(c, cfg)
+			if mustAuth {
+				ReturnUnauth(c, cfg)
+				return
+			}
+			c.Next()
 			return
 		}
 
@@ -138,20 +148,16 @@ func JwtAuth(cfg *config.Config) func(*gin.Context) {
 			Id: user.Id,
 		}
 		accessTokenString, ok := token.RecreateAccessToken(accessTokenData, cfg.Opt.SecretKey, uint(cfg.Opt.TokenVersion))
-		if !ok {
-			return
+		if ok {
+			SetCookie(c, token.ACCESS_TOKEN_NAME, accessTokenString, token.ACCESS_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 		}
-		SetCookie(c, token.ACCESS_TOKEN_NAME, accessTokenString, token.ACCESS_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 
 		if bNeedRefresh(refreshClaim) {
 			refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.NewRefreshTokenClaim(refreshClaim.Data, refreshClaim.RefreshVersion, uint(cfg.Opt.TokenVersion)))
 			refreshTokenString, err := refreshToken.SignedString([]byte(cfg.Opt.SecretKey))
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to sign jwt"})
-				return
+			if err == nil {
+				SetCookie(c, token.REFRESH_TOKEN_NAME, refreshTokenString, token.REFRESH_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 			}
-
-			SetCookie(c, token.REFRESH_TOKEN_NAME, refreshTokenString, token.REFRESH_TOKEN_LIFE_TIME, cfg.Opt.IsProd)
 		}
 
 		c.Set(config.CONTEXT_USER, accessTokenData)
@@ -219,13 +225,8 @@ func AdminMiddleware() gin.HandlerFunc {
 
 		user := userData.(models.UserJwt)
 
-		// In a real app, you might want to fetch the user from DB to check IsAdmin
-		// or include IsAdmin in the JWT claim.
-		// For now, let's assume we need to check the DB or use the user ID.
-		// To keep it simple and match the current model, let's assume we fetch it.
-
 		var dbUser models.User
-		cfg := c.MustGet("config").(*config.Config) // Need to set config in context
+		cfg := c.MustGet("config").(*config.Config)
 		if err := cfg.DB.Select("is_admin").First(&dbUser, user.Id).Error; err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": false, "error": "Forbidden"})
 			return

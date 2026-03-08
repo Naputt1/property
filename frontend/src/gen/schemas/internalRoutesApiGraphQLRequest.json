@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "operationName": {
+      "description": "Optional operation name if multiple are defined in the query",
+      "type": "string"
+    },
+    "query": {
+      "description": "The GraphQL query or mutation string",
+      "type": "string",
+      "example": "query { properties(limit: 5) { items { id price street } } }"
+    },
+    "variables": {
+      "description": "Optional variables for the operation",
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "x-readme-ref-name": "internal_routes_api.GraphQLRequest"
+}

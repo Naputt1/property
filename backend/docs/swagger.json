@@ -18,48 +18,6 @@
     "host": "localhost:8080",
     "basePath": "/api",
     "paths": {
-        "/admin/jobs": {
-            "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
-                "description": "Get a list of background jobs with pagination",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "List background jobs",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobListPayload"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/stream-upload": {
             "post": {
                 "security": [
@@ -110,57 +68,6 @@
             }
         },
         "/admin/upload": {
-            "post": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
-                "description": "Queue a background job to migrate properties from a CSV file",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Upload CSV for migration",
-                "parameters": [
-                    {
-                        "description": "CSV Migration Configuration",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.CSVConfigPayload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/upload-file": {
             "post": {
                 "security": [
                     {
@@ -517,6 +424,52 @@
                 }
             }
         },
+        "/api/query": {
+            "post": {
+                "description": "Execute complex queries and mutations for properties and background jobs.\n\nThis endpoint provides a flexible way to fetch exactly the data you need.\nIt supports filtering, pagination, and nested data structures.\n\n### Authentication\nThis endpoint uses Optional JWT Authentication.\n- Public users can query property listings.\n- Authenticated users can access additional details.\n- Admin users (identified by JWT) can perform mutations like creating, updating, or deleting properties.\n\n### Example Property Query\n```graphql\nquery {\nproperties(limit: 10, minPrice: 200000, townCity: \"London\") {\nitems {\nid\nprice\nstreet\npostcode\n}\ntotal\n}\n}\n```\n\n### Example Job Query (Admin only)\n```graphql\nquery {\njobs(limit: 5) {\nitems {\nid\nstatus\nprogress\ntaskType\n}\ntotal\n}\n}\n```\n\n### Example Mutations (Admin only)\n\n**Create Property:**\n```graphql\nmutation {\ncreateProperty(input: {\nprice: 250000,\ndateOfTransfer: \"2024-03-07T00:00:00Z\",\npostcode: \"SW1A 1AA\",\npropertyType: \"D\",\noldNew: \"N\",\nduration: \"F\",\npaon: \"10\",\nsaon: \"\",\nstreet: \"Downing Street\",\nlocality: \"Westminster\",\ntownCity: \"London\",\ndistrict: \"Greater London\",\ncounty: \"London\",\nppdCategoryType: \"A\",\nrecordStatus: \"A\"\n}) { id price street }\n}\n```\n\n**Update Property:**\n```graphql\nmutation {\nupdateProperty(id: \"UUID-HERE\", input: {\nprice: 260000,\n# ... other fields\n}) { id price }\n}\n```\n\n**Delete Property:**\n```graphql\nmutation {\ndeleteProperty(id: \"UUID-HERE\")\n}\n```",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GraphQL"
+                ],
+                "summary": "Unified GraphQL API",
+                "parameters": [
+                    {
+                        "description": "GraphQL Operation (Query or Mutation)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.GraphQLRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.GraphQLResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid GraphQL request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (if authentication is required for specific operation)",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "Log in a user with username and password",
@@ -579,283 +532,6 @@
                     }
                 }
             }
-        },
-        "/property": {
-            "get": {
-                "description": "Get a list of UK housing properties with pagination and filtering",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "property"
-                ],
-                "summary": "List properties",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "Page size",
-                        "name": "pageSize",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Town/City",
-                        "name": "town_city",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "District",
-                        "name": "district",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "County",
-                        "name": "county",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Property Type",
-                        "name": "property_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Minimum Price",
-                        "name": "min_price",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Maximum Price",
-                        "name": "max_price",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PropertyListPayload"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
-                "description": "Create a new property record",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "property"
-                ],
-                "summary": "Create property",
-                "parameters": [
-                    {
-                        "description": "Property object",
-                        "name": "property",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.Property"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.Property"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/property/{id}": {
-            "get": {
-                "description": "Get detailed information for a specific property",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "property"
-                ],
-                "summary": "Get property by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Property ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.Property"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
-                "description": "Update an existing property record",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "property"
-                ],
-                "summary": "Update property",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Property ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Property object",
-                        "name": "property",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.Property"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/backend_internal_models.Property"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
-                "description": "Delete a property record",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "property"
-                ],
-                "summary": "Delete property",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Property ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -870,34 +546,6 @@
                 },
                 "relative_affordability": {
                     "type": "number"
-                }
-            }
-        },
-        "backend_internal_models.CSVConfigPayload": {
-            "type": "object",
-            "properties": {
-                "bucket_key": {
-                    "type": "string"
-                },
-                "column_mapping": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "file": {
-                    "description": "Backward compatibility",
-                    "type": "string"
-                },
-                "has_header": {
-                    "type": "boolean"
-                },
-                "job_id": {
-                    "type": "string"
-                },
-                "path": {
-                    "description": "Backward compatibility",
-                    "type": "string"
                 }
             }
         },
@@ -917,68 +565,6 @@
                     "type": "string"
                 }
             }
-        },
-        "backend_internal_models.Job": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "message": {
-                    "description": "For error messages or success info",
-                    "type": "string"
-                },
-                "payload": {
-                    "description": "Custom data the job was initiated with",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "progress": {
-                    "type": "integer"
-                },
-                "result": {
-                    "description": "Data resulting from completion/failure",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "status": {
-                    "$ref": "#/definitions/backend_internal_models.JobStatus"
-                },
-                "task_type": {
-                    "type": "string"
-                },
-                "total": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "backend_internal_models.JobStatus": {
-            "type": "string",
-            "enum": [
-                "PENDING",
-                "RUNNING",
-                "SUCCESS",
-                "FAILED"
-            ],
-            "x-enum-varnames": [
-                "JobStatusPending",
-                "JobStatusRunning",
-                "JobStatusSuccess",
-                "JobStatusFailed"
-            ]
         },
         "backend_internal_models.MedianPriceResult": {
             "type": "object",
@@ -1036,77 +622,6 @@
                 },
                 "transaction_count": {
                     "type": "integer"
-                }
-            }
-        },
-        "backend_internal_models.Property": {
-            "type": "object",
-            "properties": {
-                "county": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "date_of_transfer": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "district": {
-                    "type": "string"
-                },
-                "duration": {
-                    "description": "F = Freehold, L = Leasehold",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "A unique identifier for each property sale",
-                    "type": "string"
-                },
-                "locality": {
-                    "type": "string"
-                },
-                "old_new": {
-                    "description": "Y = a newly built property, N = an established residential building",
-                    "type": "string"
-                },
-                "paon": {
-                    "description": "Primary Addressable Object Name. Typically the house number or name.",
-                    "type": "string"
-                },
-                "postcode": {
-                    "type": "string"
-                },
-                "ppd_category_type": {
-                    "description": "A = Standard Price Paid entry, B = Additional Price Paid entry",
-                    "type": "string"
-                },
-                "price": {
-                    "description": "In GBP",
-                    "type": "integer"
-                },
-                "property_type": {
-                    "description": "D = Detached, S = Semi-Detached, T = Terraced, F = Flats/Maisonettes, O = Other",
-                    "type": "string"
-                },
-                "record_status": {
-                    "description": "A = Addition, C = Change, D = Delete",
-                    "type": "string"
-                },
-                "saon": {
-                    "description": "Secondary Addressable Object Name. Where a property has been divided into separate units (for example, flats).",
-                    "type": "string"
-                },
-                "street": {
-                    "type": "string"
-                },
-                "town_city": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
@@ -1203,17 +718,70 @@
                 }
             }
         },
-        "internal_routes_api.JobListPayload": {
+        "internal_routes_api.GraphQLError": {
+            "type": "object",
+            "properties": {
+                "extensions": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_routes_api.GraphQLLocation"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "array",
+                    "items": {}
+                }
+            }
+        },
+        "internal_routes_api.GraphQLLocation": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "type": "integer"
+                },
+                "line": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_routes_api.GraphQLRequest": {
+            "type": "object",
+            "properties": {
+                "operationName": {
+                    "description": "Optional operation name if multiple are defined in the query",
+                    "type": "string"
+                },
+                "query": {
+                    "description": "The GraphQL query or mutation string",
+                    "type": "string",
+                    "example": "query { properties(limit: 5) { items { id price street } } }"
+                },
+                "variables": {
+                    "description": "Optional variables for the operation",
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "internal_routes_api.GraphQLResponse": {
             "type": "object",
             "properties": {
                 "data": {
+                    "description": "The requested data"
+                },
+                "errors": {
+                    "description": "Any errors encountered during execution",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.Job"
+                        "$ref": "#/definitions/internal_routes_api.GraphQLError"
                     }
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         },
@@ -1255,20 +823,6 @@
                 },
                 "user": {
                     "$ref": "#/definitions/backend_internal_models.User"
-                }
-            }
-        },
-        "internal_routes_api.PropertyListPayload": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/backend_internal_models.Property"
-                    }
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         }

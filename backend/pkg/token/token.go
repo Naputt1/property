@@ -3,6 +3,7 @@ package token
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -71,6 +72,23 @@ func CreateAccessToken[T interface{}](data T, secretKey string, version uint) (s
 }
 
 func GetClaim[T interface{}, C IClaim[T]](c *gin.Context, claims C, cookieName string, secretKey []byte) (C, bool) {
+	// Try Authorization header first
+	authHeader := c.GetHeader("Authorization")
+	if authHeader != "" {
+		parts := strings.Split(authHeader, " ")
+		if len(parts) == 2 && strings.ToLower(parts[0]) == "bearer" {
+			tokenString := parts[1]
+			if tokenString != "null" && tokenString != "" {
+				claim, err := ValidateToken[T](secretKey, tokenString, claims)
+				if err == nil {
+					return claim, true
+				}
+				log.Printf("get claim validate header: %s", err.Error())
+			}
+		}
+	}
+
+	// Fallback to cookie
 	cookie, err := c.Cookie(cookieName)
 	if err == nil {
 		claim, err := ValidateToken[T](secretKey, cookie, claims)
@@ -78,10 +96,9 @@ func GetClaim[T interface{}, C IClaim[T]](c *gin.Context, claims C, cookieName s
 			return claim, true
 		}
 
-		log.Printf("get claim validate: %s - %s", cookieName, err.Error())
+		log.Printf("get claim validate cookie: %s - %s", cookieName, err.Error())
 		return nil, false
 	}
 
-	log.Printf("get claim: %s - %s", cookieName, err.Error())
 	return nil, false
 }

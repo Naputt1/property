@@ -7,7 +7,8 @@
     "dev": "vite",
     "start": "vite preview",
     "typecheck": "tsc",
-    "generate:api": "kubb && node -e \"const fs = require('fs'); const path = 'src/gen/clients/postAdminUploadFile.ts'; if (fs.existsSync(path)) { const content = fs.readFileSync(path, 'utf8'); fs.writeFileSync(path, content.replace('data: formData as FormData', 'data: formData as any')); }\""
+    "generate:api": "kubb && node -e \"const fs = require('fs'); const path = 'src/gen/clients/postAdminUploadFile.ts'; if (fs.existsSync(path)) { const content = fs.readFileSync(path, 'utf8'); fs.writeFileSync(path, content.replace('data: formData as FormData', 'data: formData as any')); }\"",
+    "generate:gql": "graphql-codegen"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
@@ -42,6 +43,11 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^6.0.0",
+    "@graphql-codegen/cli": "^6.1.3",
+    "@graphql-codegen/typescript": "^5.0.9",
+    "@graphql-codegen/typescript-operations": "^5.0.9",
+    "@graphql-codegen/typescript-react-query": "^6.1.2",
     "@kubb/cli": "^4.32.3",
     "@kubb/core": "^4.32.3",
     "@kubb/plugin-client": "^4.32.3",
@@ -55,6 +61,8 @@
     "@types/node": "^22",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "graphql": "^16.13.1",
+    "graphql-request": "^7.4.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",

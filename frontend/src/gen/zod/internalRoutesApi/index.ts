@@ -1,7 +1,9 @@
 export { internalRoutesApiBaseResponseSchema } from "./baseResponseSchema.ts";
 export { internalRoutesApiErrorResponseSchema } from "./errorResponseSchema.ts";
-export { internalRoutesApiJobListPayloadSchema } from "./jobListPayloadSchema.ts";
+export { internalRoutesApiGraphQLErrorSchema } from "./graphQLErrorSchema.ts";
+export { internalRoutesApiGraphQLLocationSchema } from "./graphQLLocationSchema.ts";
+export { internalRoutesApiGraphQLRequestSchema } from "./graphQLRequestSchema.ts";
+export { internalRoutesApiGraphQLResponseSchema } from "./graphQLResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./loginBodySchema.ts";
 export { internalRoutesApiLoginPayloadSchema } from "./loginPayloadSchema.ts";
-export { internalRoutesApiPropertyListPayloadSchema } from "./propertyListPayloadSchema.ts";
