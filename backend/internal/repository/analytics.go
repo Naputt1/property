@@ -44,7 +44,7 @@ func (r *analyticsRepository) GetPriceTrend(ctx context.Context, interval string
 			       AVG(avg_price)::bigint as avg_price,
 			       AVG(median_price)::bigint as median_price,
 			       SUM(transaction_count) as transaction_count
-			FROM mv_district_monthly_stats
+			FROM mv_monthly_regional_stats
 			GROUP BY year
 			ORDER BY year ASC
 		`
@@ -58,7 +58,7 @@ func (r *analyticsRepository) GetPriceTrend(ctx context.Context, interval string
 		       AVG(avg_price)::bigint as avg_price,
 		       AVG(median_price)::bigint as median_price,
 		       SUM(transaction_count) as transaction_count
-		FROM mv_district_monthly_stats
+		FROM mv_monthly_regional_stats
 		GROUP BY year, month
 		ORDER BY year ASC, month ASC
 	`
@@ -88,37 +88,48 @@ func (r *analyticsRepository) GetAffordability(ctx context.Context) ([]models.Af
 	return results, err
 }
 
-func (r *analyticsRepository) GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error) {
+func (r *analyticsRepository) GetGrowthHotspots(ctx context.Context, regionType string, limit int) ([]models.GrowthHotspotResult, error) {
 	results := []models.GrowthHotspotResult{}
 
-	query := `
+	validRegions := map[string]bool{"county": true, "district": true, "town_city": true}
+	if !validRegions[regionType] {
+		return nil, fmt.Errorf("invalid region type: %s", regionType)
+	}
+
+	// Use a very large limit for "all" results (limit <= 0)
+	if limit <= 0 {
+		limit = 10000
+	}
+
+	query := fmt.Sprintf(`
 		WITH yearly_stats AS (
-			SELECT district, year, AVG(median_price)::bigint as median_price
-			FROM mv_district_monthly_stats
-			GROUP BY district, year
+			SELECT %s as region, year, AVG(median_price)::bigint as median_price
+			FROM mv_monthly_regional_stats
+			WHERE %s IS NOT NULL AND %s != ''
+			GROUP BY %s, year
 		),
 		latest_years AS (
 			SELECT DISTINCT year FROM yearly_stats ORDER BY year DESC LIMIT 2
 		),
 		growth AS (
-			SELECT curr.district as region,
+			SELECT curr.region,
 			       curr.median_price as current_median,
 			       prev.median_price as prev_median,
 			       ((curr.median_price - prev.median_price)::float / prev.median_price::float) * 100 as growth_rate
 			FROM yearly_stats curr
-			JOIN yearly_stats prev ON curr.district = prev.district 
+			JOIN yearly_stats prev ON curr.region = prev.region 
 			     AND curr.year = (SELECT year FROM latest_years LIMIT 1)
 			     AND prev.year = (SELECT year FROM latest_years OFFSET 1 LIMIT 1)
 		)
 		SELECT region, growth_rate, prev_median, current_median FROM growth WHERE prev_median > 0 ORDER BY growth_rate DESC LIMIT ?
-	`
+	`, regionType, regionType, regionType, regionType)
 
 	err := r.db.WithContext(ctx).Raw(query, limit).Scan(&results).Error
 	return results, err
 }
 
 func (r *analyticsRepository) RefreshMaterializedView(ctx context.Context) error {
-	views := []string{"mv_district_monthly_stats", "mv_regional_stats", "mv_new_build_stats"}
+	views := []string{"mv_monthly_regional_stats", "mv_regional_stats", "mv_new_build_stats"}
 	for _, v := range views {
 		if err := r.db.WithContext(ctx).Exec(fmt.Sprintf("REFRESH MATERIALIZED VIEW CONCURRENTLY %s", v)).Error; err != nil {
 			return err
@@ -193,6 +204,11 @@ func (r *analyticsRepository) GetPriceBracketDistribution(ctx context.Context) (
 func (r *analyticsRepository) GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error) {
 	results := []models.TopActiveAreaResult{}
 	
+	// Use a very large limit for "all" results (limit <= 0)
+	if limit <= 0 {
+		limit = 10000
+	}
+
 	query := `
 		SELECT TRIM(region_name) as region, transaction_count, (transaction_count * avg_price)::bigint as total_value
 		FROM mv_regional_stats

@@ -56,22 +56,25 @@ func migrations() []*gormigrate.Migration {
 
 				// 3. Materialized Views for Analytics
 				
-				// Monthly Stats per District
+				// Monthly Stats per Region (Consolidated)
 				mvMonthly := `
-					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_district_monthly_stats AS
-					SELECT district,
+					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_monthly_regional_stats AS
+					SELECT county, district, town_city,
 					       extract(year from date_of_transfer) as year,
 					       extract(month from date_of_transfer) as month,
 					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
 					       AVG(price)::bigint as avg_price,
 					       COUNT(*) as transaction_count
 					FROM properties
-					GROUP BY district, year, month
+					GROUP BY county, district, town_city, year, month
 				`
 				if err := tx.Exec(mvMonthly).Error; err != nil {
 					return err
 				}
-				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_dms_unique ON mv_district_monthly_stats(district, year, month)")
+				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_county ON mv_monthly_regional_stats(county)")
+				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_district ON mv_monthly_regional_stats(district)")
+				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_town_city ON mv_monthly_regional_stats(town_city)")
+				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_date ON mv_monthly_regional_stats(year, month)")
 
 				// Regional Stats (For regional medians and active areas)
 				mvRegional := `
@@ -140,7 +143,7 @@ func migrations() []*gormigrate.Migration {
 				return nil
 			},
 			Rollback: func(tx *gorm.DB) error {
-				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_district_monthly_stats")
+				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_monthly_regional_stats")
 				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_regional_stats")
 				tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_new_build_stats")
 				return tx.Migrator().DropTable(

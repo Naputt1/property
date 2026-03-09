@@ -33,10 +33,10 @@ function MapAnalytics() {
   // Stabilize parameters
   const medianParams = useMemo(() => ({ by: regionType }), [regionType]);
   const activeParams = useMemo(
-    () => ({ by: regionType, limit: 100 }),
+    () => ({ by: regionType, limit: 0 }),
     [regionType],
   );
-  const growthParams = useMemo(() => ({ limit: 100 }), []);
+  const growthParams = useMemo(() => ({ by: regionType, limit: 0 }), [regionType]);
 
   const { data: medianPrices, isLoading: loadingMedian } =
     useGetAnalyticsMedianPrice(medianParams, queryOptions);
@@ -97,7 +97,7 @@ function MapAnalytics() {
       case "growth_rate":
         return "Growth Rate";
       case "transaction_count":
-        return "Transactions";
+        return "Market Activity";
       default:
         return "";
     }

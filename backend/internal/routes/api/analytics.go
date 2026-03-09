@@ -95,19 +95,21 @@ func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 
 // GetGrowthHotspots godoc
 // @Summary Get growth hotspots
-// @Description Get top districts with highest price growth rate
+// @Description Get regions with highest price growth rate
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Param limit query int false "Number of results" default(10)
+// @Param by query string false "Region type (county, district, town_city)" default(district)
+// @Param limit query int false "Number of results (0 for all)" default(10)
 // @Success 200 {array} backend_internal_models.GrowthHotspotResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/growth-hotspots [get]
 func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
+	regionType := c.DefaultQuery("by", "district")
 	limitStr := c.DefaultQuery("limit", "10")
 	limit, _ := strconv.Atoi(limitStr)
 
-	results, err := h.svc.GetGrowthHotspots(c.Request.Context(), limit)
+	results, err := h.svc.GetGrowthHotspots(c.Request.Context(), regionType, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
 		return

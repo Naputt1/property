@@ -8,7 +8,13 @@ import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorRe
 
 export type GetAnalyticsGrowthHotspotsQueryParams = {
   /**
-   * @description Number of results
+   * @description Region type (county, district, town_city)
+   * @default "district"
+   * @type string | undefined
+   */
+  by?: string;
+  /**
+   * @description Number of results (0 for all)
    * @default 10
    * @type integer | undefined
    */
