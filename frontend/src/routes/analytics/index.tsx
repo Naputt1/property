@@ -17,14 +17,16 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { useGetAnalyticsMedianPrice } from "@/gen/hooks/useGetAnalyticsMedianPrice";
-import { useGetAnalyticsPriceTrend } from "@/gen/hooks/useGetAnalyticsPriceTrend";
-import { useGetAnalyticsAffordability } from "@/gen/hooks/useGetAnalyticsAffordability";
-import { useGetAnalyticsGrowthHotspots } from "@/gen/hooks/useGetAnalyticsGrowthHotspots";
-import { useGetAnalyticsNewBuildPremium } from "@/gen/hooks/useGetAnalyticsNewBuildPremium";
-import { useGetAnalyticsPropertyTypeDistribution } from "@/gen/hooks/useGetAnalyticsPropertyTypeDistribution";
-import { useGetAnalyticsPriceBracketDistribution } from "@/gen/hooks/useGetAnalyticsPriceBracketDistribution";
-import { useGetAnalyticsTopActiveAreas } from "@/gen/hooks/useGetAnalyticsTopActiveAreas";
+import {
+  useGetAnalyticsMedianPrice,
+  useGetAnalyticsPriceTrend,
+  useGetAnalyticsAffordability,
+  useGetAnalyticsGrowthHotspots,
+  useGetAnalyticsNewBuildPremium,
+  useGetAnalyticsPropertyTypeDistribution,
+  useGetAnalyticsPriceBracketDistribution,
+  useGetAnalyticsTopActiveAreas,
+} from "@/gen/hooks";
 
 export const Route = createFileRoute("/analytics/")({
   component: Analytics,
@@ -41,6 +43,7 @@ const COLORS = [
 function Analytics() {
   const [regionType, setRegionType] = useState<any>("county");
   const [trendInterval, setTrendInterval] = useState<any>("month");
+  const [activityInterval, setActivityInterval] = useState<any>("month");
   const [premiumRegion, setPremiumRegion] = useState<any>("county");
   const [activeAreaRegion, setActiveAreaRegion] = useState<any>("district");
 
@@ -58,15 +61,27 @@ function Analytics() {
 
   // Stabilize all parameter objects
   const medianParams = useMemo(() => ({ by: regionType }), [regionType]);
-  const trendParams = useMemo(() => ({ interval: trendInterval }), [trendInterval]);
+  const trendParams = useMemo(
+    () => ({ interval: trendInterval }),
+    [trendInterval],
+  );
+  const activityTrendParams = useMemo(
+    () => ({ interval: activityInterval }),
+    [activityInterval],
+  );
   const growthParams = useMemo(() => ({ limit: 10 }), []);
   const premiumParams = useMemo(() => ({ by: premiumRegion }), [premiumRegion]);
-  const activeParams = useMemo(() => ({ by: activeAreaRegion, limit: 10 }), [activeAreaRegion]);
+  const activeParams = useMemo(
+    () => ({ by: activeAreaRegion, limit: 10 }),
+    [activeAreaRegion],
+  );
 
   const { data: medianPrices, isLoading: loadingMedian } =
     useGetAnalyticsMedianPrice(medianParams, queryOptions);
   const { data: priceTrends, isLoading: loadingTrends } =
     useGetAnalyticsPriceTrend(trendParams, queryOptions);
+  const { data: activityTrends, isLoading: loadingActivityTrends } =
+    useGetAnalyticsPriceTrend(activityTrendParams, queryOptions);
   const { data: affordability, isLoading: loadingAffordability } =
     useGetAnalyticsAffordability(queryOptions);
   const { data: hotspots, isLoading: loadingHotspots } =
@@ -162,6 +177,51 @@ function Analytics() {
                     strokeWidth={2}
                     dot={false}
                     name="Median Price"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                Loading...
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Activity Trend Section */}
+        <section className="bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Market Activity Trends</h2>
+            <select
+              className="border rounded px-3 py-1 text-sm bg-muted/50"
+              value={activityInterval}
+              onChange={(e) => setActivityInterval(e.target.value)}
+            >
+              <option value="month">Monthly</option>
+              <option value="year">Yearly</option>
+            </select>
+          </div>
+          <div className="h-87.5 w-full">
+            {!loadingActivityTrends ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={activityTrends}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="period" fontSize={12} tickMargin={10} />
+                  <YAxis fontSize={12} />
+                  <Tooltip
+                    formatter={(value: any) => [
+                      value.toLocaleString(),
+                      "Transactions",
+                    ]}
+                  />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="transaction_count"
+                    stroke="var(--color-chart-3)"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Transaction Count"
                   />
                 </LineChart>
               </ResponsiveContainer>

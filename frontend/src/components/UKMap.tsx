@@ -52,8 +52,25 @@ const UKMap: React.FC<UKMapProps> = ({
   // Handles: "Bristol, City of" vs "City of Bristol", "St Albans" vs "St. Albans", etc.
   const normalizeRegionName = (name: string): string => {
     if (!name) return "";
-    return name
-      .toLowerCase()
+
+    const clean = name.trim().toLowerCase();
+
+    // Manual hard-mappings for specific known issues
+    const manualMappings: Record<string, string> = {
+      rustland: "rutland",
+      "west glamorgan": "west glamorgan",
+      "mid glamorgan": "mid glamorgan",
+      "south glamorgan": "south glamorgan",
+      "rhondda cynon taff": "rhondda cynon taf",
+      "st albans": "st albans",
+      "st helens": "st helens",
+      "kingston upon hull": "kingston upon hull",
+      "herefordshire county of": "herefordshire",
+    };
+
+    if (manualMappings[clean]) return manualMappings[clean];
+
+    return clean
       .replace(/[.,]/g, "") // Remove commas and dots
       .replace(
         /\b(city of|city|of|and|the|upon|on|borough|royal|ceremonial)\b/g,

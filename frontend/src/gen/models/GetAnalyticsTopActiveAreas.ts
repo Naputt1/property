@@ -19,6 +19,11 @@ export type GetAnalyticsTopActiveAreasQueryParams = {
    * @type integer | undefined
    */
   limit?: number;
+  /**
+   * @description Year to filter by
+   * @type integer | undefined
+   */
+  year?: number;
 };
 
 /**

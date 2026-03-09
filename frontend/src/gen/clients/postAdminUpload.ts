@@ -44,7 +44,7 @@ export async function postAdminUpload(
   >({
     method: "POST",
     url: getPostAdminUploadUrl().url.toString(),
-    data: formData as FormData,
+    data: formData as any,
     ...requestConfig,
   });
   return res.data;

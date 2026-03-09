@@ -5,5 +5,6 @@ export { backendInternalModelsNewBuildPremiumResultSchema } from "./newBuildPrem
 export { backendInternalModelsPriceBracketResultSchema } from "./priceBracketResultSchema.ts";
 export { backendInternalModelsPriceTrendResultSchema } from "./priceTrendResultSchema.ts";
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./propertyTypeDistributionResultSchema.ts";
+export { backendInternalModelsTimeRangeResultSchema } from "./timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserSchema } from "./userSchema.ts";

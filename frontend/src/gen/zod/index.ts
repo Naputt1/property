@@ -5,6 +5,7 @@ export { backendInternalModelsNewBuildPremiumResultSchema } from "./backendInter
 export { backendInternalModelsPriceBracketResultSchema } from "./backendInternalModels/priceBracketResultSchema.ts";
 export { backendInternalModelsPriceTrendResultSchema } from "./backendInternalModels/priceTrendResultSchema.ts";
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./backendInternalModels/propertyTypeDistributionResultSchema.ts";
+export { backendInternalModelsTimeRangeResultSchema } from "./backendInternalModels/timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./backendInternalModels/topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
 export {
@@ -46,6 +47,11 @@ export {
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./getAnalyticsPropertyTypeDistributionSchema.ts";
+export {
+  getAnalyticsTimeRange200Schema,
+  getAnalyticsTimeRange500Schema,
+  getAnalyticsTimeRangeQueryResponseSchema,
+} from "./getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
   getAnalyticsTopActiveAreas500Schema,

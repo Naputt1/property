@@ -45,6 +45,12 @@ export type {
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./GetAnalyticsPropertyTypeDistribution.ts";
 export type {
+  GetAnalyticsTimeRange200,
+  GetAnalyticsTimeRange500,
+  GetAnalyticsTimeRangeQuery,
+  GetAnalyticsTimeRangeQueryResponse,
+} from "./GetAnalyticsTimeRange.ts";
+export type {
   GetAnalyticsTopActiveAreas200,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
@@ -94,6 +100,7 @@ export type { BackendInternalModelsNewBuildPremiumResult } from "./backendIntern
 export type { BackendInternalModelsPriceBracketResult } from "./backendInternalModels/PriceBracketResult.ts";
 export type { BackendInternalModelsPriceTrendResult } from "./backendInternalModels/PriceTrendResult.ts";
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./backendInternalModels/PropertyTypeDistributionResult.ts";
+export type { BackendInternalModelsTimeRangeResult } from "./backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./backendInternalModels/User.ts";
 export type { GormDeletedAt } from "./gorm/DeletedAt.ts";

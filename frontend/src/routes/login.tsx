@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
-import { usePostAuthLogin } from "@/gen/hooks/usePostAuthLogin";
+import { usePostAuthLogin } from "@/gen/hooks";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),

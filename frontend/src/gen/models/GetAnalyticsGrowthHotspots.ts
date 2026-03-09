@@ -19,6 +19,11 @@ export type GetAnalyticsGrowthHotspotsQueryParams = {
    * @type integer | undefined
    */
   limit?: number;
+  /**
+   * @description Year to filter by
+   * @type integer | undefined
+   */
+  year?: number;
 };
 
 /**

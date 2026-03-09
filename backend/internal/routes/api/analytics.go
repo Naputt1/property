@@ -24,6 +24,7 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 	rg.GET("/property-type-distribution", h.GetPropertyTypeDistribution)
 	rg.GET("/price-bracket-distribution", h.GetPriceBracketDistribution)
 	rg.GET("/top-active-areas", h.GetTopActiveAreas)
+	rg.GET("/time-range", h.GetTimeRange)
 }
 
 // GetMedianPriceByRegion godoc
@@ -33,12 +34,15 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 // @Accept json
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(county)
+// @Param year query int false "Year to filter by"
 // @Success 200 {array} backend_internal_models.MedianPriceResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/median-price [get]
 func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "county")
-	results, err := h.svc.GetMedianPriceByRegion(c.Request.Context(), regionType)
+	year, _ := strconv.Atoi(c.Query("year"))
+
+	results, err := h.svc.GetMedianPriceByRegion(c.Request.Context(), regionType, year)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
 		return
@@ -101,6 +105,7 @@ func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results (0 for all)" default(10)
+// @Param year query int false "Year to filter by"
 // @Success 200 {array} backend_internal_models.GrowthHotspotResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/growth-hotspots [get]
@@ -108,8 +113,9 @@ func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "district")
 	limitStr := c.DefaultQuery("limit", "10")
 	limit, _ := strconv.Atoi(limitStr)
+	year, _ := strconv.Atoi(c.Query("year"))
 
-	results, err := h.svc.GetGrowthHotspots(c.Request.Context(), regionType, limit)
+	results, err := h.svc.GetGrowthHotspots(c.Request.Context(), regionType, limit, year)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
 		return
@@ -193,6 +199,7 @@ func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results" default(10)
+// @Param year query int false "Year to filter by"
 // @Success 200 {array} backend_internal_models.TopActiveAreaResult
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/top-active-areas [get]
@@ -200,8 +207,9 @@ func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
 	regionType := c.DefaultQuery("by", "district")
 	limitStr := c.DefaultQuery("limit", "10")
 	limit, _ := strconv.Atoi(limitStr)
+	year, _ := strconv.Atoi(c.Query("year"))
 
-	results, err := h.svc.GetTopActiveAreas(c.Request.Context(), regionType, limit)
+	results, err := h.svc.GetTopActiveAreas(c.Request.Context(), regionType, limit, year)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
 		return
@@ -209,5 +217,26 @@ func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
 	c.JSON(http.StatusOK, TopActiveAreaResponse{
 		BaseResponse: BaseResponse{Status: true},
 		Data:         results,
+	})
+}
+
+// GetTimeRange godoc
+// @Summary Get available time range for analytics
+// @Description Get minimum and maximum year available in the dataset
+// @Tags analytics
+// @Accept json
+// @Produce json
+// @Success 200 {object} backend_internal_models.TimeRangeResult
+// @Failure 500 {object} ErrorResponse
+// @Router /analytics/time-range [get]
+func (h *AnalyticsHandler) GetTimeRange(c *gin.Context) {
+	result, err := h.svc.GetTimeRange(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, TimeRangeResponse{
+		BaseResponse: BaseResponse{Status: true},
+		Data:         result,
 	})
 }
