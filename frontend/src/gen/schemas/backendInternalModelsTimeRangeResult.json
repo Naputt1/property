@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "max_year": { "type": "integer" },
+    "min_year": { "type": "integer" }
+  },
+  "x-readme-ref-name": "backend_internal_models.TimeRangeResult"
+}

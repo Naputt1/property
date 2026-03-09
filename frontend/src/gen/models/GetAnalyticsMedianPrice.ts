@@ -13,6 +13,11 @@ export type GetAnalyticsMedianPriceQueryParams = {
    * @type string | undefined
    */
   by?: string;
+  /**
+   * @description Year to filter by
+   * @type integer | undefined
+   */
+  year?: number;
 };
 
 /**

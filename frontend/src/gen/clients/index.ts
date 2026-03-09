@@ -5,6 +5,7 @@ export { getAnalyticsNewBuildPremium } from "./getAnalyticsNewBuildPremium.ts";
 export { getAnalyticsPriceBracketDistribution } from "./getAnalyticsPriceBracketDistribution.ts";
 export { getAnalyticsPriceTrend } from "./getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./getAnalyticsPropertyTypeDistribution.ts";
+export { getAnalyticsTimeRange } from "./getAnalyticsTimeRange.ts";
 export { getAnalyticsTopActiveAreas } from "./getAnalyticsTopActiveAreas.ts";
 export { postAdminStreamUpload } from "./postAdminStreamUpload.ts";
 export { postAdminUpload } from "./postAdminUpload.ts";

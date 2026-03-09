@@ -49,3 +49,8 @@ type TopActiveAreaResult struct {
 	TransactionCount int64  `json:"transaction_count"`
 	TotalValue       int64  `json:"total_value"`
 }
+
+type TimeRangeResult struct {
+	MinYear int `json:"min_year"`
+	MaxYear int `json:"max_year"`
+}

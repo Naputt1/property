@@ -13,6 +13,7 @@ export const getAnalyticsTopActiveAreasQueryParamsSchema = z.object({
     .default("district")
     .describe("Region type (county, district, town_city)"),
   limit: z.coerce.number().int().default(10).describe("Number of results"),
+  year: z.optional(z.coerce.number().int().describe("Year to filter by")),
 });
 
 /**

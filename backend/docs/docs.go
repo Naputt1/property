@@ -181,6 +181,12 @@ const docTemplate = `{
                         "description": "Number of results (0 for all)",
                         "name": "limit",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year to filter by",
+                        "name": "year",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -221,6 +227,12 @@ const docTemplate = `{
                         "default": "county",
                         "description": "Region type (county, district, town_city)",
                         "name": "by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year to filter by",
+                        "name": "year",
                         "in": "query"
                     }
                 ],
@@ -389,6 +401,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/analytics/time-range": {
+            "get": {
+                "description": "Get minimum and maximum year available in the dataset",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get available time range for analytics",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/backend_internal_models.TimeRangeResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/analytics/top-active-areas": {
             "get": {
                 "description": "Get regions with highest transaction volume",
@@ -415,6 +456,12 @@ const docTemplate = `{
                         "default": 10,
                         "description": "Number of results",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year to filter by",
+                        "name": "year",
                         "in": "query"
                     }
                 ],
@@ -649,6 +696,17 @@ const docTemplate = `{
                 },
                 "property_type": {
                     "type": "string"
+                }
+            }
+        },
+        "backend_internal_models.TimeRangeResult": {
+            "type": "object",
+            "properties": {
+                "max_year": {
+                    "type": "integer"
+                },
+                "min_year": {
+                    "type": "integer"
                 }
             }
         },

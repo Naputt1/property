@@ -55,25 +55,49 @@ func migrations() []*gormigrate.Migration {
 				}
 
 				// 3. Materialized Views for Analytics
+
+				// Drop old views if they have the old schema (optional, but good for this migration)
+				// tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_monthly_regional_stats")
 				
-				// Monthly Stats per Region (Consolidated)
+				// Monthly Stats per Region (Consolidated with UNION for better granularity)
 				mvMonthly := `
 					CREATE MATERIALIZED VIEW IF NOT EXISTS mv_monthly_regional_stats AS
-					SELECT county, district, town_city,
+					SELECT 'county' as region_type, county as region_name,
 					       extract(year from date_of_transfer) as year,
 					       extract(month from date_of_transfer) as month,
 					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
 					       AVG(price)::bigint as avg_price,
 					       COUNT(*) as transaction_count
-					FROM properties
-					GROUP BY county, district, town_city, year, month
+					FROM properties WHERE county IS NOT NULL AND county != ''
+					GROUP BY county, year, month
+					UNION ALL
+					SELECT 'district' as region_type, district as region_name,
+					       extract(year from date_of_transfer) as year,
+					       extract(month from date_of_transfer) as month,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties WHERE district IS NOT NULL AND district != ''
+					GROUP BY district, year, month
+					UNION ALL
+					SELECT 'town_city' as region_type, town_city as region_name,
+					       extract(year from date_of_transfer) as year,
+					       extract(month from date_of_transfer) as month,
+					       (percentile_cont(0.5) WITHIN GROUP (ORDER BY price))::bigint as median_price,
+					       AVG(price)::bigint as avg_price,
+					       COUNT(*) as transaction_count
+					FROM properties WHERE town_city IS NOT NULL AND town_city != ''
+					GROUP BY town_city, year, month
 				`
 				if err := tx.Exec(mvMonthly).Error; err != nil {
-					return err
+					// If it fails because it already exists with a different schema, we might need to drop it.
+					// For a safer automated approach in this dev environment:
+					tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_monthly_regional_stats CASCADE")
+					if err := tx.Exec(mvMonthly).Error; err != nil {
+						return err
+					}
 				}
-				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_county ON mv_monthly_regional_stats(county)")
-				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_district ON mv_monthly_regional_stats(district)")
-				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_town_city ON mv_monthly_regional_stats(town_city)")
+				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_region ON mv_monthly_regional_stats(region_type, region_name)")
 				tx.Exec("CREATE INDEX IF NOT EXISTS idx_mv_mrs_date ON mv_monthly_regional_stats(year, month)")
 
 				// Regional Stats (For regional medians and active areas)
@@ -98,7 +122,10 @@ func migrations() []*gormigrate.Migration {
 					FROM properties WHERE town_city IS NOT NULL AND town_city != '' GROUP BY town_city
 				`
 				if err := tx.Exec(mvRegional).Error; err != nil {
-					return err
+					tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_regional_stats CASCADE")
+					if err := tx.Exec(mvRegional).Error; err != nil {
+						return err
+					}
 				}
 				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_rs_unique ON mv_regional_stats(region_type, region_name)")
 
@@ -114,7 +141,10 @@ func migrations() []*gormigrate.Migration {
 					FROM properties WHERE district IS NOT NULL AND district != '' GROUP BY district, old_new
 				`
 				if err := tx.Exec(mvNewBuild).Error; err != nil {
-					return err
+					tx.Exec("DROP MATERIALIZED VIEW IF EXISTS mv_new_build_stats CASCADE")
+					if err := tx.Exec(mvNewBuild).Error; err != nil {
+						return err
+					}
 				}
 				tx.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_nbs_unique ON mv_new_build_stats(region_type, region_name, old_new)")
 

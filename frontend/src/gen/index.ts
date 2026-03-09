@@ -12,6 +12,8 @@ export type { GetAnalyticsPriceTrendQueryKey } from "./hooks/useGetAnalyticsPric
 export type { GetAnalyticsPriceTrendSuspenseQueryKey } from "./hooks/useGetAnalyticsPriceTrendSuspense.ts";
 export type { GetAnalyticsPropertyTypeDistributionQueryKey } from "./hooks/useGetAnalyticsPropertyTypeDistribution.ts";
 export type { GetAnalyticsPropertyTypeDistributionSuspenseQueryKey } from "./hooks/useGetAnalyticsPropertyTypeDistributionSuspense.ts";
+export type { GetAnalyticsTimeRangeQueryKey } from "./hooks/useGetAnalyticsTimeRange.ts";
+export type { GetAnalyticsTimeRangeSuspenseQueryKey } from "./hooks/useGetAnalyticsTimeRangeSuspense.ts";
 export type { GetAnalyticsTopActiveAreasQueryKey } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
 export type { GetAnalyticsTopActiveAreasSuspenseQueryKey } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
 export type { PostAdminStreamUploadMutationKey } from "./hooks/usePostAdminStreamUpload.ts";
@@ -66,6 +68,12 @@ export type {
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./models/GetAnalyticsPropertyTypeDistribution.ts";
 export type {
+  GetAnalyticsTimeRange200,
+  GetAnalyticsTimeRange500,
+  GetAnalyticsTimeRangeQuery,
+  GetAnalyticsTimeRangeQueryResponse,
+} from "./models/GetAnalyticsTimeRange.ts";
+export type {
   GetAnalyticsTopActiveAreas200,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
@@ -115,6 +123,7 @@ export type { BackendInternalModelsNewBuildPremiumResult } from "./models/backen
 export type { BackendInternalModelsPriceBracketResult } from "./models/backendInternalModels/PriceBracketResult.ts";
 export type { BackendInternalModelsPriceTrendResult } from "./models/backendInternalModels/PriceTrendResult.ts";
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./models/backendInternalModels/PropertyTypeDistributionResult.ts";
+export type { BackendInternalModelsTimeRangeResult } from "./models/backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./models/backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./models/backendInternalModels/User.ts";
 export type { GormDeletedAt } from "./models/gorm/DeletedAt.ts";
@@ -134,6 +143,7 @@ export { getAnalyticsNewBuildPremium } from "./clients/getAnalyticsNewBuildPremi
 export { getAnalyticsPriceBracketDistribution } from "./clients/getAnalyticsPriceBracketDistribution.ts";
 export { getAnalyticsPriceTrend } from "./clients/getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./clients/getAnalyticsPropertyTypeDistribution.ts";
+export { getAnalyticsTimeRange } from "./clients/getAnalyticsTimeRange.ts";
 export { getAnalyticsTopActiveAreas } from "./clients/getAnalyticsTopActiveAreas.ts";
 export { postAdminStreamUpload } from "./clients/postAdminStreamUpload.ts";
 export { postAdminUpload } from "./clients/postAdminUpload.ts";
@@ -182,6 +192,12 @@ export { useGetAnalyticsPropertyTypeDistribution } from "./hooks/useGetAnalytics
 export { getAnalyticsPropertyTypeDistributionSuspenseQueryKey } from "./hooks/useGetAnalyticsPropertyTypeDistributionSuspense.ts";
 export { getAnalyticsPropertyTypeDistributionSuspenseQueryOptions } from "./hooks/useGetAnalyticsPropertyTypeDistributionSuspense.ts";
 export { useGetAnalyticsPropertyTypeDistributionSuspense } from "./hooks/useGetAnalyticsPropertyTypeDistributionSuspense.ts";
+export { getAnalyticsTimeRangeQueryKey } from "./hooks/useGetAnalyticsTimeRange.ts";
+export { getAnalyticsTimeRangeQueryOptions } from "./hooks/useGetAnalyticsTimeRange.ts";
+export { useGetAnalyticsTimeRange } from "./hooks/useGetAnalyticsTimeRange.ts";
+export { getAnalyticsTimeRangeSuspenseQueryKey } from "./hooks/useGetAnalyticsTimeRangeSuspense.ts";
+export { getAnalyticsTimeRangeSuspenseQueryOptions } from "./hooks/useGetAnalyticsTimeRangeSuspense.ts";
+export { useGetAnalyticsTimeRangeSuspense } from "./hooks/useGetAnalyticsTimeRangeSuspense.ts";
 export { getAnalyticsTopActiveAreasQueryKey } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
 export { getAnalyticsTopActiveAreasQueryOptions } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
 export { useGetAnalyticsTopActiveAreas } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
@@ -210,6 +226,7 @@ export { backendInternalModelsNewBuildPremiumResultSchema } from "./zod/backendI
 export { backendInternalModelsPriceBracketResultSchema } from "./zod/backendInternalModels/priceBracketResultSchema.ts";
 export { backendInternalModelsPriceTrendResultSchema } from "./zod/backendInternalModels/priceTrendResultSchema.ts";
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./zod/backendInternalModels/propertyTypeDistributionResultSchema.ts";
+export { backendInternalModelsTimeRangeResultSchema } from "./zod/backendInternalModels/timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./zod/backendInternalModels/topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserSchema } from "./zod/backendInternalModels/userSchema.ts";
 export {
@@ -251,6 +268,11 @@ export {
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./zod/getAnalyticsPropertyTypeDistributionSchema.ts";
+export {
+  getAnalyticsTimeRange200Schema,
+  getAnalyticsTimeRange500Schema,
+  getAnalyticsTimeRangeQueryResponseSchema,
+} from "./zod/getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
   getAnalyticsTopActiveAreas500Schema,

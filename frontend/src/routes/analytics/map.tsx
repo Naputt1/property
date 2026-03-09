@@ -1,11 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import UKMap from "@/components/UKMap";
-import { useGetAnalyticsMedianPrice } from "@/gen/hooks/useGetAnalyticsMedianPrice";
-import { useGetAnalyticsGrowthHotspots } from "@/gen/hooks/useGetAnalyticsGrowthHotspots";
-import { useGetAnalyticsTopActiveAreas } from "@/gen/hooks/useGetAnalyticsTopActiveAreas";
+import {
+  useGetAnalyticsMedianPrice,
+  useGetAnalyticsGrowthHotspots,
+  useGetAnalyticsTopActiveAreas,
+  useGetAnalyticsTimeRange,
+} from "@/gen/hooks";
 import { Button } from "@/components/ui/button";
-import { Map as MapIcon, BarChart3, TrendingUp, Activity } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import {
+  Map as MapIcon,
+  BarChart3,
+  TrendingUp,
+  Activity,
+  Calendar,
+  Clock,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/analytics/map")({
@@ -17,6 +28,7 @@ type MetricType = "median_price" | "growth_rate" | "transaction_count";
 function MapAnalytics() {
   const [metric, setMetric] = useState<MetricType>("median_price");
   const [regionType, setRegionType] = useState<"county" | "district">("county");
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   const queryOptions = useMemo(
     () => ({
@@ -30,13 +42,39 @@ function MapAnalytics() {
     [],
   );
 
+  const { data: timeRange } = useGetAnalyticsTimeRange(queryOptions);
+
+  // Initialize selected year from time range
+  useEffect(() => {
+    if (timeRange && selectedYear === null && timeRange.max_year) {
+      setSelectedYear(timeRange.max_year);
+    }
+  }, [timeRange, selectedYear]);
+
   // Stabilize parameters
-  const medianParams = useMemo(() => ({ by: regionType }), [regionType]);
-  const activeParams = useMemo(
-    () => ({ by: regionType, limit: 0 }),
-    [regionType],
+  const medianParams = useMemo(
+    () => ({
+      by: regionType,
+      year: selectedYear || undefined,
+    }),
+    [regionType, selectedYear],
   );
-  const growthParams = useMemo(() => ({ by: regionType, limit: 0 }), [regionType]);
+  const activeParams = useMemo(
+    () => ({
+      by: regionType,
+      limit: 0,
+      year: selectedYear || undefined,
+    }),
+    [regionType, selectedYear],
+  );
+  const growthParams = useMemo(
+    () => ({
+      by: regionType,
+      limit: 0,
+      year: selectedYear || undefined,
+    }),
+    [regionType, selectedYear],
+  );
 
   const { data: medianPrices, isLoading: loadingMedian } =
     useGetAnalyticsMedianPrice(medianParams, queryOptions);
@@ -48,17 +86,17 @@ function MapAnalytics() {
   const mapData = useMemo(() => {
     let rawData: Array<{ region?: string; value?: number | bigint }> = [];
     if (metric === "median_price") {
-      rawData = (medianPrices || []).map((d) => ({
+      rawData = (medianPrices || []).map((d: any) => ({
         region: d.region,
         value: d.median_price,
       }));
     } else if (metric === "growth_rate") {
-      rawData = (hotspots || []).map((d) => ({
+      rawData = (hotspots || []).map((d: any) => ({
         region: d.region,
         value: d.growth_rate,
       }));
     } else {
-      rawData = (activeAreas || []).map((d) => ({
+      rawData = (activeAreas || []).map((d: any) => ({
         region: d.region,
         value: Number(d.transaction_count),
       }));
@@ -212,6 +250,48 @@ function MapAnalytics() {
                     </div>
                   </div>
                 </div>
+
+                {timeRange && (
+                  <div className="space-y-6 pt-4 border-t border-slate-100">
+                    {metric === "growth_rate" && (
+                      <p className="text-[10px] text-slate-500 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
+                        Note: Growth rate compares the selected period to the
+                        same period in the previous year.
+                      </p>
+                    )}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-indigo-500" />
+                          Year: {selectedYear}
+                        </label>
+                        <button
+                          onClick={() => setSelectedYear(null)}
+                          className={`text-[10px] font-bold uppercase tracking-wider ${selectedYear === null ? "text-indigo-600" : "text-slate-400 hover:text-indigo-600"}`}
+                        >
+                          All Time
+                        </button>
+                      </div>
+                      <Slider
+                        value={[
+                          selectedYear ||
+                            (timeRange?.max_year ?? new Date().getFullYear()),
+                        ]}
+                        min={timeRange?.min_year ?? 1995}
+                        max={timeRange?.max_year ?? new Date().getFullYear()}
+                        step={1}
+                        onValueChange={([val]) => setSelectedYear(val)}
+                        className={selectedYear === null ? "opacity-40" : ""}
+                      />
+                      <div className="flex justify-between text-[10px] font-bold text-slate-400">
+                        <span>{timeRange?.min_year ?? 1995}</span>
+                        <span>
+                          {timeRange?.max_year ?? new Date().getFullYear()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -268,12 +348,9 @@ function MapAnalytics() {
                 formatValue={formatValue}
               />
               <div className="absolute top-6 right-6 z-1000 flex gap-2">
-                <div className="bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm text-[10px] font-bold text-slate-500 uppercase tracking-tight">
-                  Updated:{" "}
-                  {new Date().toLocaleDateString("en-GB", {
-                    month: "short",
-                    year: "numeric",
-                  })}
+                <div className="bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm text-[10px] font-bold text-slate-500 uppercase tracking-tight flex items-center gap-2">
+                  <Clock className="h-3 w-3 text-indigo-500" />
+                  Period: {selectedYear ? selectedYear : "All Time"}
                 </div>
               </div>
             </div>

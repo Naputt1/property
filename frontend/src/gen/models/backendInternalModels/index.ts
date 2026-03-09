@@ -5,5 +5,6 @@ export type { BackendInternalModelsNewBuildPremiumResult } from "./NewBuildPremi
 export type { BackendInternalModelsPriceBracketResult } from "./PriceBracketResult.ts";
 export type { BackendInternalModelsPriceTrendResult } from "./PriceTrendResult.ts";
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./PropertyTypeDistributionResult.ts";
+export type { BackendInternalModelsTimeRangeResult } from "./TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./User.ts";

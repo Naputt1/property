@@ -12,6 +12,7 @@ export const getAnalyticsMedianPriceQueryParamsSchema = z.object({
     .string()
     .default("county")
     .describe("Region type (county, district, town_city)"),
+  year: z.optional(z.coerce.number().int().describe("Year to filter by")),
 });
 
 /**

@@ -71,8 +71,8 @@ func (s *analyticsService) setCache(ctx context.Context, key string, value inter
 	}
 }
 
-func (s *analyticsService) GetMedianPriceByRegion(ctx context.Context, regionType string) ([]models.MedianPriceResult, error) {
-	cacheKey := fmt.Sprintf("%smedian_price:%s", AnalyticsCachePrefix, regionType)
+func (s *analyticsService) GetMedianPriceByRegion(ctx context.Context, regionType string, year int) ([]models.MedianPriceResult, error) {
+	cacheKey := fmt.Sprintf("%smedian_price:%s:%d", AnalyticsCachePrefix, regionType, year)
 	var results []models.MedianPriceResult
 
 	found, _ := s.getCached(ctx, cacheKey, &results)
@@ -80,7 +80,7 @@ func (s *analyticsService) GetMedianPriceByRegion(ctx context.Context, regionTyp
 		return results, nil
 	}
 
-	results, err := s.repo.GetMedianPriceByRegion(ctx, regionType)
+	results, err := s.repo.GetMedianPriceByRegion(ctx, regionType, year)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (s *analyticsService) GetAffordability(ctx context.Context) ([]models.Affor
 	return results, nil
 }
 
-func (s *analyticsService) GetGrowthHotspots(ctx context.Context, regionType string, limit int) ([]models.GrowthHotspotResult, error) {
-	cacheKey := fmt.Sprintf("%sgrowth_hotspots:%s:%d", AnalyticsCachePrefix, regionType, limit)
+func (s *analyticsService) GetGrowthHotspots(ctx context.Context, regionType string, limit, year int) ([]models.GrowthHotspotResult, error) {
+	cacheKey := fmt.Sprintf("%sgrowth_hotspots:%s:%d:%d", AnalyticsCachePrefix, regionType, limit, year)
 	var results []models.GrowthHotspotResult
 
 	found, _ := s.getCached(ctx, cacheKey, &results)
@@ -134,7 +134,7 @@ func (s *analyticsService) GetGrowthHotspots(ctx context.Context, regionType str
 		return results, nil
 	}
 
-	results, err := s.repo.GetGrowthHotspots(ctx, regionType, limit)
+	results, err := s.repo.GetGrowthHotspots(ctx, regionType, limit, year)
 	if err != nil {
 		return nil, err
 	}
@@ -197,8 +197,8 @@ func (s *analyticsService) GetPriceBracketDistribution(ctx context.Context) ([]m
 	return results, nil
 }
 
-func (s *analyticsService) GetTopActiveAreas(ctx context.Context, regionType string, limit int) ([]models.TopActiveAreaResult, error) {
-	cacheKey := fmt.Sprintf("%stop_active_areas:%s:%d", AnalyticsCachePrefix, regionType, limit)
+func (s *analyticsService) GetTopActiveAreas(ctx context.Context, regionType string, limit, year int) ([]models.TopActiveAreaResult, error) {
+	cacheKey := fmt.Sprintf("%stop_active_areas:%s:%d:%d", AnalyticsCachePrefix, regionType, limit, year)
 	var results []models.TopActiveAreaResult
 
 	found, _ := s.getCached(ctx, cacheKey, &results)
@@ -206,13 +206,31 @@ func (s *analyticsService) GetTopActiveAreas(ctx context.Context, regionType str
 		return results, nil
 	}
 
-	results, err := s.repo.GetTopActiveAreas(ctx, regionType, limit)
+	results, err := s.repo.GetTopActiveAreas(ctx, regionType, limit, year)
 	if err != nil {
 		return nil, err
 	}
 
 	s.setCache(ctx, cacheKey, results)
 	return results, nil
+}
+
+func (s *analyticsService) GetTimeRange(ctx context.Context) (*models.TimeRangeResult, error) {
+	cacheKey := fmt.Sprintf("%stime_range", AnalyticsCachePrefix)
+	var result models.TimeRangeResult
+
+	found, _ := s.getCached(ctx, cacheKey, &result)
+	if found {
+		return &result, nil
+	}
+
+	res, err := s.repo.GetTimeRange(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	s.setCache(ctx, cacheKey, res)
+	return res, nil
 }
 
 func (s *analyticsService) RefreshMaterializedView(ctx context.Context) error {
@@ -227,7 +245,7 @@ func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 
 	// Precompute median price by region
 	for _, region := range regions {
-		_, err := s.GetMedianPriceByRegion(ctx, region)
+		_, err := s.GetMedianPriceByRegion(ctx, region, 0)
 		if err != nil {
 			slog.Error("failed to precompute median price", "region", region, "error", err)
 		}
@@ -237,7 +255,7 @@ func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 			slog.Error("failed to precompute new build premium", "region", region, "error", err)
 		}
 
-		_, err = s.GetTopActiveAreas(ctx, region, 10)
+		_, err = s.GetTopActiveAreas(ctx, region, 10, 0)
 		if err != nil {
 			slog.Error("failed to precompute top active areas", "region", region, "error", err)
 		}
@@ -260,7 +278,7 @@ func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 
 	// Precompute growth hotspots
 	for _, region := range []string{"county", "district"} {
-		_, err = s.GetGrowthHotspots(ctx, region, 100)
+		_, err = s.GetGrowthHotspots(ctx, region, 100, 0)
 		if err != nil {
 			slog.Error("failed to precompute growth hotspots", "region", region, "error", err)
 		}

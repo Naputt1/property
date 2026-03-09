@@ -66,6 +66,11 @@ type TopActiveAreaResponse struct {
 	Data []models.TopActiveAreaResult `json:"data"`
 }
 
+type TimeRangeResponse struct {
+	BaseResponse
+	Data *models.TimeRangeResult `json:"data"`
+}
+
 // --- Payload Types (used for Swagger documentation to match unwrapped frontend types) ---
 
 type LoginPayload struct {

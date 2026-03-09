@@ -17,6 +17,7 @@ export const getAnalyticsGrowthHotspotsQueryParamsSchema = z.object({
     .int()
     .default(10)
     .describe("Number of results (0 for all)"),
+  year: z.optional(z.coerce.number().int().describe("Year to filter by")),
 });
 
 /**
