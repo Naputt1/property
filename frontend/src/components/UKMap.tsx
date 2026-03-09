@@ -48,11 +48,29 @@ const UKMap: React.FC<UKMapProps> = ({
     return () => controller.abort();
   }, [regionType]);
 
-  // Map data for O(1) lookup
+  // Robust normalization for UK regional names to fix mismatches
+  // Handles: "Bristol, City of" vs "City of Bristol", "St Albans" vs "St. Albans", etc.
+  const normalizeRegionName = (name: string): string => {
+    if (!name) return "";
+    return name
+      .toLowerCase()
+      .replace(/[.,]/g, "") // Remove commas and dots
+      .replace(
+        /\b(city of|city|of|and|the|upon|on|borough|royal|ceremonial)\b/g,
+        "",
+      ) // Remove common filler words
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(" ")
+      .sort() // Sort words alphabetically to handle reordering
+      .join(" ");
+  };
+
+  // Map data for O(1) lookup with normalized keys
   const dataLookup = useMemo(() => {
     const map = new Map<string, number>();
     data.forEach((item) => {
-      map.set(item.region, item.value);
+      map.set(normalizeRegionName(item.region), item.value);
     });
     return map;
   }, [data]);
@@ -114,11 +132,12 @@ const UKMap: React.FC<UKMapProps> = ({
   };
 
   const style = (feature: any) => {
-    const name =
+    const rawName =
       feature.properties.name ||
       feature.properties.county ||
-      feature.properties.LAD13NM;
-    const value = dataLookup.get(name);
+      feature.properties.LAD13NM ||
+      "";
+    const value = dataLookup.get(normalizeRegionName(rawName));
 
     return {
       fillColor: getColor(value),
@@ -130,11 +149,12 @@ const UKMap: React.FC<UKMapProps> = ({
   };
 
   const onEachFeature = (feature: any, layer: L.Layer) => {
-    const name =
+    const rawName =
       feature.properties.name ||
       feature.properties.county ||
-      feature.properties.LAD13NM;
-    const value = dataLookup.get(name);
+      feature.properties.LAD13NM ||
+      "";
+    const value = dataLookup.get(normalizeRegionName(rawName));
     const formattedValue =
       value !== undefined ? formatValue(value) : "No data available";
 
@@ -142,7 +162,7 @@ const UKMap: React.FC<UKMapProps> = ({
       `
       <div class="p-3 bg-white shadow-xl rounded-lg border border-slate-100 min-w-40">
         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">UK Region</div>
-        <div class="font-bold text-slate-900 text-sm mb-2 pb-2 border-b border-slate-50">${name}</div>
+        <div class="font-bold text-slate-900 text-sm mb-2 pb-2 border-b border-slate-50">${rawName}</div>
         <div class="flex items-end justify-between gap-2">
           <div>
             <div class="text-[10px] text-slate-500 uppercase font-semibold">${metricLabel}</div>

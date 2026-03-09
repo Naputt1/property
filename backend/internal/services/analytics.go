@@ -125,8 +125,8 @@ func (s *analyticsService) GetAffordability(ctx context.Context) ([]models.Affor
 	return results, nil
 }
 
-func (s *analyticsService) GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error) {
-	cacheKey := fmt.Sprintf("%sgrowth_hotspots:%d", AnalyticsCachePrefix, limit)
+func (s *analyticsService) GetGrowthHotspots(ctx context.Context, regionType string, limit int) ([]models.GrowthHotspotResult, error) {
+	cacheKey := fmt.Sprintf("%sgrowth_hotspots:%s:%d", AnalyticsCachePrefix, regionType, limit)
 	var results []models.GrowthHotspotResult
 
 	found, _ := s.getCached(ctx, cacheKey, &results)
@@ -134,7 +134,7 @@ func (s *analyticsService) GetGrowthHotspots(ctx context.Context, limit int) ([]
 		return results, nil
 	}
 
-	results, err := s.repo.GetGrowthHotspots(ctx, limit)
+	results, err := s.repo.GetGrowthHotspots(ctx, regionType, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -259,9 +259,11 @@ func (s *analyticsService) PrecomputeCache(ctx context.Context) error {
 	}
 
 	// Precompute growth hotspots
-	_, err = s.GetGrowthHotspots(ctx, 10)
-	if err != nil {
-		slog.Error("failed to precompute growth hotspots", "error", err)
+	for _, region := range []string{"county", "district"} {
+		_, err = s.GetGrowthHotspots(ctx, region, 100)
+		if err != nil {
+			slog.Error("failed to precompute growth hotspots", "region", region, "error", err)
+		}
 	}
 
 	// Precompute distributions

@@ -292,7 +292,7 @@ function Analytics() {
               <thead className="bg-muted/50 text-muted-foreground uppercase text-xs font-medium">
                 <tr>
                   <th className="px-4 py-3">Region</th>
-                  <th className="px-4 py-3 text-right">Transactions</th>
+                  <th className="px-4 py-3 text-right">Market Activity</th>
                   <th className="px-4 py-3 text-right">Total Value</th>
                 </tr>
               </thead>
@@ -448,7 +448,7 @@ function Analytics() {
             <table className="w-full text-sm text-left">
               <thead className="bg-muted/50 text-muted-foreground uppercase text-xs font-medium">
                 <tr>
-                  <th className="px-4 py-3">District</th>
+                  <th className="px-4 py-3">Region</th>
                   <th className="px-4 py-3">Growth</th>
                   <th className="px-4 py-3 text-right">Current Median</th>
                 </tr>

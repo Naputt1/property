@@ -53,7 +53,7 @@ export function getAnalyticsGrowthHotspotsSuspenseQueryOptions(
 }
 
 /**
- * @description Get top districts with highest price growth rate
+ * @description Get regions with highest price growth rate
  * @summary Get growth hotspots
  * {@link /analytics/growth-hotspots}
  */

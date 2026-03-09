@@ -150,7 +150,7 @@
         },
         "/analytics/growth-hotspots": {
             "get": {
-                "description": "Get top districts with highest price growth rate",
+                "description": "Get regions with highest price growth rate",
                 "consumes": [
                     "application/json"
                 ],
@@ -163,9 +163,16 @@
                 "summary": "Get growth hotspots",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "district",
+                        "description": "Region type (county, district, town_city)",
+                        "name": "by",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "default": 10,
-                        "description": "Number of results",
+                        "description": "Number of results (0 for all)",
                         "name": "limit",
                         "in": "query"
                     }

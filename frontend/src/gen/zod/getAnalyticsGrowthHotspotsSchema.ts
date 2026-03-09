@@ -8,7 +8,15 @@ import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorR
 import { z } from "zod/v4";
 
 export const getAnalyticsGrowthHotspotsQueryParamsSchema = z.object({
-  limit: z.coerce.number().int().default(10).describe("Number of results"),
+  by: z
+    .string()
+    .default("district")
+    .describe("Region type (county, district, town_city)"),
+  limit: z.coerce
+    .number()
+    .int()
+    .default(10)
+    .describe("Number of results (0 for all)"),
 });
 
 /**

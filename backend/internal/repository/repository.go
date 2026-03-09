@@ -36,7 +36,7 @@ type AnalyticsRepository interface {
 	GetMedianPriceByRegion(ctx context.Context, regionType string) ([]models.MedianPriceResult, error)
 	GetPriceTrend(ctx context.Context, interval string) ([]models.PriceTrendResult, error)
 	GetAffordability(ctx context.Context) ([]models.AffordabilityResult, error)
-	GetGrowthHotspots(ctx context.Context, limit int) ([]models.GrowthHotspotResult, error)
+	GetGrowthHotspots(ctx context.Context, regionType string, limit int) ([]models.GrowthHotspotResult, error)
 	GetNewBuildPremium(ctx context.Context, regionType string) ([]models.NewBuildPremiumResult, error)
 	GetPropertyTypeDistribution(ctx context.Context) ([]models.PropertyTypeDistributionResult, error)
 	GetPriceBracketDistribution(ctx context.Context) ([]models.PriceBracketResult, error)

@@ -296,10 +296,15 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get top districts with highest price growth rate
+      description: Get regions with highest price growth rate
       parameters:
+      - default: district
+        description: Region type (county, district, town_city)
+        in: query
+        name: by
+        type: string
       - default: 10
-        description: Number of results
+        description: Number of results (0 for all)
         in: query
         name: limit
         type: integer
