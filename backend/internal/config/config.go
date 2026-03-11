@@ -26,10 +26,8 @@ type OptionDatabase struct {
 }
 
 type OptionRedis struct {
-	Host     string `env:"REDIS_HOST" envDefault:"localhost"`
-	Port     int    `env:"REDIS_PORT" envDefault:"6379"`
-	Password string `env:"REDIS_PASSWORD" envDefault:""`
-	DB       int    `env:"REDIS_DB" envDefault:"0"`
+	URL string `env:"REDIS_URL" envDefault:"localhost:6379"`
+	DB  int    `env:"REDIS_DB" envDefault:"0"`
 }
 
 type OptionBucket struct {
@@ -115,9 +113,8 @@ func CreateConfig() (*Config, error) {
 
 	// Redis client initialization
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", opt.Redis.Host, opt.Redis.Port),
-		Password: opt.Redis.Password,
-		DB:       opt.Redis.DB,
+		Addr: opt.Redis.URL,
+		DB:   opt.Redis.DB,
 	})
 
 	return &Config{

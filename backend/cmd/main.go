@@ -11,7 +11,6 @@ import (
 	"backend/internal/storage"
 	"context"
 	"flag"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -69,9 +68,8 @@ func main() {
 
 	// Initialize asynq client
 	asynqClient := asynq.NewClient(asynq.RedisClientOpt{
-		Addr:     fmt.Sprintf("%s:%d", cfg.Opt.Redis.Host, cfg.Opt.Redis.Port),
-		Password: cfg.Opt.Redis.Password,
-		DB:       cfg.Opt.Redis.DB,
+		Addr: cfg.Opt.Redis.URL,
+		DB:   cfg.Opt.Redis.DB,
 	})
 
 	if err := asynqClient.Ping(); err != nil {

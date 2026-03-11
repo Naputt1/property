@@ -4,7 +4,6 @@ import (
 	"backend/internal/config"
 	"backend/internal/services"
 	"context"
-	"fmt"
 	"log/slog"
 
 	"github.com/hibiken/asynq"
@@ -18,9 +17,8 @@ type AsynqServer struct {
 
 func NewAsynqServer(cfg *config.Config, svcs *services.Services) (*AsynqServer, error) {
 	redisConnOpt := asynq.RedisClientOpt{
-		Addr:     fmt.Sprintf("%s:%d", cfg.Opt.Redis.Host, cfg.Opt.Redis.Port),
-		Password: cfg.Opt.Redis.Password,
-		DB:       cfg.Opt.Redis.DB,
+		Addr: cfg.Opt.Redis.URL,
+		DB:   cfg.Opt.Redis.DB,
 	}
 
 	mainSrv := asynq.NewServer(
