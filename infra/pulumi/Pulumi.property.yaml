@@ -1,0 +1,24 @@
+config:
+  cloudflare:apiKey:
+    secure: AAABADiCbo8WWsLuYOEtjITJTf0ovKHN73+WhOhdPA8lxZFwl6HTqCapQIoe73C4LbaY9Es1ArPKbbmQUZHel3ldyEUk
+  cloudflare:apiToken:
+    secure: AAABAP+6AMoijjTLAANhq0EpgDUBUqQtPw7jVeTEXdg180VkjPlQYcFTfmieoXktOoVZjMslIe/PD1f8ga4ST+G2XSG7m9Tj
+  cloudflare:email: naputtalt1@gmail.com
+  property:cloudflareTunnelId:
+    secure: AAABAFF+33ZzIFZ9fFaeJowXvQT4DkTORnbwRe0coFtryMb5Ltyu+2mHqFk3AelrB6GH0OlviNg/t90NRor5WYJjDDU=
+  property:cloudflareTunnelname:
+    secure: AAABAAYpTD95ThgK2BW8pMUo2TipGL+R9jgq9yvJnGuCPxrmUJ513GWcsA==
+  property:cloudflareZoneId:
+    secure: AAABALEriqV06QnhN+z953OXmEfOD429Y1XjW4Ta0e8BSlnX0K63DZGzyVye17UD0dR7BcnAhqNJ2mg9wVMycw==
+  property:dbPassword:
+    secure: AAABAPq9PNQrBahrpLEkydUTfzY7CGp9H32QqbQ5PYr3DsxvvudEf7heBGPPG0qHraEAQMPc0sLTaDwgp4m8l6e7bGbby5GVmW1fsg==
+  property:secretKey:
+    secure: AAABANb2EoR3kqsX0nCNv00+1NhWeC+m/qOSgOuvsljGaG3vLqQu+l0Pd3lZCwgJMYfafChrcClWhkMHERu6xfk96CswW0HBoCGhCE3TV3lryBHxLM7Evi1/v8WBE9vkjlvJpRpSXA/pAlzdPyvPLV0gF14fTCLo
+  property:turnstileSecretKey:
+    secure: AAABAIU/jpC4NPR6DX7n7n9TbF6biHmmdCkgZg3+V78IJ1S0NgK1EDxaTZN1RrR2fEVIow/14+k=
+  property:turnstileSiteKey:
+    secure: AAABANjEXhww5WRQ2zaaeU7M3qOzdUxR00JvsMeUQdhGOFtSIT/AmfjaV5Nt0FrObzI6lNsrh7TDz9Qq2uQKmHGA+w==
+  property:rustfsPassword:
+    secure: AAABAKnL6hrpqagnzkQ+a91ptsIBC9ZEI5mYtqIvVf+JakfazWhU87ULNhbf+/dsl3Cvn4FDT9SbqG/faHA3KByXqSxNjnMQoJLIRg==
+  property:cloudflareAccountId:
+    secure: AAABAGDjd9U1eNrFmoUMZ3LI5l9Opi4DO+Wct6vUvYt92CZ5SpwWnL83DvlgNrWaYahxsr109uoptxBv8cL4Hg==

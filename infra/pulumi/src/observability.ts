@@ -39,8 +39,8 @@ export function createObservability(
   const asynqmonService = new k8s.core.v1.Service("asynqmon", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
-      ports: [{ port: 8082, targetPort: 8080 }],
+      type: "ClusterIP",
+      ports: [{ port: 8080, targetPort: 8080 }],
       selector: asynqmonLabels,
     },
   });
@@ -126,7 +126,7 @@ scrape_configs:
   const prometheusService = new k8s.core.v1.Service("prometheus", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
+      type: "ClusterIP",
       ports: [{ port: 9090, targetPort: 9090 }],
       selector: prometheusLabels,
     },
@@ -216,11 +216,133 @@ schema_config:
   const lokiService = new k8s.core.v1.Service("loki", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
+      type: "ClusterIP",
       ports: [{ port: 3100, targetPort: 3100 }],
       selector: lokiLabels,
     },
   });
+
+  // Promtail
+  const promtailServiceAccount = new k8s.core.v1.ServiceAccount("promtail-sa", {
+    metadata: { namespace: ns.metadata.name },
+  });
+
+  const promtailClusterRole = new k8s.rbac.v1.ClusterRole("promtail-cr", {
+    rules: [
+      {
+        apiGroups: [""],
+        resources: ["nodes", "nodes/proxy", "services", "endpoints", "pods"],
+        verbs: ["get", "list", "watch"],
+      },
+    ],
+  });
+
+  const promtailClusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding(
+    "promtail-crb",
+    {
+      roleRef: {
+        apiGroup: "rbac.authorization.k8s.io",
+        kind: "ClusterRole",
+        name: promtailClusterRole.metadata.name,
+      },
+      subjects: [
+        {
+          kind: "ServiceAccount",
+          name: promtailServiceAccount.metadata.name,
+          namespace: ns.metadata.name,
+        },
+      ],
+    },
+  );
+
+  const promtailConfig = new k8s.core.v1.ConfigMap("promtail-config", {
+    metadata: { namespace: ns.metadata.name },
+    data: {
+      "promtail.yaml": pulumi.interpolate`
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki.${ns.metadata.name}.svc.cluster.local:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: kubernetes-pods
+    pipeline_stages:
+      - docker: {}
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: job
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+      - source_labels: [__meta_kubernetes_pod_container_name]
+        target_label: container
+      - replacement: /var/log/pods/$1/*.log
+        separator: /
+        source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_uid, __meta_kubernetes_pod_container_name]
+        target_label: __path__
+`,
+    },
+  });
+
+  const promtailLabels = { app: "promtail" };
+  const promtailDaemonSet = new k8s.apps.v1.DaemonSet(
+    "promtail",
+    {
+      metadata: { namespace: ns.metadata.name },
+      spec: {
+        selector: { matchLabels: promtailLabels },
+        template: {
+          metadata: { labels: promtailLabels },
+          spec: {
+            serviceAccountName: promtailServiceAccount.metadata.name,
+            containers: [
+              {
+                name: "promtail",
+                image: "grafana/promtail:latest",
+                args: ["-config.file=/etc/promtail/promtail.yaml"],
+                env: [
+                  {
+                    name: "HOSTNAME",
+                    valueFrom: { fieldRef: { fieldPath: "spec.nodeName" } },
+                  },
+                ],
+                ports: [{ containerPort: 9080, name: "http-metrics" }],
+                volumeMounts: [
+                  { name: "config", mountPath: "/etc/promtail" },
+                  { name: "logs", mountPath: "/var/log" },
+                  {
+                    name: "varlibdockercontainers",
+                    mountPath: "/var/lib/docker/containers",
+                    readOnly: true,
+                  },
+                ],
+              },
+            ],
+            volumes: [
+              {
+                name: "config",
+                configMap: { name: promtailConfig.metadata.name },
+              },
+              { name: "logs", hostPath: { path: "/var/log" } },
+              {
+                name: "varlibdockercontainers",
+                hostPath: { path: "/var/lib/docker/containers" },
+              },
+            ],
+          },
+        },
+      },
+    },
+    { dependsOn: dependOn },
+  );
 
   // Grafana provisioning
   const grafanaDatasourcesConfig = new k8s.core.v1.ConfigMap(
@@ -535,7 +657,7 @@ providers:
   const grafanaService = new k8s.core.v1.Service("grafana", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
+      type: "ClusterIP",
       ports: [{ port: 3000, targetPort: 3000 }],
       selector: grafanaLabels,
     },

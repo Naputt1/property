@@ -57,7 +57,7 @@ export function createRustFS(ns: Namespace, config: pulumi.Config) {
   const rustfsService = new k8s.core.v1.Service("rustfs", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
+      type: "ClusterIP",
       ports: [
         { name: "api", port: 9000, targetPort: 9000 },
         { name: "console", port: 9001, targetPort: 9001 },

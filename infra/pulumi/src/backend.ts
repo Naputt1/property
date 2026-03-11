@@ -49,11 +49,6 @@ export function createBackend(
                     value: pulumi.interpolate`${redisHost}:6379`,
                   },
                   {
-                    name: "ASYNQ_URL",
-                    value: pulumi.interpolate`${redisHost}:6379`,
-                  },
-
-                  {
                     name: "RUSTFS_URL",
                     value: pulumi.interpolate`http://${rustfsHost}:${services.rustfs.spec.ports[0].port}`,
                   },
@@ -76,7 +71,7 @@ export function createBackend(
   const backendService = new k8s.core.v1.Service("backend", {
     metadata: { namespace: ns.metadata.name },
     spec: {
-      type: "LoadBalancer",
+      type: "ClusterIP",
       ports: [{ port: 8080, targetPort: 8080 }],
       selector: backendLabels,
     },
