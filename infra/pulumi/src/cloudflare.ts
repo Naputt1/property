@@ -96,9 +96,10 @@ export async function createCloudflareTunnel(
   );
 
   // Add our rule
+  // Using the internal ClusterIP service name
   ingresses.push({
     hostname: recordHostname,
-    service: pulumi.interpolate`http://backend.${ns.metadata.name}.svc.cluster.local:${backendService.spec.ports[0].port}`,
+    service: pulumi.interpolate`http://${backendService.spec.clusterIP}:${backendService.spec.ports[0].port}`,
   });
 
   // Append catch-all rule at the end
@@ -118,32 +119,5 @@ export async function createCloudflareTunnel(
     { provider: provider },
   );
 
-  // 4. Deploy cloudflared in Kubernetes
-  const tunnelLabels = { app: "cloudflared" };
-  const cloudflaredDeployment = new k8s.apps.v1.Deployment("cloudflared", {
-    metadata: { namespace: ns.metadata.name },
-    spec: {
-      selector: { matchLabels: tunnelLabels },
-      template: {
-        metadata: { labels: tunnelLabels },
-        spec: {
-          containers: [
-            {
-              name: "cloudflared",
-              image: "cloudflare/cloudflared:latest",
-              args: ["tunnel", "run"],
-              env: [
-                {
-                  name: "TUNNEL_TOKEN",
-                  value: tunnelToken.token,
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  });
-
-  return { tunnel, dnsRecord, tunnelId };
+  return { tunnel, dnsRecord, tunnelId, tunnelToken: tunnelToken.token };
 }

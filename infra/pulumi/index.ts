@@ -81,6 +81,8 @@ export const rustfsPort = rustfsService.spec.ports.apply((ports) => {
   return apiPort?.port;
 });
 
+export const rustfsIP = rustfsService.spec.clusterIP;
+
 export const asynqmonUrl = asynqmonService.status.loadBalancer.ingress[0].ip;
 
 export const prometheusUrl =
