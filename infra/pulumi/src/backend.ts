@@ -31,7 +31,7 @@ export function createBackend(
             containers: [
               {
                 name: "backend",
-                image: "naputt/git:property-manage-backend-latest",
+                image: "naputt/property-backend:latest",
                 imagePullPolicy: "Always",
                 env: [
                   { name: "PORT", value: "8080" },
