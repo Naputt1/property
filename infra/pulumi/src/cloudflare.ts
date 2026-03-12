@@ -6,7 +6,6 @@ import { Namespace } from "@pulumi/kubernetes/core/v1";
 export async function createCloudflareTunnel(
   ns: Namespace,
   config: pulumi.Config,
-  backendService: k8s.core.v1.Service,
 ) {
   // Use .require() instead of .requireSecret() for IDs to allow using them in get() calls.
   // These values must be provided as plain strings in the Pulumi config.
@@ -96,10 +95,18 @@ export async function createCloudflareTunnel(
   );
 
   // Add our rule
-  // Using the internal ClusterIP service name
+  // Using the Traefik service in kube-system as the backend for the tunnel
+  const traefikServiceUrl = "http://traefik.kube-system.svc.cluster.local:80";
+
   ingresses.push({
     hostname: recordHostname,
-    service: pulumi.interpolate`http://${backendService.spec.clusterIP}:${backendService.spec.ports[0].port}`,
+    service: traefikServiceUrl,
+  });
+
+  // Add wildcard for tenants
+  ingresses.push({
+    hostname: `*.${recordHostname}`,
+    service: traefikServiceUrl,
   });
 
   // Append catch-all rule at the end

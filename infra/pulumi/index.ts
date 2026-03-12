@@ -6,6 +6,7 @@ import { createRedis } from "./src/redis";
 import { createBackend } from "./src/backend";
 import { createObservability } from "./src/observability";
 import { createCloudflareTunnel } from "./src/cloudflare";
+import { createIngress } from "./src/ingress";
 
 // Config
 const config = new pulumi.Config();
@@ -53,6 +54,12 @@ const { service: backendService, deployment: backendDeployment } =
     ],
   );
 
+// Ingress
+const ingress = createIngress(ns, {
+  backend: backendService,
+  rustfs: rustfsService,
+});
+
 // Observability Deployment
 const { asynqmonService, prometheusService, grafanaService } =
   createObservability(
@@ -66,14 +73,12 @@ const { asynqmonService, prometheusService, grafanaService } =
   );
 
 // Cloudflare Tunnel
-
-const tunnelResources = createCloudflareTunnel(ns, config, backendService);
+const tunnelResources = createCloudflareTunnel(ns, config);
 
 // Outputs
-
-export const backendUrl = backendService.status.loadBalancer.ingress[0].ip;
-
-export const rustfsUrl = rustfsService.status.loadBalancer.ingress[0].ip;
+export const backendUrl = "https://property.napnap.work/api";
+export const frontendUrl = "https://property.napnap.work";
+export const rustfsUploadUrl = "http://ras-pi.tail0684eb.ts.net";
 
 export const rustfsPort = rustfsService.spec.ports.apply((ports) => {
   const apiPort = ports.find((p) => p.name === "api");
@@ -84,14 +89,9 @@ export const rustfsPort = rustfsService.spec.ports.apply((ports) => {
 export const rustfsIP = rustfsService.spec.clusterIP;
 
 export const asynqmonUrl = asynqmonService.status.loadBalancer.ingress[0].ip;
-
-export const prometheusUrl =
-  prometheusService.status.loadBalancer.ingress[0].ip;
-
+export const prometheusUrl = prometheusService.status.loadBalancer.ingress[0].ip;
 export const grafanaUrl = grafanaService.status.loadBalancer.ingress[0].ip;
 
 export const tunnelId = tunnelResources.then((r) => r.tunnelId);
-
 export const rustfsAccessKey = "rustfsadmin";
-
 export const rustfsPassword = config.requireSecret("rustfsPassword");
