@@ -99,8 +99,6 @@ jobs:
         run: |
           cd infra/pulumi
 
-          RUSTFS_IP=$(pulumi stack output rustfsIP)
-          RUSTFS_PORT=$(pulumi stack output rustfsPort)
           RUSTFS_ACCESS_KEY=$(pulumi stack output rustfsAccessKey)
           RUSTFS_SECRET_KEY=$(pulumi stack output rustfsPassword --show-secrets)
 
@@ -109,7 +107,7 @@ jobs:
           cd ../../frontend
           chmod +x upload-to-rustfs.sh
 
-          RUSTFS_URL="http://${RUSTFS_IP}:${RUSTFS_PORT}" \
+          RUSTFS_URL="http://rustfs-property.ras-pi.tail0684eb.ts.net" \
           RUSTFS_ACCESS_KEY="$RUSTFS_ACCESS_KEY" \
           RUSTFS_SECRET_KEY="$RUSTFS_SECRET_KEY" \
           ./upload-to-rustfs.sh
