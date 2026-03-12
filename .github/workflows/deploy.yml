@@ -47,9 +47,9 @@ jobs:
           push: true
           platforms: linux/arm64
           context: ./backend
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-latest
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cache,mode=max
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cache,mode=max
 
           # For Raspberry Pi (ARM), you might want to enable multi-arch build
           # platforms: linux/amd64,linux/arm64
