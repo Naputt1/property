@@ -28,4 +28,19 @@ aws s3 mb s3://"$BUCKET_NAME" --endpoint-url "$RUSTFS_URL" || echo "Bucket might
 # Sync dist to bucket
 aws s3 sync dist s3://"$BUCKET_NAME" --endpoint-url "$RUSTFS_URL" --delete
 
+echo "Setting public bucket policy..."
+# Make bucket public (read-only for anonymous users)
+POLICY='{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": ["s3:GetObject"],
+      "Resource": ["arn:aws:s3:::'"$BUCKET_NAME"'/*"]
+    }
+  ]
+}'
+aws s3api put-bucket-policy --bucket "$BUCKET_NAME" --policy "$POLICY" --endpoint-url "$RUSTFS_URL"
+
 echo "Frontend deployed successfully to RustFS!"
