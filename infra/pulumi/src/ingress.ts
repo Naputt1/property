@@ -91,13 +91,30 @@ export function createIngress(
         },
       },
       spec: {
+        rules: hosts.map((host) => ({
+          host: host,
+          http: {
+            paths: [bucketPath],
+          },
+        })),
+      },
+    },
+  );
+
+  // Ingress for RustFS API (No Middleware)
+  // This is used for uploading files (S3 API)
+  const rustfsApiIngress = new k8s.networking.v1.Ingress(
+    "property-rustfs-api-ingress",
+    {
+      metadata: {
+        namespace: ns.metadata.name,
+        annotations: {
+          "kubernetes.io/ingress.class": "traefik",
+          "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+        },
+      },
+      spec: {
         rules: [
-          ...hosts.map((host) => ({
-            host: host,
-            http: {
-              paths: [bucketPath],
-            },
-          })),
           {
             host: "rustfs.property.ras-pi.tail0684eb.ts.net",
             http: {
@@ -109,5 +126,10 @@ export function createIngress(
     },
   );
 
-  return { apiIngress, frontendIngress, frontendPrefixMiddleware };
+  return {
+    apiIngress,
+    frontendIngress,
+    rustfsApiIngress,
+    frontendPrefixMiddleware,
+  };
 }
