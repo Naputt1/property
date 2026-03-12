@@ -55,7 +55,15 @@ const { service: backendService, deployment: backendDeployment } =
   );
 
 // Ingress
-const { apiIngress, frontendIngress, rustfsApiIngress } = createIngress(ns, {
+const {
+  apiIngress,
+  frontendIndexIngress,
+  frontendAssetsIngress,
+  rustfsApiIngress,
+  frontendIndexMiddleware,
+  frontendCacheMiddleware,
+  frontendNoCacheMiddleware,
+} = createIngress(ns, {
   backend: backendService,
   rustfs: rustfsService,
 });
