@@ -98,7 +98,7 @@ export async function createCloudflareTunnel(
   // Add our rule
   ingresses.push({
     hostname: recordHostname,
-    service: pulumi.interpolate`http://192.168.1.113:${backendService.spec.ports[0].port}`, // Internal K8s service name
+    service: pulumi.interpolate`http://backend.${ns.metadata.name}.svc.cluster.local:${backendService.spec.ports[0].port}`,
   });
 
   // Append catch-all rule at the end
