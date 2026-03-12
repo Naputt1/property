@@ -6,7 +6,8 @@ export function createIngress(
   ns: Namespace,
   services: { backend: Service; rustfs: Service },
 ) {
-  const hosts = ["property.napnap.work", "ras-pi.tail0684eb.ts.net"];
+  const frontendHosts = ["property.napnap.work", "ras-pi.tail0684eb.ts.net"];
+  const rustfsHost = "rustfs.property.ras-pi.tail0684eb.ts.net";
 
   // Middleware to prepend /property to the path for RustFS
   const frontendPrefixMiddleware = new k8s.apiextensions.CustomResource(
@@ -105,7 +106,7 @@ export function createIngress(
       },
     },
     spec: {
-      rules: hosts.map((host) => ({
+      rules: frontendHosts.map((host) => ({
         host: host,
         http: {
           paths: [
@@ -149,7 +150,7 @@ export function createIngress(
         },
       },
       spec: {
-        rules: hosts.flatMap((host) => [
+        rules: frontendHosts.flatMap((host) => [
           {
             host: host,
             http: {
@@ -185,7 +186,7 @@ export function createIngress(
         },
       },
       spec: {
-        rules: hosts.map((host) => ({
+        rules: frontendHosts.map((host) => ({
           host: host,
           http: {
             paths: [
@@ -211,6 +212,8 @@ export function createIngress(
         annotations: {
           "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+          // Set a higher priority to ensure this matches before other catch-all rules if they exist
+          "traefik.ingress.kubernetes.io/router.priority": "100",
         },
       },
       spec: {
@@ -218,7 +221,13 @@ export function createIngress(
           {
             host: "rustfs.property.ras-pi.tail0684eb.ts.net",
             http: {
-              paths: [bucketPath],
+              paths: [
+                {
+                  path: "/",
+                  pathType: "Prefix",
+                  backend: bucketPath.backend,
+                },
+              ],
             },
           },
         ],
