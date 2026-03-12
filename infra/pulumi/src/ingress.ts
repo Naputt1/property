@@ -5,6 +5,41 @@ export function createIngress(
   ns: Namespace,
   services: { backend: Service; rustfs: Service },
 ) {
+  const bucketPath = {
+    path: "/",
+    pathType: "Prefix",
+    backend: {
+      service: {
+        name: services.rustfs.metadata.name,
+        port: { number: 9000 },
+      },
+    },
+  };
+
+  const commonPaths = [
+    {
+      path: "/api",
+      pathType: "Prefix",
+      backend: {
+        service: {
+          name: services.backend.metadata.name,
+          port: { number: 8080 },
+        },
+      },
+    },
+    {
+      path: "/ws",
+      pathType: "Prefix",
+      backend: {
+        service: {
+          name: services.backend.metadata.name,
+          port: { number: 8080 },
+        },
+      },
+    },
+    bucketPath,
+  ];
+
   const ingress = new k8s.networking.v1.Ingress("property-ingress", {
     metadata: {
       namespace: ns.metadata.name,
@@ -18,73 +53,13 @@ export function createIngress(
         {
           host: "property.napnap.work",
           http: {
-            paths: [
-              {
-                path: "/api",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: services.backend.metadata.name,
-                    port: { number: 8080 },
-                  },
-                },
-              },
-              {
-                path: "/ws",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: services.backend.metadata.name,
-                    port: { number: 8080 },
-                  },
-                },
-              },
-              {
-                path: "/",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: services.rustfs.metadata.name,
-                    port: { number: 9000 },
-                  },
-                },
-              },
-            ],
+            paths: commonPaths,
           },
         },
         {
-          host: "property.napnap.work",
+          host: "rustfs.property.ras-pi.tail0684eb.ts.net",
           http: {
-            paths: [
-              {
-                path: "/",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: services.rustfs.metadata.name,
-                    port: { number: 9000 },
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          host: "rustfs-property.ras-pi.tail0684eb.ts.net",
-          http: {
-            paths: [
-              {
-                // Root path still works
-                path: "/",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: services.rustfs.metadata.name,
-                    port: { number: 9000 },
-                  },
-                },
-              },
-            ],
+            paths: [bucketPath],
           },
         },
       ],
