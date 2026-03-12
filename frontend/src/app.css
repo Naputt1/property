@@ -145,13 +145,13 @@ body {
 
 /* Leaflet Customizations */
 .custom-leaflet-tooltip {
-  @apply bg-transparent border-none shadow-none !important;
+  @apply !bg-transparent !border-none !shadow-none;
 }
 
 .custom-leaflet-tooltip::before {
-  @apply border-none !important;
+  @apply !border-none;
 }
 
 .leaflet-container {
-  @apply font-sans !important;
+  @apply !font-sans;
 }
