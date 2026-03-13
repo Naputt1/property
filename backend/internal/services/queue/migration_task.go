@@ -20,6 +20,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
+	"compress/gzip"
 )
 
 // cleanUUID removes curly braces and normalizes the TUI to a standard UUID string format
@@ -453,7 +454,22 @@ func (h *MigrationHandler) HandleCSVMigrateTask(ctx context.Context, t *asynq.Ta
 
 	defer object.Close()
 
-	reader := csv.NewReader(object)
+	var reader *csv.Reader
+	if strings.HasSuffix(strings.ToLower(payload.BucketKey), ".gz") {
+		slog.Info("Detected gzipped CSV file", "bucket_key", payload.BucketKey)
+		gzReader, err := gzip.NewReader(object)
+		if err != nil {
+			slog.Error("Failed to create gzip reader", "error", err)
+			if jobID != "" {
+				_ = h.svcs.Job.UpdateJobStatus(ctx, jobID, models.JobStatusFailed, fmt.Sprintf("Failed to decompress file: %v", err))
+			}
+			return err
+		}
+		defer gzReader.Close()
+		reader = csv.NewReader(gzReader)
+	} else {
+		reader = csv.NewReader(object)
+	}
 
 	// Skip header if needed
 	if payload.HasHeader {
