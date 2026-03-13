@@ -303,6 +303,19 @@ scrape_configs:
           metadata: { labels: promtailLabels },
           spec: {
             serviceAccountName: promtailServiceAccount.metadata.name,
+            initContainers: [
+              {
+                name: "init-sysctl",
+                image: "busybox:1.36",
+                command: [
+                  "sysctl",
+                  "-w",
+                  "fs.inotify.max_user_instances=512",
+                  "fs.inotify.max_user_watches=1048576",
+                ],
+                securityContext: { privileged: true },
+              },
+            ],
             containers: [
               {
                 name: "promtail",
@@ -315,6 +328,10 @@ scrape_configs:
                   },
                 ],
                 ports: [{ containerPort: 9080, name: "http-metrics" }],
+                resources: {
+                  requests: { cpu: "100m", memory: "128Mi" },
+                  limits: { cpu: "200m", memory: "256Mi" },
+                },
                 volumeMounts: [
                   { name: "config", mountPath: "/etc/promtail" },
                   { name: "logs", mountPath: "/var/log" },
