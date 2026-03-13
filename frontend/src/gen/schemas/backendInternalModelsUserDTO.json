@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer" },
+    "is_admin": { "type": "boolean" },
+    "name": { "type": "string" },
+    "username": { "type": "string" }
+  },
+  "x-readme-ref-name": "backend_internal_models.UserDTO"
+}

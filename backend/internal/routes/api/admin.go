@@ -269,7 +269,7 @@ type UpdateUserRequest struct {
 // @Tags admin
 // @Produce json
 // @Security JwtAuth
-// @Success 200 {array} models.User
+// @Success 200 {array} models.UserDTO
 // @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 403 {object} ErrorResponse "Forbidden"
 // @Failure 500 {object} ErrorResponse
@@ -281,7 +281,13 @@ func ListUsers(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to list users"})
 		return
 	}
-	c.JSON(http.StatusOK, users)
+
+	userDTOs := make([]models.UserDTO, len(users))
+	for i, u := range users {
+		userDTOs[i] = u.ToDTO()
+	}
+
+	c.JSON(http.StatusOK, userDTOs)
 }
 
 // CreateUser godoc

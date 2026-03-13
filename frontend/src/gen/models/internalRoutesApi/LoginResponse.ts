@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsUser } from "../backendInternalModels/User.ts";
+import type { BackendInternalModelsUserDTO } from "../backendInternalModels/UserDTO.ts";
 
 export type InternalRoutesApiLoginResponse = {
   /**
@@ -17,5 +17,5 @@ export type InternalRoutesApiLoginResponse = {
   /**
    * @type object | undefined
    */
-  user?: BackendInternalModelsUser;
+  user?: BackendInternalModelsUserDTO;
 };

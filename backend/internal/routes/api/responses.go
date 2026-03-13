@@ -11,9 +11,9 @@ type BaseResponse struct {
 // --- Raw Responses (used by backend implementation) ---
 
 type LoginResponse struct {
-	Status bool         `json:"status" example:"true"`
-	Token  string       `json:"token,omitempty"`
-	User   *models.User `json:"user,omitempty"`
+	Status bool           `json:"status" example:"true"`
+	Token  string         `json:"token,omitempty"`
+	User   models.UserDTO `json:"user,omitempty"`
 }
 
 type ErrorResponse struct {
@@ -74,8 +74,8 @@ type TimeRangeResponse struct {
 // --- Payload Types (used for Swagger documentation to match unwrapped frontend types) ---
 
 type LoginPayload struct {
-	Token string       `json:"token"`
-	User  *models.User `json:"user"`
+	Token string         `json:"token"`
+	User  models.UserDTO `json:"user"`
 }
 
 // GraphQLRequest defines the structure for a GraphQL operation

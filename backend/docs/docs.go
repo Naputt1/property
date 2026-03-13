@@ -58,31 +58,31 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                            "$ref": "#/definitions/api.JobResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden (Admin only)",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -107,25 +107,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden (Admin only)",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -162,31 +162,31 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                            "$ref": "#/definitions/api.JobResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden (Admin only)",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -223,31 +223,31 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                            "$ref": "#/definitions/api.JobResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden (Admin only)",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -274,26 +274,26 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/backend_internal_models.User"
+                                "$ref": "#/definitions/models.UserDTO"
                             }
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -322,7 +322,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.CreateUserRequest"
+                            "$ref": "#/definitions/api.CreateUserRequest"
                         }
                     }
                 ],
@@ -330,31 +330,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -392,7 +392,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.UpdateUserRequest"
+                            "$ref": "#/definitions/api.UpdateUserRequest"
                         }
                     }
                 ],
@@ -400,31 +400,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -456,31 +456,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -503,13 +503,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.AffordabilityResponse"
+                            "$ref": "#/definitions/api.AffordabilityResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -554,13 +554,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.GrowthHotspotResponse"
+                            "$ref": "#/definitions/api.GrowthHotspotResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -598,13 +598,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.MedianPriceResponse"
+                            "$ref": "#/definitions/api.MedianPriceResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -636,13 +636,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.NewBuildPremiumResponse"
+                            "$ref": "#/definitions/api.NewBuildPremiumResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -665,13 +665,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PriceBracketResponse"
+                            "$ref": "#/definitions/api.PriceBracketResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -703,13 +703,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PriceTrendResponse"
+                            "$ref": "#/definitions/api.PriceTrendResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -732,13 +732,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.PropertyTypeDistributionResponse"
+                            "$ref": "#/definitions/api.PropertyTypeDistributionResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -761,13 +761,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.TimeRangeResponse"
+                            "$ref": "#/definitions/api.TimeRangeResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -812,13 +812,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.TopActiveAreaResponse"
+                            "$ref": "#/definitions/api.TopActiveAreaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -844,7 +844,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.GraphQLRequest"
+                            "$ref": "#/definitions/api.GraphQLRequest"
                         }
                     }
                 ],
@@ -852,19 +852,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.GraphQLResponse"
+                            "$ref": "#/definitions/api.GraphQLResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid GraphQL request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized (if authentication is required for specific operation)",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -890,7 +890,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.LoginBody"
+                            "$ref": "#/definitions/api.LoginBody"
                         }
                     }
                 ],
@@ -898,25 +898,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.LoginResponse"
+                            "$ref": "#/definitions/api.LoginResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid request body",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Invalid username or password",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -939,7 +939,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     }
                 }
@@ -970,7 +970,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ChangePasswordRequest"
+                            "$ref": "#/definitions/api.ChangePasswordRequest"
                         }
                     }
                 ],
@@ -978,25 +978,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                            "$ref": "#/definitions/api.BaseResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -1004,172 +1004,13 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "backend_internal_models.AffordabilityResult": {
-            "type": "object",
-            "properties": {
-                "avg_price": {
-                    "type": "integer"
-                },
-                "property_type": {
-                    "type": "string"
-                },
-                "relative_affordability": {
-                    "type": "number"
-                }
-            }
-        },
-        "backend_internal_models.GrowthHotspotResult": {
-            "type": "object",
-            "properties": {
-                "current_median": {
-                    "type": "integer"
-                },
-                "growth_rate": {
-                    "type": "number"
-                },
-                "prev_median": {
-                    "type": "integer"
-                },
-                "region": {
-                    "type": "string"
-                }
-            }
-        },
-        "backend_internal_models.MedianPriceResult": {
-            "type": "object",
-            "properties": {
-                "median_price": {
-                    "type": "integer"
-                },
-                "region": {
-                    "type": "string"
-                }
-            }
-        },
-        "backend_internal_models.NewBuildPremiumResult": {
-            "type": "object",
-            "properties": {
-                "new_avg": {
-                    "type": "integer"
-                },
-                "old_avg": {
-                    "type": "integer"
-                },
-                "premium_percent": {
-                    "type": "number"
-                },
-                "region": {
-                    "type": "string"
-                }
-            }
-        },
-        "backend_internal_models.PriceBracketResult": {
-            "type": "object",
-            "properties": {
-                "bracket": {
-                    "type": "string"
-                },
-                "count": {
-                    "type": "integer"
-                },
-                "percentage": {
-                    "type": "number"
-                }
-            }
-        },
-        "backend_internal_models.PriceTrendResult": {
-            "type": "object",
-            "properties": {
-                "avg_price": {
-                    "type": "integer"
-                },
-                "median_price": {
-                    "type": "integer"
-                },
-                "period": {
-                    "type": "string"
-                },
-                "transaction_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "backend_internal_models.PropertyTypeDistributionResult": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "percentage": {
-                    "type": "number"
-                },
-                "property_type": {
-                    "type": "string"
-                }
-            }
-        },
-        "backend_internal_models.TimeRangeResult": {
-            "type": "object",
-            "properties": {
-                "max_year": {
-                    "type": "integer"
-                },
-                "min_year": {
-                    "type": "integer"
-                }
-            }
-        },
-        "backend_internal_models.TopActiveAreaResult": {
-            "type": "object",
-            "properties": {
-                "region": {
-                    "type": "string"
-                },
-                "total_value": {
-                    "type": "integer"
-                },
-                "transaction_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "backend_internal_models.User": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_admin": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "refresh_version": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_routes_api.AffordabilityResponse": {
+        "api.AffordabilityResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.AffordabilityResult"
+                        "$ref": "#/definitions/models.AffordabilityResult"
                     }
                 },
                 "message": {
@@ -1181,7 +1022,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.BaseResponse": {
+        "api.BaseResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -1193,7 +1034,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.ChangePasswordRequest": {
+        "api.ChangePasswordRequest": {
             "type": "object",
             "required": [
                 "new_password",
@@ -1209,7 +1050,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.CreateUserRequest": {
+        "api.CreateUserRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -1231,7 +1072,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.ErrorResponse": {
+        "api.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1243,7 +1084,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.GraphQLError": {
+        "api.GraphQLError": {
             "type": "object",
             "properties": {
                 "extensions": {
@@ -1253,7 +1094,7 @@ const docTemplate = `{
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_routes_api.GraphQLLocation"
+                        "$ref": "#/definitions/api.GraphQLLocation"
                     }
                 },
                 "message": {
@@ -1265,7 +1106,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.GraphQLLocation": {
+        "api.GraphQLLocation": {
             "type": "object",
             "properties": {
                 "column": {
@@ -1276,7 +1117,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.GraphQLRequest": {
+        "api.GraphQLRequest": {
             "type": "object",
             "properties": {
                 "operationName": {
@@ -1295,7 +1136,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.GraphQLResponse": {
+        "api.GraphQLResponse": {
             "type": "object",
             "properties": {
                 "data": {
@@ -1305,18 +1146,18 @@ const docTemplate = `{
                     "description": "Any errors encountered during execution",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_routes_api.GraphQLError"
+                        "$ref": "#/definitions/api.GraphQLError"
                     }
                 }
             }
         },
-        "internal_routes_api.GrowthHotspotResponse": {
+        "api.GrowthHotspotResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.GrowthHotspotResult"
+                        "$ref": "#/definitions/models.GrowthHotspotResult"
                     }
                 },
                 "message": {
@@ -1328,7 +1169,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.JobResponse": {
+        "api.JobResponse": {
             "type": "object",
             "properties": {
                 "job_id": {
@@ -1343,7 +1184,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.LoginBody": {
+        "api.LoginBody": {
             "type": "object",
             "required": [
                 "password",
@@ -1358,7 +1199,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.LoginResponse": {
+        "api.LoginResponse": {
             "type": "object",
             "properties": {
                 "status": {
@@ -1369,17 +1210,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/backend_internal_models.User"
+                    "$ref": "#/definitions/models.UserDTO"
                 }
             }
         },
-        "internal_routes_api.MedianPriceResponse": {
+        "api.MedianPriceResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.MedianPriceResult"
+                        "$ref": "#/definitions/models.MedianPriceResult"
                     }
                 },
                 "message": {
@@ -1391,13 +1232,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.NewBuildPremiumResponse": {
+        "api.NewBuildPremiumResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.NewBuildPremiumResult"
+                        "$ref": "#/definitions/models.NewBuildPremiumResult"
                     }
                 },
                 "message": {
@@ -1409,13 +1250,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.PriceBracketResponse": {
+        "api.PriceBracketResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.PriceBracketResult"
+                        "$ref": "#/definitions/models.PriceBracketResult"
                     }
                 },
                 "message": {
@@ -1427,13 +1268,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.PriceTrendResponse": {
+        "api.PriceTrendResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.PriceTrendResult"
+                        "$ref": "#/definitions/models.PriceTrendResult"
                     }
                 },
                 "message": {
@@ -1445,13 +1286,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.PropertyTypeDistributionResponse": {
+        "api.PropertyTypeDistributionResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.PropertyTypeDistributionResult"
+                        "$ref": "#/definitions/models.PropertyTypeDistributionResult"
                     }
                 },
                 "message": {
@@ -1463,11 +1304,11 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.TimeRangeResponse": {
+        "api.TimeRangeResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/backend_internal_models.TimeRangeResult"
+                    "$ref": "#/definitions/models.TimeRangeResult"
                 },
                 "message": {
                     "type": "string"
@@ -1478,13 +1319,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.TopActiveAreaResponse": {
+        "api.TopActiveAreaResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/backend_internal_models.TopActiveAreaResult"
+                        "$ref": "#/definitions/models.TopActiveAreaResult"
                     }
                 },
                 "message": {
@@ -1496,12 +1337,158 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_routes_api.UpdateUserRequest": {
+        "api.UpdateUserRequest": {
             "type": "object",
             "required": [
                 "username"
             ],
             "properties": {
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AffordabilityResult": {
+            "type": "object",
+            "properties": {
+                "avg_price": {
+                    "type": "integer"
+                },
+                "property_type": {
+                    "type": "string"
+                },
+                "relative_affordability": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.GrowthHotspotResult": {
+            "type": "object",
+            "properties": {
+                "current_median": {
+                    "type": "integer"
+                },
+                "growth_rate": {
+                    "type": "number"
+                },
+                "prev_median": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MedianPriceResult": {
+            "type": "object",
+            "properties": {
+                "median_price": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.NewBuildPremiumResult": {
+            "type": "object",
+            "properties": {
+                "new_avg": {
+                    "type": "integer"
+                },
+                "old_avg": {
+                    "type": "integer"
+                },
+                "premium_percent": {
+                    "type": "number"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PriceBracketResult": {
+            "type": "object",
+            "properties": {
+                "bracket": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "percentage": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.PriceTrendResult": {
+            "type": "object",
+            "properties": {
+                "avg_price": {
+                    "type": "integer"
+                },
+                "median_price": {
+                    "type": "integer"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "transaction_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PropertyTypeDistributionResult": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "property_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.TimeRangeResult": {
+            "type": "object",
+            "properties": {
+                "max_year": {
+                    "type": "integer"
+                },
+                "min_year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.TopActiveAreaResult": {
+            "type": "object",
+            "properties": {
+                "region": {
+                    "type": "string"
+                },
+                "total_value": {
+                    "type": "integer"
+                },
+                "transaction_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.UserDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "is_admin": {
                     "type": "boolean"
                 },

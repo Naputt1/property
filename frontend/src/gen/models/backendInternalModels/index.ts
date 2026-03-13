@@ -8,3 +8,4 @@ export type { BackendInternalModelsPropertyTypeDistributionResult } from "./Prop
 export type { BackendInternalModelsTimeRangeResult } from "./TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./User.ts";
+export type { BackendInternalModelsUserDTO } from "./UserDTO.ts";

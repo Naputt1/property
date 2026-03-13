@@ -7,4 +7,5 @@ export { backendInternalModelsPriceTrendResultSchema } from "./priceTrendResultS
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./propertyTypeDistributionResultSchema.ts";
 export { backendInternalModelsTimeRangeResultSchema } from "./timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./topActiveAreaResultSchema.ts";
+export { backendInternalModelsUserDTOSchema } from "./userDTOSchema.ts";
 export { backendInternalModelsUserSchema } from "./userSchema.ts";
