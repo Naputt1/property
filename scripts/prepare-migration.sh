@@ -70,12 +70,13 @@ if command -v aws &> /dev/null; then
     export AWS_DEFAULT_REGION="us-east-1"
 
     # Configure AWS CLI for better reliability on large files
-    echo "Configuring AWS CLI for large file upload (concurrency: 10, chunksize: 32MB, timeout: 300s)..."
-    aws configure set default.s3.max_concurrent_requests 10
-    aws configure set default.s3.multipart_chunksize 32MB
-    aws configure set default.s3.multipart_threshold 128MB
+    echo "Configuring AWS CLI for large file upload (concurrency: 3, chunksize: 16MB, timeout: 600s)..."
+    aws configure set default.s3.max_concurrent_requests 3
+    aws configure set default.s3.multipart_chunksize 16MB
+    aws configure set default.s3.multipart_threshold 64MB
     aws configure set default.s3.max_attempts 20
-    # Note: connect_timeout and read_timeout are set in config file, or use global options if supported
+    aws configure set default.s3.addressing_style path
+    aws configure set default.s3.payload_signing_enabled false
 
     # Ensure bucket exists (ignore error if it already exists)
     echo "Ensuring bucket $BUCKET_NAME exists..."
@@ -94,8 +95,8 @@ if command -v aws &> /dev/null; then
         if aws s3 cp "$UPLOAD_FILE" "s3://$BUCKET_NAME/$BUCKET_KEY" \
             --endpoint-url "$RUSTFS_URL" \
             --no-verify-ssl \
-            --cli-read-timeout 300 \
-            --cli-connect-timeout 300 \
+            --cli-read-timeout 600 \
+            --cli-connect-timeout 600 \
             --expected-size "$FILE_SIZE"; then
             SUCCESS=true
             break
