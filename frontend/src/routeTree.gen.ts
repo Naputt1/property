@@ -14,9 +14,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AnalyticsRouteRouteImport } from './routes/analytics/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as AnalyticsIndexRouteImport } from './routes/analytics/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AnalyticsMapRouteImport } from './routes/analytics/map'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminPropertiesRouteImport } from './routes/admin/properties'
 
 const PropertiesRoute = PropertiesRouteImport.update({
@@ -44,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalyticsIndexRoute = AnalyticsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -59,6 +66,11 @@ const AnalyticsMapRoute = AnalyticsMapRouteImport.update({
   path: '/map',
   getParentRoute: () => AnalyticsRouteRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
   id: '/properties',
   path: '/properties',
@@ -72,18 +84,22 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/properties': typeof PropertiesRoute
   '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/analytics/map': typeof AnalyticsMapRoute
   '/admin/': typeof AdminIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
+  '/profile/': typeof ProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/properties': typeof PropertiesRoute
   '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/analytics/map': typeof AnalyticsMapRoute
   '/admin': typeof AdminIndexRoute
   '/analytics': typeof AnalyticsIndexRoute
+  '/profile': typeof ProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,9 +109,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/properties': typeof PropertiesRoute
   '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/analytics/map': typeof AnalyticsMapRoute
   '/admin/': typeof AdminIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
+  '/profile/': typeof ProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,18 +124,22 @@ export interface FileRouteTypes {
     | '/login'
     | '/properties'
     | '/admin/properties'
+    | '/admin/users'
     | '/analytics/map'
     | '/admin/'
     | '/analytics/'
+    | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/properties'
     | '/admin/properties'
+    | '/admin/users'
     | '/analytics/map'
     | '/admin'
     | '/analytics'
+    | '/profile'
   id:
     | '__root__'
     | '/'
@@ -126,9 +148,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/properties'
     | '/admin/properties'
+    | '/admin/users'
     | '/analytics/map'
     | '/admin/'
     | '/analytics/'
+    | '/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -137,6 +161,7 @@ export interface RootRouteChildren {
   AnalyticsRouteRoute: typeof AnalyticsRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   PropertiesRoute: typeof PropertiesRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -176,6 +201,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/analytics/': {
       id: '/analytics/'
       path: '/'
@@ -197,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsMapRouteImport
       parentRoute: typeof AnalyticsRouteRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/properties': {
       id: '/admin/properties'
       path: '/properties'
@@ -209,11 +248,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminPropertiesRoute: typeof AdminPropertiesRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminPropertiesRoute: AdminPropertiesRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -241,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRouteRoute: AnalyticsRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   PropertiesRoute: PropertiesRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,9 +7,13 @@ import (
 )
 
 type UserService interface {
-	CreateUser(ctx context.Context, username, password string, isAdmin bool) error
+	CreateUser(ctx context.Context, username, password, name string, isAdmin bool) error
 	Authenticate(ctx context.Context, username, password string) (*models.User, error)
 	GetUserByID(ctx context.Context, id int64) (*models.User, error)
+	ListUsers(ctx context.Context) ([]*models.User, error)
+	UpdateUser(ctx context.Context, id int64, username, name string, isAdmin bool) error
+	DeleteUser(ctx context.Context, id int64) error
+	UpdatePassword(ctx context.Context, id int64, newPassword string) error
 }
 
 type PropertyService interface {

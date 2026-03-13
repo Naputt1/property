@@ -1,3 +1,5 @@
+export { deleteAdminUsersId } from "./deleteAdminUsersId.ts";
+export { getAdminUsers } from "./getAdminUsers.ts";
 export { getAnalyticsAffordability } from "./getAnalyticsAffordability.ts";
 export { getAnalyticsGrowthHotspots } from "./getAnalyticsGrowthHotspots.ts";
 export { getAnalyticsMedianPrice } from "./getAnalyticsMedianPrice.ts";
@@ -11,6 +13,9 @@ export { postAdminMigrateExisting } from "./postAdminMigrateExisting.ts";
 export { postAdminReset } from "./postAdminReset.ts";
 export { postAdminStreamUpload } from "./postAdminStreamUpload.ts";
 export { postAdminUpload } from "./postAdminUpload.ts";
+export { postAdminUsers } from "./postAdminUsers.ts";
 export { postApiQuery } from "./postApiQuery.ts";
 export { postAuthLogin } from "./postAuthLogin.ts";
 export { postAuthLogout } from "./postAuthLogout.ts";
+export { postUserChangePassword } from "./postUserChangePassword.ts";
+export { putAdminUsersId } from "./putAdminUsersId.ts";

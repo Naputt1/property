@@ -4,6 +4,7 @@ import (
 	"backend/internal/config"
 	"backend/internal/models"
 	"backend/internal/routes/middlewares"
+	"backend/internal/services"
 	"errors"
 	"log"
 	"net/http"
@@ -84,7 +85,11 @@ func Logout(c *gin.Context) {
 	})
 }
 
-func RegisterAuthRoutes(r *gin.RouterGroup, cfg *config.Config) {
+func RegisterAuthRoutes(r *gin.RouterGroup, cfg *config.Config, svcs *services.Services) {
+	r.Use(func(c *gin.Context) {
+		c.Set("services", svcs)
+		c.Next()
+	})
 	r.POST("/login", Login, middlewares.JwtSign(cfg))
 	r.POST("/logout", Logout)
 }

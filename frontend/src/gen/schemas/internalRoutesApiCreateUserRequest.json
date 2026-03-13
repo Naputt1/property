@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["password", "username"],
+  "properties": {
+    "is_admin": { "type": "boolean" },
+    "name": { "type": "string" },
+    "password": { "type": "string", "minLength": 6 },
+    "username": { "type": "string" }
+  },
+  "x-readme-ref-name": "internal_routes_api.CreateUserRequest"
+}
