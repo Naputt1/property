@@ -12,7 +12,6 @@ import type {
 import type {
   GetAnalyticsNewBuildPremiumQueryResponse,
   GetAnalyticsNewBuildPremiumQueryParams,
-  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
 } from "../models/GetAnalyticsNewBuildPremium.ts";
 
@@ -34,9 +33,7 @@ export async function getAnalyticsNewBuildPremium(
 
   const res = await request<
     GetAnalyticsNewBuildPremiumQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsNewBuildPremium401 | GetAnalyticsNewBuildPremium500
-    >,
+    ResponseErrorConfig<GetAnalyticsNewBuildPremium500>,
     unknown
   >({
     method: "GET",

@@ -13,12 +13,6 @@ export type GetAnalyticsPropertyTypeDistribution200 =
   InternalRoutesApiPropertyTypeDistributionResponse;
 
 /**
- * @description Unauthorized
- */
-export type GetAnalyticsPropertyTypeDistribution401 =
-  InternalRoutesApiErrorResponse;
-
-/**
  * @description Internal Server Error
  */
 export type GetAnalyticsPropertyTypeDistribution500 =
@@ -29,7 +23,5 @@ export type GetAnalyticsPropertyTypeDistributionQueryResponse =
 
 export type GetAnalyticsPropertyTypeDistributionQuery = {
   Response: GetAnalyticsPropertyTypeDistribution200;
-  Errors:
-    | GetAnalyticsPropertyTypeDistribution401
-    | GetAnalyticsPropertyTypeDistribution500;
+  Errors: GetAnalyticsPropertyTypeDistribution500;
 };

@@ -10,7 +10,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsPropertyTypeDistributionQueryResponse,
-  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
 } from "../models/GetAnalyticsPropertyTypeDistribution.ts";
 import type {
@@ -35,10 +34,7 @@ export function getAnalyticsPropertyTypeDistributionSuspenseQueryOptions(
   const queryKey = getAnalyticsPropertyTypeDistributionSuspenseQueryKey();
   return queryOptions<
     GetAnalyticsPropertyTypeDistributionQueryResponse,
-    ResponseErrorConfig<
-      | GetAnalyticsPropertyTypeDistribution401
-      | GetAnalyticsPropertyTypeDistribution500
-    >,
+    ResponseErrorConfig<GetAnalyticsPropertyTypeDistribution500>,
     GetAnalyticsPropertyTypeDistributionQueryResponse,
     typeof queryKey
   >({
@@ -66,10 +62,7 @@ export function useGetAnalyticsPropertyTypeDistributionSuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsPropertyTypeDistributionQueryResponse,
-        ResponseErrorConfig<
-          | GetAnalyticsPropertyTypeDistribution401
-          | GetAnalyticsPropertyTypeDistribution500
-        >,
+        ResponseErrorConfig<GetAnalyticsPropertyTypeDistribution500>,
         TData,
         TQueryKey
       >
@@ -92,10 +85,7 @@ export function useGetAnalyticsPropertyTypeDistributionSuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<
-      | GetAnalyticsPropertyTypeDistribution401
-      | GetAnalyticsPropertyTypeDistribution500
-    >
+    ResponseErrorConfig<GetAnalyticsPropertyTypeDistribution500>
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

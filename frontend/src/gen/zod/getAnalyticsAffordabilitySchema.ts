@@ -15,13 +15,6 @@ export const getAnalyticsAffordability200Schema = z.lazy(
 );
 
 /**
- * @description Unauthorized
- */
-export const getAnalyticsAffordability401Schema = z.lazy(
-  () => internalRoutesApiErrorResponseSchema,
-);
-
-/**
  * @description Internal Server Error
  */
 export const getAnalyticsAffordability500Schema = z.lazy(

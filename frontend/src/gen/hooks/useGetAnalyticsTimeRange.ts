@@ -10,7 +10,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsTimeRangeQueryResponse,
-  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
 } from "../models/GetAnalyticsTimeRange.ts";
 import type {
@@ -35,7 +34,7 @@ export function getAnalyticsTimeRangeQueryOptions(
   const queryKey = getAnalyticsTimeRangeQueryKey();
   return queryOptions<
     GetAnalyticsTimeRangeQueryResponse,
-    ResponseErrorConfig<GetAnalyticsTimeRange401 | GetAnalyticsTimeRange500>,
+    ResponseErrorConfig<GetAnalyticsTimeRange500>,
     GetAnalyticsTimeRangeQueryResponse,
     typeof queryKey
   >({
@@ -63,9 +62,7 @@ export function useGetAnalyticsTimeRange<
     query?: Partial<
       QueryObserverOptions<
         GetAnalyticsTimeRangeQueryResponse,
-        ResponseErrorConfig<
-          GetAnalyticsTimeRange401 | GetAnalyticsTimeRange500
-        >,
+        ResponseErrorConfig<GetAnalyticsTimeRange500>,
         TData,
         TQueryData,
         TQueryKey
@@ -85,10 +82,9 @@ export function useGetAnalyticsTimeRange<
       queryKey,
     } as unknown as QueryObserverOptions,
     queryClient,
-  ) as UseQueryResult<
-    TData,
-    ResponseErrorConfig<GetAnalyticsTimeRange401 | GetAnalyticsTimeRange500>
-  > & { queryKey: TQueryKey };
+  ) as UseQueryResult<TData, ResponseErrorConfig<GetAnalyticsTimeRange500>> & {
+    queryKey: TQueryKey;
+  };
 
   query.queryKey = queryKey as TQueryKey;
 

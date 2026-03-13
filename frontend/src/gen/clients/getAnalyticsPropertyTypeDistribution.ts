@@ -11,7 +11,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsPropertyTypeDistributionQueryResponse,
-  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
 } from "../models/GetAnalyticsPropertyTypeDistribution.ts";
 
@@ -35,10 +34,7 @@ export async function getAnalyticsPropertyTypeDistribution(
 
   const res = await request<
     GetAnalyticsPropertyTypeDistributionQueryResponse,
-    ResponseErrorConfig<
-      | GetAnalyticsPropertyTypeDistribution401
-      | GetAnalyticsPropertyTypeDistribution500
-    >,
+    ResponseErrorConfig<GetAnalyticsPropertyTypeDistribution500>,
     unknown
   >({
     method: "GET",

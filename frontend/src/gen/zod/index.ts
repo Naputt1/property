@@ -26,59 +26,50 @@ export {
 } from "./getAdminUsersSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
-  getAnalyticsAffordability401Schema,
   getAnalyticsAffordability500Schema,
   getAnalyticsAffordabilityQueryResponseSchema,
 } from "./getAnalyticsAffordabilitySchema.ts";
 export {
   getAnalyticsGrowthHotspots200Schema,
-  getAnalyticsGrowthHotspots401Schema,
   getAnalyticsGrowthHotspots500Schema,
   getAnalyticsGrowthHotspotsQueryParamsSchema,
   getAnalyticsGrowthHotspotsQueryResponseSchema,
 } from "./getAnalyticsGrowthHotspotsSchema.ts";
 export {
   getAnalyticsMedianPrice200Schema,
-  getAnalyticsMedianPrice401Schema,
   getAnalyticsMedianPrice500Schema,
   getAnalyticsMedianPriceQueryParamsSchema,
   getAnalyticsMedianPriceQueryResponseSchema,
 } from "./getAnalyticsMedianPriceSchema.ts";
 export {
   getAnalyticsNewBuildPremium200Schema,
-  getAnalyticsNewBuildPremium401Schema,
   getAnalyticsNewBuildPremium500Schema,
   getAnalyticsNewBuildPremiumQueryParamsSchema,
   getAnalyticsNewBuildPremiumQueryResponseSchema,
 } from "./getAnalyticsNewBuildPremiumSchema.ts";
 export {
   getAnalyticsPriceBracketDistribution200Schema,
-  getAnalyticsPriceBracketDistribution401Schema,
   getAnalyticsPriceBracketDistribution500Schema,
   getAnalyticsPriceBracketDistributionQueryResponseSchema,
 } from "./getAnalyticsPriceBracketDistributionSchema.ts";
 export {
   getAnalyticsPriceTrend200Schema,
-  getAnalyticsPriceTrend401Schema,
   getAnalyticsPriceTrend500Schema,
   getAnalyticsPriceTrendQueryParamsSchema,
   getAnalyticsPriceTrendQueryResponseSchema,
 } from "./getAnalyticsPriceTrendSchema.ts";
 export {
   getAnalyticsPropertyTypeDistribution200Schema,
-  getAnalyticsPropertyTypeDistribution401Schema,
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./getAnalyticsPropertyTypeDistributionSchema.ts";
 export {
   getAnalyticsTimeRange200Schema,
-  getAnalyticsTimeRange401Schema,
   getAnalyticsTimeRange500Schema,
   getAnalyticsTimeRangeQueryResponseSchema,
 } from "./getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
-  getAnalyticsTopActiveAreas401Schema,
   getAnalyticsTopActiveAreas500Schema,
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,

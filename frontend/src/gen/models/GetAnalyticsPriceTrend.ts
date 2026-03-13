@@ -21,11 +21,6 @@ export type GetAnalyticsPriceTrendQueryParams = {
 export type GetAnalyticsPriceTrend200 = InternalRoutesApiPriceTrendResponse;
 
 /**
- * @description Unauthorized
- */
-export type GetAnalyticsPriceTrend401 = InternalRoutesApiErrorResponse;
-
-/**
  * @description Internal Server Error
  */
 export type GetAnalyticsPriceTrend500 = InternalRoutesApiErrorResponse;
@@ -35,5 +30,5 @@ export type GetAnalyticsPriceTrendQueryResponse = GetAnalyticsPriceTrend200;
 export type GetAnalyticsPriceTrendQuery = {
   Response: GetAnalyticsPriceTrend200;
   QueryParams: GetAnalyticsPriceTrendQueryParams;
-  Errors: GetAnalyticsPriceTrend401 | GetAnalyticsPriceTrend500;
+  Errors: GetAnalyticsPriceTrend500;
 };

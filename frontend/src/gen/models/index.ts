@@ -18,14 +18,12 @@ export type {
 } from "./GetAdminUsers.ts";
 export type {
   GetAnalyticsAffordability200,
-  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
   GetAnalyticsAffordabilityQuery,
   GetAnalyticsAffordabilityQueryResponse,
 } from "./GetAnalyticsAffordability.ts";
 export type {
   GetAnalyticsGrowthHotspots200,
-  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
   GetAnalyticsGrowthHotspotsQuery,
   GetAnalyticsGrowthHotspotsQueryParams,
@@ -33,7 +31,6 @@ export type {
 } from "./GetAnalyticsGrowthHotspots.ts";
 export type {
   GetAnalyticsMedianPrice200,
-  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
   GetAnalyticsMedianPriceQuery,
   GetAnalyticsMedianPriceQueryParams,
@@ -41,7 +38,6 @@ export type {
 } from "./GetAnalyticsMedianPrice.ts";
 export type {
   GetAnalyticsNewBuildPremium200,
-  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
   GetAnalyticsNewBuildPremiumQuery,
   GetAnalyticsNewBuildPremiumQueryParams,
@@ -49,14 +45,12 @@ export type {
 } from "./GetAnalyticsNewBuildPremium.ts";
 export type {
   GetAnalyticsPriceBracketDistribution200,
-  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
   GetAnalyticsPriceBracketDistributionQuery,
   GetAnalyticsPriceBracketDistributionQueryResponse,
 } from "./GetAnalyticsPriceBracketDistribution.ts";
 export type {
   GetAnalyticsPriceTrend200,
-  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
   GetAnalyticsPriceTrendQuery,
   GetAnalyticsPriceTrendQueryParams,
@@ -64,21 +58,18 @@ export type {
 } from "./GetAnalyticsPriceTrend.ts";
 export type {
   GetAnalyticsPropertyTypeDistribution200,
-  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
   GetAnalyticsPropertyTypeDistributionQuery,
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./GetAnalyticsPropertyTypeDistribution.ts";
 export type {
   GetAnalyticsTimeRange200,
-  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
   GetAnalyticsTimeRangeQuery,
   GetAnalyticsTimeRangeQueryResponse,
 } from "./GetAnalyticsTimeRange.ts";
 export type {
   GetAnalyticsTopActiveAreas200,
-  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
   GetAnalyticsTopActiveAreasQueryParams,

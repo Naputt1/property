@@ -11,7 +11,6 @@ import type {
 import type {
   GetAnalyticsMedianPriceQueryResponse,
   GetAnalyticsMedianPriceQueryParams,
-  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
 } from "../models/GetAnalyticsMedianPrice.ts";
 import type {
@@ -38,9 +37,7 @@ export function getAnalyticsMedianPriceSuspenseQueryOptions(
   const queryKey = getAnalyticsMedianPriceSuspenseQueryKey(params);
   return queryOptions<
     GetAnalyticsMedianPriceQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsMedianPrice401 | GetAnalyticsMedianPrice500
-    >,
+    ResponseErrorConfig<GetAnalyticsMedianPrice500>,
     GetAnalyticsMedianPriceQueryResponse,
     typeof queryKey
   >({
@@ -68,9 +65,7 @@ export function useGetAnalyticsMedianPriceSuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsMedianPriceQueryResponse,
-        ResponseErrorConfig<
-          GetAnalyticsMedianPrice401 | GetAnalyticsMedianPrice500
-        >,
+        ResponseErrorConfig<GetAnalyticsMedianPrice500>,
         TData,
         TQueryKey
       >
@@ -93,7 +88,7 @@ export function useGetAnalyticsMedianPriceSuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<GetAnalyticsMedianPrice401 | GetAnalyticsMedianPrice500>
+    ResponseErrorConfig<GetAnalyticsMedianPrice500>
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

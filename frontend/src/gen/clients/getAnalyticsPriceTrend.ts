@@ -12,7 +12,6 @@ import type {
 import type {
   GetAnalyticsPriceTrendQueryResponse,
   GetAnalyticsPriceTrendQueryParams,
-  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
 } from "../models/GetAnalyticsPriceTrend.ts";
 
@@ -34,7 +33,7 @@ export async function getAnalyticsPriceTrend(
 
   const res = await request<
     GetAnalyticsPriceTrendQueryResponse,
-    ResponseErrorConfig<GetAnalyticsPriceTrend401 | GetAnalyticsPriceTrend500>,
+    ResponseErrorConfig<GetAnalyticsPriceTrend500>,
     unknown
   >({
     method: "GET",

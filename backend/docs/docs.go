@@ -488,11 +488,6 @@ const docTemplate = `{
         },
         "/analytics/affordability": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get relative affordability by property type",
                 "consumes": [
                     "application/json"
@@ -511,12 +506,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.AffordabilityResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -528,11 +517,6 @@ const docTemplate = `{
         },
         "/analytics/growth-hotspots": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get regions with highest price growth rate",
                 "consumes": [
                     "application/json"
@@ -573,12 +557,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.GrowthHotspotResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -590,11 +568,6 @@ const docTemplate = `{
         },
         "/analytics/median-price": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get median price grouped by county, district, or town_city",
                 "consumes": [
                     "application/json"
@@ -628,12 +601,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.MedianPriceResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -645,11 +612,6 @@ const docTemplate = `{
         },
         "/analytics/new-build-premium": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get average prices of new builds vs established properties by region",
                 "consumes": [
                     "application/json"
@@ -677,12 +639,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.NewBuildPremiumResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -694,11 +650,6 @@ const docTemplate = `{
         },
         "/analytics/price-bracket-distribution": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get distribution of properties by price ranges",
                 "consumes": [
                     "application/json"
@@ -717,12 +668,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.PriceBracketResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -734,11 +679,6 @@ const docTemplate = `{
         },
         "/analytics/price-trend": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get average and median price trends over time",
                 "consumes": [
                     "application/json"
@@ -766,12 +706,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.PriceTrendResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -783,11 +717,6 @@ const docTemplate = `{
         },
         "/analytics/property-type-distribution": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get distribution of properties by type (detached, semi, flat, etc.)",
                 "consumes": [
                     "application/json"
@@ -806,12 +735,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.PropertyTypeDistributionResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -823,11 +746,6 @@ const docTemplate = `{
         },
         "/analytics/time-range": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get minimum and maximum year available in the dataset",
                 "consumes": [
                     "application/json"
@@ -846,12 +764,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_routes_api.TimeRangeResponse"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -863,11 +775,6 @@ const docTemplate = `{
         },
         "/analytics/top-active-areas": {
             "get": {
-                "security": [
-                    {
-                        "JwtAuth": []
-                    }
-                ],
                 "description": "Get regions with highest transaction volume",
                 "consumes": [
                     "application/json"
@@ -906,12 +813,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/internal_routes_api.TopActiveAreaResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
                         }
                     },
                     "500": {

@@ -22,13 +22,6 @@ export const getAnalyticsNewBuildPremium200Schema = z.lazy(
 );
 
 /**
- * @description Unauthorized
- */
-export const getAnalyticsNewBuildPremium401Schema = z.lazy(
-  () => internalRoutesApiErrorResponseSchema,
-);
-
-/**
  * @description Internal Server Error
  */
 export const getAnalyticsNewBuildPremium500Schema = z.lazy(

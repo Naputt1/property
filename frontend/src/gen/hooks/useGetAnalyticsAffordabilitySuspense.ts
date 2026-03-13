@@ -10,7 +10,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsAffordabilityQueryResponse,
-  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
 } from "../models/GetAnalyticsAffordability.ts";
 import type {
@@ -35,9 +34,7 @@ export function getAnalyticsAffordabilitySuspenseQueryOptions(
   const queryKey = getAnalyticsAffordabilitySuspenseQueryKey();
   return queryOptions<
     GetAnalyticsAffordabilityQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsAffordability401 | GetAnalyticsAffordability500
-    >,
+    ResponseErrorConfig<GetAnalyticsAffordability500>,
     GetAnalyticsAffordabilityQueryResponse,
     typeof queryKey
   >({
@@ -64,9 +61,7 @@ export function useGetAnalyticsAffordabilitySuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsAffordabilityQueryResponse,
-        ResponseErrorConfig<
-          GetAnalyticsAffordability401 | GetAnalyticsAffordability500
-        >,
+        ResponseErrorConfig<GetAnalyticsAffordability500>,
         TData,
         TQueryKey
       >
@@ -88,9 +83,7 @@ export function useGetAnalyticsAffordabilitySuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<
-      GetAnalyticsAffordability401 | GetAnalyticsAffordability500
-    >
+    ResponseErrorConfig<GetAnalyticsAffordability500>
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

@@ -24,13 +24,6 @@ export const getAnalyticsTopActiveAreas200Schema = z.lazy(
 );
 
 /**
- * @description Unauthorized
- */
-export const getAnalyticsTopActiveAreas401Schema = z.lazy(
-  () => internalRoutesApiErrorResponseSchema,
-);
-
-/**
  * @description Internal Server Error
  */
 export const getAnalyticsTopActiveAreas500Schema = z.lazy(

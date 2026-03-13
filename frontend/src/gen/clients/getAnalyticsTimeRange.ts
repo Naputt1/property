@@ -11,7 +11,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsTimeRangeQueryResponse,
-  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
 } from "../models/GetAnalyticsTimeRange.ts";
 
@@ -32,7 +31,7 @@ export async function getAnalyticsTimeRange(
 
   const res = await request<
     GetAnalyticsTimeRangeQueryResponse,
-    ResponseErrorConfig<GetAnalyticsTimeRange401 | GetAnalyticsTimeRange500>,
+    ResponseErrorConfig<GetAnalyticsTimeRange500>,
     unknown
   >({
     method: "GET",
