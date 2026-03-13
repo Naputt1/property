@@ -2,6 +2,11 @@
 
 A comprehensive platform for analyzing and accessing UK housing market and rental data. This project features a high-performance Go backend with GraphQL and REST interfaces, a modern React frontend with interactive mapping, and a robust observability stack.
 
+## 📚 Project Documentation
+
+- **Technical Report:** [Detailed architectural and design choices](report.md)
+- **Presentation Slides:** [Project Overview & Technical Deep-dive](https://docs.google.com/presentation/d/1riwdcTcVOU-xarC40XzI0tz-11Tv_kcFvqPIubRxDI8/edit?usp=sharing)
+
 ## 🏗 Project Overview
 
 The system is designed to process and analyze large datasets of UK property transactions and rental listings. It provides insights into affordability, growth hotspots, and market distributions through interactive dashboards and geographic visualizations.
