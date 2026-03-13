@@ -8,7 +8,7 @@ export type { InternalRoutesApiGraphQLResponse } from "./GraphQLResponse.ts";
 export type { InternalRoutesApiGrowthHotspotResponse } from "./GrowthHotspotResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./LoginBody.ts";
-export type { InternalRoutesApiLoginPayload } from "./LoginPayload.ts";
+export type { InternalRoutesApiLoginResponse } from "./LoginResponse.ts";
 export type { InternalRoutesApiMedianPriceResponse } from "./MedianPriceResponse.ts";
 export type { InternalRoutesApiNewBuildPremiumResponse } from "./NewBuildPremiumResponse.ts";
 export type { InternalRoutesApiPriceBracketResponse } from "./PriceBracketResponse.ts";

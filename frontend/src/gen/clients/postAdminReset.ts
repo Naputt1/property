@@ -11,6 +11,8 @@ import type {
 } from "../../services/kubb-client";
 import type {
   PostAdminResetMutationResponse,
+  PostAdminReset401,
+  PostAdminReset403,
   PostAdminReset500,
 } from "../models/PostAdminReset.ts";
 
@@ -31,7 +33,9 @@ export async function postAdminReset(
 
   const res = await request<
     PostAdminResetMutationResponse,
-    ResponseErrorConfig<PostAdminReset500>,
+    ResponseErrorConfig<
+      PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+    >,
     unknown
   >({
     method: "POST",

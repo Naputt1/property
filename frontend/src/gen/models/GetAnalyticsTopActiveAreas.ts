@@ -33,6 +33,11 @@ export type GetAnalyticsTopActiveAreas200 =
   InternalRoutesApiTopActiveAreaResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type GetAnalyticsTopActiveAreas401 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type GetAnalyticsTopActiveAreas500 = InternalRoutesApiErrorResponse;
@@ -43,5 +48,5 @@ export type GetAnalyticsTopActiveAreasQueryResponse =
 export type GetAnalyticsTopActiveAreasQuery = {
   Response: GetAnalyticsTopActiveAreas200;
   QueryParams: GetAnalyticsTopActiveAreasQueryParams;
-  Errors: GetAnalyticsTopActiveAreas500;
+  Errors: GetAnalyticsTopActiveAreas401 | GetAnalyticsTopActiveAreas500;
 };

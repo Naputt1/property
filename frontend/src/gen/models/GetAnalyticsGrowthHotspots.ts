@@ -33,6 +33,11 @@ export type GetAnalyticsGrowthHotspots200 =
   InternalRoutesApiGrowthHotspotResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type GetAnalyticsGrowthHotspots401 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type GetAnalyticsGrowthHotspots500 = InternalRoutesApiErrorResponse;
@@ -43,5 +48,5 @@ export type GetAnalyticsGrowthHotspotsQueryResponse =
 export type GetAnalyticsGrowthHotspotsQuery = {
   Response: GetAnalyticsGrowthHotspots200;
   QueryParams: GetAnalyticsGrowthHotspotsQueryParams;
-  Errors: GetAnalyticsGrowthHotspots500;
+  Errors: GetAnalyticsGrowthHotspots401 | GetAnalyticsGrowthHotspots500;
 };

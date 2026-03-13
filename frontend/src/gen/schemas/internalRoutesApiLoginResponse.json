@@ -1,6 +1,7 @@
 {
   "type": "object",
   "properties": {
+    "status": { "type": "boolean", "example": true },
     "token": { "type": "string" },
     "user": {
       "type": "object",
@@ -17,5 +18,5 @@
       "x-readme-ref-name": "backend_internal_models.User"
     }
   },
-  "x-readme-ref-name": "internal_routes_api.LoginPayload"
+  "x-readme-ref-name": "internal_routes_api.LoginResponse"
 }

@@ -1,11 +1,13 @@
 export type {
   GetAnalyticsAffordability200,
+  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
   GetAnalyticsAffordabilityQuery,
   GetAnalyticsAffordabilityQueryResponse,
 } from "./GetAnalyticsAffordability.ts";
 export type {
   GetAnalyticsGrowthHotspots200,
+  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
   GetAnalyticsGrowthHotspotsQuery,
   GetAnalyticsGrowthHotspotsQueryParams,
@@ -13,6 +15,7 @@ export type {
 } from "./GetAnalyticsGrowthHotspots.ts";
 export type {
   GetAnalyticsMedianPrice200,
+  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
   GetAnalyticsMedianPriceQuery,
   GetAnalyticsMedianPriceQueryParams,
@@ -20,6 +23,7 @@ export type {
 } from "./GetAnalyticsMedianPrice.ts";
 export type {
   GetAnalyticsNewBuildPremium200,
+  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
   GetAnalyticsNewBuildPremiumQuery,
   GetAnalyticsNewBuildPremiumQueryParams,
@@ -27,12 +31,14 @@ export type {
 } from "./GetAnalyticsNewBuildPremium.ts";
 export type {
   GetAnalyticsPriceBracketDistribution200,
+  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
   GetAnalyticsPriceBracketDistributionQuery,
   GetAnalyticsPriceBracketDistributionQueryResponse,
 } from "./GetAnalyticsPriceBracketDistribution.ts";
 export type {
   GetAnalyticsPriceTrend200,
+  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
   GetAnalyticsPriceTrendQuery,
   GetAnalyticsPriceTrendQueryParams,
@@ -40,18 +46,21 @@ export type {
 } from "./GetAnalyticsPriceTrend.ts";
 export type {
   GetAnalyticsPropertyTypeDistribution200,
+  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
   GetAnalyticsPropertyTypeDistributionQuery,
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./GetAnalyticsPropertyTypeDistribution.ts";
 export type {
   GetAnalyticsTimeRange200,
+  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
   GetAnalyticsTimeRangeQuery,
   GetAnalyticsTimeRangeQueryResponse,
 } from "./GetAnalyticsTimeRange.ts";
 export type {
   GetAnalyticsTopActiveAreas200,
+  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
   GetAnalyticsTopActiveAreasQueryParams,
@@ -60,6 +69,8 @@ export type {
 export type {
   PostAdminMigrateExisting202,
   PostAdminMigrateExisting400,
+  PostAdminMigrateExisting401,
+  PostAdminMigrateExisting403,
   PostAdminMigrateExisting500,
   PostAdminMigrateExistingMutation,
   PostAdminMigrateExistingMutationResponse,
@@ -67,6 +78,8 @@ export type {
 } from "./PostAdminMigrateExisting.ts";
 export type {
   PostAdminReset200,
+  PostAdminReset401,
+  PostAdminReset403,
   PostAdminReset500,
   PostAdminResetMutation,
   PostAdminResetMutationResponse,
@@ -74,6 +87,8 @@ export type {
 export type {
   PostAdminStreamUpload202,
   PostAdminStreamUpload400,
+  PostAdminStreamUpload401,
+  PostAdminStreamUpload403,
   PostAdminStreamUpload500,
   PostAdminStreamUploadMutation,
   PostAdminStreamUploadMutationResponse,
@@ -82,6 +97,8 @@ export type {
 export type {
   PostAdminUpload202,
   PostAdminUpload400,
+  PostAdminUpload401,
+  PostAdminUpload403,
   PostAdminUpload500,
   PostAdminUploadMutation,
   PostAdminUploadMutationRequest,
@@ -97,7 +114,9 @@ export type {
 } from "./PostApiQuery.ts";
 export type {
   PostAuthLogin200,
+  PostAuthLogin400,
   PostAuthLogin401,
+  PostAuthLogin500,
   PostAuthLoginMutation,
   PostAuthLoginMutationRequest,
   PostAuthLoginMutationResponse,
@@ -127,7 +146,7 @@ export type { InternalRoutesApiGraphQLResponse } from "./internalRoutesApi/Graph
 export type { InternalRoutesApiGrowthHotspotResponse } from "./internalRoutesApi/GrowthHotspotResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./internalRoutesApi/JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./internalRoutesApi/LoginBody.ts";
-export type { InternalRoutesApiLoginPayload } from "./internalRoutesApi/LoginPayload.ts";
+export type { InternalRoutesApiLoginResponse } from "./internalRoutesApi/LoginResponse.ts";
 export type { InternalRoutesApiMedianPriceResponse } from "./internalRoutesApi/MedianPriceResponse.ts";
 export type { InternalRoutesApiNewBuildPremiumResponse } from "./internalRoutesApi/NewBuildPremiumResponse.ts";
 export type { InternalRoutesApiPriceBracketResponse } from "./internalRoutesApi/PriceBracketResponse.ts";

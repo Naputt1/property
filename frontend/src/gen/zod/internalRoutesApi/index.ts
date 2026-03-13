@@ -8,7 +8,7 @@ export { internalRoutesApiGraphQLResponseSchema } from "./graphQLResponseSchema.
 export { internalRoutesApiGrowthHotspotResponseSchema } from "./growthHotspotResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./loginBodySchema.ts";
-export { internalRoutesApiLoginPayloadSchema } from "./loginPayloadSchema.ts";
+export { internalRoutesApiLoginResponseSchema } from "./loginResponseSchema.ts";
 export { internalRoutesApiMedianPriceResponseSchema } from "./medianPriceResponseSchema.ts";
 export { internalRoutesApiNewBuildPremiumResponseSchema } from "./newBuildPremiumResponseSchema.ts";
 export { internalRoutesApiPriceBracketResponseSchema } from "./priceBracketResponseSchema.ts";

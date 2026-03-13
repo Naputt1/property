@@ -10,6 +10,7 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsPriceBracketDistributionQueryResponse,
+  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
 } from "../models/GetAnalyticsPriceBracketDistribution.ts";
 import type {
@@ -34,7 +35,10 @@ export function getAnalyticsPriceBracketDistributionQueryOptions(
   const queryKey = getAnalyticsPriceBracketDistributionQueryKey();
   return queryOptions<
     GetAnalyticsPriceBracketDistributionQueryResponse,
-    ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>,
+    ResponseErrorConfig<
+      | GetAnalyticsPriceBracketDistribution401
+      | GetAnalyticsPriceBracketDistribution500
+    >,
     GetAnalyticsPriceBracketDistributionQueryResponse,
     typeof queryKey
   >({
@@ -62,7 +66,10 @@ export function useGetAnalyticsPriceBracketDistribution<
     query?: Partial<
       QueryObserverOptions<
         GetAnalyticsPriceBracketDistributionQueryResponse,
-        ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>,
+        ResponseErrorConfig<
+          | GetAnalyticsPriceBracketDistribution401
+          | GetAnalyticsPriceBracketDistribution500
+        >,
         TData,
         TQueryData,
         TQueryKey
@@ -85,7 +92,10 @@ export function useGetAnalyticsPriceBracketDistribution<
     queryClient,
   ) as UseQueryResult<
     TData,
-    ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>
+    ResponseErrorConfig<
+      | GetAnalyticsPriceBracketDistribution401
+      | GetAnalyticsPriceBracketDistribution500
+    >
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

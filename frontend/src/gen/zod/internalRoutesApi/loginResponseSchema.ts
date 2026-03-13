@@ -6,7 +6,8 @@
 import { backendInternalModelsUserSchema } from "../backendInternalModels/userSchema.ts";
 import { z } from "zod/v4";
 
-export const internalRoutesApiLoginPayloadSchema = z.object({
+export const internalRoutesApiLoginResponseSchema = z.object({
+  status: z.optional(z.boolean()),
   token: z.optional(z.string()),
   get user() {
     return backendInternalModelsUserSchema.optional();

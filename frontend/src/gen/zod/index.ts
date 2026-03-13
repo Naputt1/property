@@ -10,50 +10,59 @@ export { backendInternalModelsTopActiveAreaResultSchema } from "./backendInterna
 export { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
+  getAnalyticsAffordability401Schema,
   getAnalyticsAffordability500Schema,
   getAnalyticsAffordabilityQueryResponseSchema,
 } from "./getAnalyticsAffordabilitySchema.ts";
 export {
   getAnalyticsGrowthHotspots200Schema,
+  getAnalyticsGrowthHotspots401Schema,
   getAnalyticsGrowthHotspots500Schema,
   getAnalyticsGrowthHotspotsQueryParamsSchema,
   getAnalyticsGrowthHotspotsQueryResponseSchema,
 } from "./getAnalyticsGrowthHotspotsSchema.ts";
 export {
   getAnalyticsMedianPrice200Schema,
+  getAnalyticsMedianPrice401Schema,
   getAnalyticsMedianPrice500Schema,
   getAnalyticsMedianPriceQueryParamsSchema,
   getAnalyticsMedianPriceQueryResponseSchema,
 } from "./getAnalyticsMedianPriceSchema.ts";
 export {
   getAnalyticsNewBuildPremium200Schema,
+  getAnalyticsNewBuildPremium401Schema,
   getAnalyticsNewBuildPremium500Schema,
   getAnalyticsNewBuildPremiumQueryParamsSchema,
   getAnalyticsNewBuildPremiumQueryResponseSchema,
 } from "./getAnalyticsNewBuildPremiumSchema.ts";
 export {
   getAnalyticsPriceBracketDistribution200Schema,
+  getAnalyticsPriceBracketDistribution401Schema,
   getAnalyticsPriceBracketDistribution500Schema,
   getAnalyticsPriceBracketDistributionQueryResponseSchema,
 } from "./getAnalyticsPriceBracketDistributionSchema.ts";
 export {
   getAnalyticsPriceTrend200Schema,
+  getAnalyticsPriceTrend401Schema,
   getAnalyticsPriceTrend500Schema,
   getAnalyticsPriceTrendQueryParamsSchema,
   getAnalyticsPriceTrendQueryResponseSchema,
 } from "./getAnalyticsPriceTrendSchema.ts";
 export {
   getAnalyticsPropertyTypeDistribution200Schema,
+  getAnalyticsPropertyTypeDistribution401Schema,
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./getAnalyticsPropertyTypeDistributionSchema.ts";
 export {
   getAnalyticsTimeRange200Schema,
+  getAnalyticsTimeRange401Schema,
   getAnalyticsTimeRange500Schema,
   getAnalyticsTimeRangeQueryResponseSchema,
 } from "./getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
+  getAnalyticsTopActiveAreas401Schema,
   getAnalyticsTopActiveAreas500Schema,
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
@@ -68,7 +77,7 @@ export { internalRoutesApiGraphQLResponseSchema } from "./internalRoutesApi/grap
 export { internalRoutesApiGrowthHotspotResponseSchema } from "./internalRoutesApi/growthHotspotResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./internalRoutesApi/loginBodySchema.ts";
-export { internalRoutesApiLoginPayloadSchema } from "./internalRoutesApi/loginPayloadSchema.ts";
+export { internalRoutesApiLoginResponseSchema } from "./internalRoutesApi/loginResponseSchema.ts";
 export { internalRoutesApiMedianPriceResponseSchema } from "./internalRoutesApi/medianPriceResponseSchema.ts";
 export { internalRoutesApiNewBuildPremiumResponseSchema } from "./internalRoutesApi/newBuildPremiumResponseSchema.ts";
 export { internalRoutesApiPriceBracketResponseSchema } from "./internalRoutesApi/priceBracketResponseSchema.ts";
@@ -79,18 +88,24 @@ export { internalRoutesApiTopActiveAreaResponseSchema } from "./internalRoutesAp
 export {
   postAdminMigrateExisting202Schema,
   postAdminMigrateExisting400Schema,
+  postAdminMigrateExisting401Schema,
+  postAdminMigrateExisting403Schema,
   postAdminMigrateExisting500Schema,
   postAdminMigrateExistingMutationResponseSchema,
   postAdminMigrateExistingQueryParamsSchema,
 } from "./postAdminMigrateExistingSchema.ts";
 export {
   postAdminReset200Schema,
+  postAdminReset401Schema,
+  postAdminReset403Schema,
   postAdminReset500Schema,
   postAdminResetMutationResponseSchema,
 } from "./postAdminResetSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,
+  postAdminStreamUpload401Schema,
+  postAdminStreamUpload403Schema,
   postAdminStreamUpload500Schema,
   postAdminStreamUploadMutationResponseSchema,
   postAdminStreamUploadQueryParamsSchema,
@@ -98,6 +113,8 @@ export {
 export {
   postAdminUpload202Schema,
   postAdminUpload400Schema,
+  postAdminUpload401Schema,
+  postAdminUpload403Schema,
   postAdminUpload500Schema,
   postAdminUploadMutationRequestSchema,
   postAdminUploadMutationResponseSchema,
@@ -111,7 +128,9 @@ export {
 } from "./postApiQuerySchema.ts";
 export {
   postAuthLogin200Schema,
+  postAuthLogin400Schema,
   postAuthLogin401Schema,
+  postAuthLogin500Schema,
   postAuthLoginMutationRequestSchema,
   postAuthLoginMutationResponseSchema,
 } from "./postAuthLoginSchema.ts";

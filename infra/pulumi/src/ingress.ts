@@ -139,6 +139,26 @@ export function createIngress(
               },
             },
             {
+              path: "/swagger",
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: services.backend.metadata.name,
+                  port: { number: 8080 },
+                },
+              },
+            },
+            {
+              path: "/playground",
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: services.backend.metadata.name,
+                  port: { number: 8080 },
+                },
+              },
+            },
+            {
               path: "/ws",
               pathType: "Prefix",
               backend: {

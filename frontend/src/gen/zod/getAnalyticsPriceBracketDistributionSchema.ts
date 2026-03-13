@@ -15,6 +15,13 @@ export const getAnalyticsPriceBracketDistribution200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsPriceBracketDistribution401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsPriceBracketDistribution500Schema = z.lazy(

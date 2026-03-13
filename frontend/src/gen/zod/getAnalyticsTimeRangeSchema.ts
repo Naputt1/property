@@ -15,6 +15,13 @@ export const getAnalyticsTimeRange200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsTimeRange401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsTimeRange500Schema = z.lazy(

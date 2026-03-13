@@ -12,6 +12,11 @@ import type { InternalRoutesApiTimeRangeResponse } from "./internalRoutesApi/Tim
 export type GetAnalyticsTimeRange200 = InternalRoutesApiTimeRangeResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type GetAnalyticsTimeRange401 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type GetAnalyticsTimeRange500 = InternalRoutesApiErrorResponse;
@@ -20,5 +25,5 @@ export type GetAnalyticsTimeRangeQueryResponse = GetAnalyticsTimeRange200;
 
 export type GetAnalyticsTimeRangeQuery = {
   Response: GetAnalyticsTimeRange200;
-  Errors: GetAnalyticsTimeRange500;
+  Errors: GetAnalyticsTimeRange401 | GetAnalyticsTimeRange500;
 };

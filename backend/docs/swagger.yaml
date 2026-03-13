@@ -209,8 +209,11 @@ definitions:
     - password
     - username
     type: object
-  internal_routes_api.LoginPayload:
+  internal_routes_api.LoginResponse:
     properties:
+      status:
+        example: true
+        type: boolean
       token:
         type: string
       user:
@@ -337,6 +340,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden (Admin only)
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -357,6 +368,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden (Admin only)
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -387,6 +406,14 @@ paths:
             $ref: '#/definitions/internal_routes_api.JobResponse'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden (Admin only)
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
@@ -421,6 +448,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden (Admin only)
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -442,10 +477,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.AffordabilityResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get affordability index
       tags:
       - analytics
@@ -476,10 +517,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.GrowthHotspotResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get growth hotspots
       tags:
       - analytics
@@ -505,10 +552,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.MedianPriceResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get median price by region
       tags:
       - analytics
@@ -530,10 +583,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.NewBuildPremiumResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get new build premium
       tags:
       - analytics
@@ -549,10 +608,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.PriceBracketResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get price bracket distribution
       tags:
       - analytics
@@ -574,10 +639,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.PriceTrendResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get price trend analysis
       tags:
       - analytics
@@ -593,10 +664,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.PropertyTypeDistributionResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get property type distribution
       tags:
       - analytics
@@ -612,10 +689,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.TimeRangeResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get available time range for analytics
       tags:
       - analytics
@@ -646,10 +729,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_routes_api.TopActiveAreaResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
       summary: Get top active areas
       tags:
       - analytics
@@ -769,7 +858,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Log in a user with username and password
+      description: Authenticate a user with username and password. Returns a JWT token
+        and user info, and sets HTTP-only cookies for session management.
       parameters:
       - description: User login credentials
         in: body
@@ -783,9 +873,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_routes_api.LoginPayload'
+            $ref: '#/definitions/internal_routes_api.LoginResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
-          description: Unauthorized
+          description: Invalid username or password
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal server error
           schema:
             $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: User login
@@ -808,6 +906,8 @@ paths:
       - auth
 securityDefinitions:
   JwtAuth:
+    description: Type 'Bearer ' followed by your JWT token in the input field. The
+      token can be obtained from the /auth/login endpoint.
     in: header
     name: Authorization
     type: apiKey

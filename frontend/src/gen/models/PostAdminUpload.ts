@@ -17,6 +17,16 @@ export type PostAdminUpload202 = InternalRoutesApiJobResponse;
 export type PostAdminUpload400 = InternalRoutesApiErrorResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type PostAdminUpload401 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export type PostAdminUpload403 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type PostAdminUpload500 = InternalRoutesApiErrorResponse;
@@ -34,5 +44,9 @@ export type PostAdminUploadMutationResponse = PostAdminUpload202;
 export type PostAdminUploadMutation = {
   Response: PostAdminUpload202;
   Request: PostAdminUploadMutationRequest;
-  Errors: PostAdminUpload400 | PostAdminUpload500;
+  Errors:
+    | PostAdminUpload400
+    | PostAdminUpload401
+    | PostAdminUpload403
+    | PostAdminUpload500;
 };

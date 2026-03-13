@@ -25,6 +25,16 @@ export type PostAdminStreamUpload202 = InternalRoutesApiJobResponse;
 export type PostAdminStreamUpload400 = InternalRoutesApiErrorResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type PostAdminStreamUpload401 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export type PostAdminStreamUpload403 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type PostAdminStreamUpload500 = InternalRoutesApiErrorResponse;
@@ -34,5 +44,9 @@ export type PostAdminStreamUploadMutationResponse = PostAdminStreamUpload202;
 export type PostAdminStreamUploadMutation = {
   Response: PostAdminStreamUpload202;
   QueryParams: PostAdminStreamUploadQueryParams;
-  Errors: PostAdminStreamUpload400 | PostAdminStreamUpload500;
+  Errors:
+    | PostAdminStreamUpload400
+    | PostAdminStreamUpload401
+    | PostAdminStreamUpload403
+    | PostAdminStreamUpload500;
 };

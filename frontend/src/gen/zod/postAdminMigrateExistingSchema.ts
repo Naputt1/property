@@ -27,6 +27,20 @@ export const postAdminMigrateExisting400Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const postAdminMigrateExisting401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export const postAdminMigrateExisting403Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const postAdminMigrateExisting500Schema = z.lazy(

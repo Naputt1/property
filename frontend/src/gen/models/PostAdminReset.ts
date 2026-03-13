@@ -12,6 +12,16 @@ import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorRe
 export type PostAdminReset200 = InternalRoutesApiBaseResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type PostAdminReset401 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export type PostAdminReset403 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type PostAdminReset500 = InternalRoutesApiErrorResponse;
@@ -20,5 +30,5 @@ export type PostAdminResetMutationResponse = PostAdminReset200;
 
 export type PostAdminResetMutation = {
   Response: PostAdminReset200;
-  Errors: PostAdminReset500;
+  Errors: PostAdminReset401 | PostAdminReset403 | PostAdminReset500;
 };

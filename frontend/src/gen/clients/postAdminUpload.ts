@@ -13,6 +13,8 @@ import type {
   PostAdminUploadMutationRequest,
   PostAdminUploadMutationResponse,
   PostAdminUpload400,
+  PostAdminUpload401,
+  PostAdminUpload403,
   PostAdminUpload500,
 } from "../models/PostAdminUpload.ts";
 import { buildFormData } from "../.kubb/config.ts";
@@ -39,7 +41,12 @@ export async function postAdminUpload(
   const formData = buildFormData(requestData);
   const res = await request<
     PostAdminUploadMutationResponse,
-    ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+    ResponseErrorConfig<
+      | PostAdminUpload400
+      | PostAdminUpload401
+      | PostAdminUpload403
+      | PostAdminUpload500
+    >,
     PostAdminUploadMutationRequest
   >({
     method: "POST",

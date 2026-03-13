@@ -25,12 +25,14 @@ export type { PostAuthLoginMutationKey } from "./hooks/usePostAuthLogin.ts";
 export type { PostAuthLogoutMutationKey } from "./hooks/usePostAuthLogout.ts";
 export type {
   GetAnalyticsAffordability200,
+  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
   GetAnalyticsAffordabilityQuery,
   GetAnalyticsAffordabilityQueryResponse,
 } from "./models/GetAnalyticsAffordability.ts";
 export type {
   GetAnalyticsGrowthHotspots200,
+  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
   GetAnalyticsGrowthHotspotsQuery,
   GetAnalyticsGrowthHotspotsQueryParams,
@@ -38,6 +40,7 @@ export type {
 } from "./models/GetAnalyticsGrowthHotspots.ts";
 export type {
   GetAnalyticsMedianPrice200,
+  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
   GetAnalyticsMedianPriceQuery,
   GetAnalyticsMedianPriceQueryParams,
@@ -45,6 +48,7 @@ export type {
 } from "./models/GetAnalyticsMedianPrice.ts";
 export type {
   GetAnalyticsNewBuildPremium200,
+  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
   GetAnalyticsNewBuildPremiumQuery,
   GetAnalyticsNewBuildPremiumQueryParams,
@@ -52,12 +56,14 @@ export type {
 } from "./models/GetAnalyticsNewBuildPremium.ts";
 export type {
   GetAnalyticsPriceBracketDistribution200,
+  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
   GetAnalyticsPriceBracketDistributionQuery,
   GetAnalyticsPriceBracketDistributionQueryResponse,
 } from "./models/GetAnalyticsPriceBracketDistribution.ts";
 export type {
   GetAnalyticsPriceTrend200,
+  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
   GetAnalyticsPriceTrendQuery,
   GetAnalyticsPriceTrendQueryParams,
@@ -65,18 +71,21 @@ export type {
 } from "./models/GetAnalyticsPriceTrend.ts";
 export type {
   GetAnalyticsPropertyTypeDistribution200,
+  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
   GetAnalyticsPropertyTypeDistributionQuery,
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./models/GetAnalyticsPropertyTypeDistribution.ts";
 export type {
   GetAnalyticsTimeRange200,
+  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
   GetAnalyticsTimeRangeQuery,
   GetAnalyticsTimeRangeQueryResponse,
 } from "./models/GetAnalyticsTimeRange.ts";
 export type {
   GetAnalyticsTopActiveAreas200,
+  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
   GetAnalyticsTopActiveAreasQueryParams,
@@ -85,6 +94,8 @@ export type {
 export type {
   PostAdminMigrateExisting202,
   PostAdminMigrateExisting400,
+  PostAdminMigrateExisting401,
+  PostAdminMigrateExisting403,
   PostAdminMigrateExisting500,
   PostAdminMigrateExistingMutation,
   PostAdminMigrateExistingMutationResponse,
@@ -92,6 +103,8 @@ export type {
 } from "./models/PostAdminMigrateExisting.ts";
 export type {
   PostAdminReset200,
+  PostAdminReset401,
+  PostAdminReset403,
   PostAdminReset500,
   PostAdminResetMutation,
   PostAdminResetMutationResponse,
@@ -99,6 +112,8 @@ export type {
 export type {
   PostAdminStreamUpload202,
   PostAdminStreamUpload400,
+  PostAdminStreamUpload401,
+  PostAdminStreamUpload403,
   PostAdminStreamUpload500,
   PostAdminStreamUploadMutation,
   PostAdminStreamUploadMutationResponse,
@@ -107,6 +122,8 @@ export type {
 export type {
   PostAdminUpload202,
   PostAdminUpload400,
+  PostAdminUpload401,
+  PostAdminUpload403,
   PostAdminUpload500,
   PostAdminUploadMutation,
   PostAdminUploadMutationRequest,
@@ -122,7 +139,9 @@ export type {
 } from "./models/PostApiQuery.ts";
 export type {
   PostAuthLogin200,
+  PostAuthLogin400,
   PostAuthLogin401,
+  PostAuthLogin500,
   PostAuthLoginMutation,
   PostAuthLoginMutationRequest,
   PostAuthLoginMutationResponse,
@@ -152,7 +171,7 @@ export type { InternalRoutesApiGraphQLResponse } from "./models/internalRoutesAp
 export type { InternalRoutesApiGrowthHotspotResponse } from "./models/internalRoutesApi/GrowthHotspotResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./models/internalRoutesApi/JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./models/internalRoutesApi/LoginBody.ts";
-export type { InternalRoutesApiLoginPayload } from "./models/internalRoutesApi/LoginPayload.ts";
+export type { InternalRoutesApiLoginResponse } from "./models/internalRoutesApi/LoginResponse.ts";
 export type { InternalRoutesApiMedianPriceResponse } from "./models/internalRoutesApi/MedianPriceResponse.ts";
 export type { InternalRoutesApiNewBuildPremiumResponse } from "./models/internalRoutesApi/NewBuildPremiumResponse.ts";
 export type { InternalRoutesApiPriceBracketResponse } from "./models/internalRoutesApi/PriceBracketResponse.ts";
@@ -263,50 +282,59 @@ export { backendInternalModelsTopActiveAreaResultSchema } from "./zod/backendInt
 export { backendInternalModelsUserSchema } from "./zod/backendInternalModels/userSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
+  getAnalyticsAffordability401Schema,
   getAnalyticsAffordability500Schema,
   getAnalyticsAffordabilityQueryResponseSchema,
 } from "./zod/getAnalyticsAffordabilitySchema.ts";
 export {
   getAnalyticsGrowthHotspots200Schema,
+  getAnalyticsGrowthHotspots401Schema,
   getAnalyticsGrowthHotspots500Schema,
   getAnalyticsGrowthHotspotsQueryParamsSchema,
   getAnalyticsGrowthHotspotsQueryResponseSchema,
 } from "./zod/getAnalyticsGrowthHotspotsSchema.ts";
 export {
   getAnalyticsMedianPrice200Schema,
+  getAnalyticsMedianPrice401Schema,
   getAnalyticsMedianPrice500Schema,
   getAnalyticsMedianPriceQueryParamsSchema,
   getAnalyticsMedianPriceQueryResponseSchema,
 } from "./zod/getAnalyticsMedianPriceSchema.ts";
 export {
   getAnalyticsNewBuildPremium200Schema,
+  getAnalyticsNewBuildPremium401Schema,
   getAnalyticsNewBuildPremium500Schema,
   getAnalyticsNewBuildPremiumQueryParamsSchema,
   getAnalyticsNewBuildPremiumQueryResponseSchema,
 } from "./zod/getAnalyticsNewBuildPremiumSchema.ts";
 export {
   getAnalyticsPriceBracketDistribution200Schema,
+  getAnalyticsPriceBracketDistribution401Schema,
   getAnalyticsPriceBracketDistribution500Schema,
   getAnalyticsPriceBracketDistributionQueryResponseSchema,
 } from "./zod/getAnalyticsPriceBracketDistributionSchema.ts";
 export {
   getAnalyticsPriceTrend200Schema,
+  getAnalyticsPriceTrend401Schema,
   getAnalyticsPriceTrend500Schema,
   getAnalyticsPriceTrendQueryParamsSchema,
   getAnalyticsPriceTrendQueryResponseSchema,
 } from "./zod/getAnalyticsPriceTrendSchema.ts";
 export {
   getAnalyticsPropertyTypeDistribution200Schema,
+  getAnalyticsPropertyTypeDistribution401Schema,
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./zod/getAnalyticsPropertyTypeDistributionSchema.ts";
 export {
   getAnalyticsTimeRange200Schema,
+  getAnalyticsTimeRange401Schema,
   getAnalyticsTimeRange500Schema,
   getAnalyticsTimeRangeQueryResponseSchema,
 } from "./zod/getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
+  getAnalyticsTopActiveAreas401Schema,
   getAnalyticsTopActiveAreas500Schema,
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
@@ -321,7 +349,7 @@ export { internalRoutesApiGraphQLResponseSchema } from "./zod/internalRoutesApi/
 export { internalRoutesApiGrowthHotspotResponseSchema } from "./zod/internalRoutesApi/growthHotspotResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./zod/internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./zod/internalRoutesApi/loginBodySchema.ts";
-export { internalRoutesApiLoginPayloadSchema } from "./zod/internalRoutesApi/loginPayloadSchema.ts";
+export { internalRoutesApiLoginResponseSchema } from "./zod/internalRoutesApi/loginResponseSchema.ts";
 export { internalRoutesApiMedianPriceResponseSchema } from "./zod/internalRoutesApi/medianPriceResponseSchema.ts";
 export { internalRoutesApiNewBuildPremiumResponseSchema } from "./zod/internalRoutesApi/newBuildPremiumResponseSchema.ts";
 export { internalRoutesApiPriceBracketResponseSchema } from "./zod/internalRoutesApi/priceBracketResponseSchema.ts";
@@ -332,18 +360,24 @@ export { internalRoutesApiTopActiveAreaResponseSchema } from "./zod/internalRout
 export {
   postAdminMigrateExisting202Schema,
   postAdminMigrateExisting400Schema,
+  postAdminMigrateExisting401Schema,
+  postAdminMigrateExisting403Schema,
   postAdminMigrateExisting500Schema,
   postAdminMigrateExistingMutationResponseSchema,
   postAdminMigrateExistingQueryParamsSchema,
 } from "./zod/postAdminMigrateExistingSchema.ts";
 export {
   postAdminReset200Schema,
+  postAdminReset401Schema,
+  postAdminReset403Schema,
   postAdminReset500Schema,
   postAdminResetMutationResponseSchema,
 } from "./zod/postAdminResetSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,
+  postAdminStreamUpload401Schema,
+  postAdminStreamUpload403Schema,
   postAdminStreamUpload500Schema,
   postAdminStreamUploadMutationResponseSchema,
   postAdminStreamUploadQueryParamsSchema,
@@ -351,6 +385,8 @@ export {
 export {
   postAdminUpload202Schema,
   postAdminUpload400Schema,
+  postAdminUpload401Schema,
+  postAdminUpload403Schema,
   postAdminUpload500Schema,
   postAdminUploadMutationRequestSchema,
   postAdminUploadMutationResponseSchema,
@@ -364,7 +400,9 @@ export {
 } from "./zod/postApiQuerySchema.ts";
 export {
   postAuthLogin200Schema,
+  postAuthLogin400Schema,
   postAuthLogin401Schema,
+  postAuthLogin500Schema,
   postAuthLoginMutationRequestSchema,
   postAuthLoginMutationResponseSchema,
 } from "./zod/postAuthLoginSchema.ts";

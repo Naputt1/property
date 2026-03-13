@@ -12,7 +12,9 @@ import type {
 import type {
   PostAuthLoginMutationRequest,
   PostAuthLoginMutationResponse,
+  PostAuthLogin400,
   PostAuthLogin401,
+  PostAuthLogin500,
 } from "../models/PostAuthLogin.ts";
 
 function getPostAuthLoginUrl() {
@@ -21,7 +23,7 @@ function getPostAuthLoginUrl() {
 }
 
 /**
- * @description Log in a user with username and password
+ * @description Authenticate a user with username and password. Returns a JWT token and user info, and sets HTTP-only cookies for session management.
  * @summary User login
  * {@link /auth/login}
  */
@@ -37,7 +39,7 @@ export async function postAuthLogin(
 
   const res = await request<
     PostAuthLoginMutationResponse,
-    ResponseErrorConfig<PostAuthLogin401>,
+    ResponseErrorConfig<PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500>,
     PostAuthLoginMutationRequest
   >({
     method: "POST",

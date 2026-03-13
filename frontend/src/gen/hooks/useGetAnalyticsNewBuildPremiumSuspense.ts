@@ -11,6 +11,7 @@ import type {
 import type {
   GetAnalyticsNewBuildPremiumQueryResponse,
   GetAnalyticsNewBuildPremiumQueryParams,
+  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
 } from "../models/GetAnalyticsNewBuildPremium.ts";
 import type {
@@ -41,7 +42,9 @@ export function getAnalyticsNewBuildPremiumSuspenseQueryOptions(
   const queryKey = getAnalyticsNewBuildPremiumSuspenseQueryKey(params);
   return queryOptions<
     GetAnalyticsNewBuildPremiumQueryResponse,
-    ResponseErrorConfig<GetAnalyticsNewBuildPremium500>,
+    ResponseErrorConfig<
+      GetAnalyticsNewBuildPremium401 | GetAnalyticsNewBuildPremium500
+    >,
     GetAnalyticsNewBuildPremiumQueryResponse,
     typeof queryKey
   >({
@@ -69,7 +72,9 @@ export function useGetAnalyticsNewBuildPremiumSuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsNewBuildPremiumQueryResponse,
-        ResponseErrorConfig<GetAnalyticsNewBuildPremium500>,
+        ResponseErrorConfig<
+          GetAnalyticsNewBuildPremium401 | GetAnalyticsNewBuildPremium500
+        >,
         TData,
         TQueryKey
       >
@@ -92,7 +97,9 @@ export function useGetAnalyticsNewBuildPremiumSuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<GetAnalyticsNewBuildPremium500>
+    ResponseErrorConfig<
+      GetAnalyticsNewBuildPremium401 | GetAnalyticsNewBuildPremium500
+    >
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

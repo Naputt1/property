@@ -13,6 +13,11 @@ export type GetAnalyticsAffordability200 =
   InternalRoutesApiAffordabilityResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type GetAnalyticsAffordability401 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type GetAnalyticsAffordability500 = InternalRoutesApiErrorResponse;
@@ -22,5 +27,5 @@ export type GetAnalyticsAffordabilityQueryResponse =
 
 export type GetAnalyticsAffordabilityQuery = {
   Response: GetAnalyticsAffordability200;
-  Errors: GetAnalyticsAffordability500;
+  Errors: GetAnalyticsAffordability401 | GetAnalyticsAffordability500;
 };

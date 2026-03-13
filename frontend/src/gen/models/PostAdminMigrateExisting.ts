@@ -30,6 +30,16 @@ export type PostAdminMigrateExisting202 = InternalRoutesApiJobResponse;
 export type PostAdminMigrateExisting400 = InternalRoutesApiErrorResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type PostAdminMigrateExisting401 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export type PostAdminMigrateExisting403 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type PostAdminMigrateExisting500 = InternalRoutesApiErrorResponse;
@@ -40,5 +50,9 @@ export type PostAdminMigrateExistingMutationResponse =
 export type PostAdminMigrateExistingMutation = {
   Response: PostAdminMigrateExisting202;
   QueryParams: PostAdminMigrateExistingQueryParams;
-  Errors: PostAdminMigrateExisting400 | PostAdminMigrateExisting500;
+  Errors:
+    | PostAdminMigrateExisting400
+    | PostAdminMigrateExisting401
+    | PostAdminMigrateExisting403
+    | PostAdminMigrateExisting500;
 };
