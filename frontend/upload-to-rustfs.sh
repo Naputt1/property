@@ -21,6 +21,7 @@ echo "Uploading to RustFS..."
 export AWS_ACCESS_KEY_ID="$RUSTFS_ACCESS_KEY"
 export AWS_SECRET_ACCESS_KEY="$RUSTFS_SECRET_KEY"
 export AWS_DEFAULT_REGION="us-east-1"
+export AWS_S3_FORCE_PATH_STYLE=true
 
 # Create bucket if it doesn't exist (ignore error if it exists)
 aws s3 mb s3://"$BUCKET_NAME" --endpoint-url "$RUSTFS_URL" || echo "Bucket might already exist"
