@@ -55,15 +55,7 @@ const { service: backendService, deployment: backendDeployment } =
   );
 
 // Ingress
-const {
-  apiIngress,
-  frontendIndexIngress,
-  frontendAssetsIngress,
-  rustfsApiIngress,
-  frontendIndexMiddleware,
-  frontendCacheMiddleware,
-  frontendNoCacheMiddleware,
-} = createIngress(ns, {
+createIngress(ns, {
   backend: backendService,
   rustfs: rustfsService,
 });
@@ -97,7 +89,8 @@ export const rustfsPort = rustfsService.spec.ports.apply((ports) => {
 export const rustfsIP = rustfsService.spec.clusterIP;
 
 export const asynqmonUrl = asynqmonService.status.loadBalancer.ingress[0].ip;
-export const prometheusUrl = prometheusService.status.loadBalancer.ingress[0].ip;
+export const prometheusUrl =
+  prometheusService.status.loadBalancer.ingress[0].ip;
 export const grafanaUrl = grafanaService.status.loadBalancer.ingress[0].ip;
 
 export const tunnelId = tunnelResources.then((r) => r.tunnelId);
