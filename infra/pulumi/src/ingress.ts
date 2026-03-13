@@ -64,7 +64,7 @@ export function createIngress(
       },
     },
     spec: {
-      rules: [...frontendHosts, rustfsHost].map((host) => ({
+      rules: frontendHosts.map((host) => ({
         host,
         http: {
           paths: [
@@ -81,6 +81,37 @@ export function createIngress(
           ],
         },
       })),
+    },
+  });
+
+  const rustfsIngress = new k8s.networking.v1.Ingress("property-rustfs", {
+    metadata: {
+      namespace: ns.metadata.name,
+      annotations: {
+        "kubernetes.io/ingress.class": "traefik",
+        "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+      },
+    },
+    spec: {
+      rules: [
+        {
+          host: rustfsHost,
+          http: {
+            paths: [
+              {
+                path: "/",
+                pathType: "Prefix",
+                backend: {
+                  service: {
+                    name: services.rustfs.metadata.name,
+                    port: { number: 9000 },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
     },
   });
 
@@ -126,5 +157,6 @@ export function createIngress(
   return {
     apiIngress,
     frontendIngress,
+    rustfsIngress,
   };
 }
