@@ -35,7 +35,7 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(county)
 // @Param year query int false "Year to filter by"
-// @Success 200 {array} backend_internal_models.MedianPriceResult
+// @Success 200 {object} MedianPriceResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/median-price [get]
 func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
@@ -60,7 +60,7 @@ func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param interval query string false "Time interval (month, year)" default(month)
-// @Success 200 {array} backend_internal_models.PriceTrendResult
+// @Success 200 {object} PriceTrendResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-trend [get]
 func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
@@ -82,7 +82,7 @@ func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {array} backend_internal_models.AffordabilityResult
+// @Success 200 {object} AffordabilityResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/affordability [get]
 func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
@@ -106,7 +106,7 @@ func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results (0 for all)" default(10)
 // @Param year query int false "Year to filter by"
-// @Success 200 {array} backend_internal_models.GrowthHotspotResult
+// @Success 200 {object} GrowthHotspotResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/growth-hotspots [get]
 func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
@@ -133,7 +133,7 @@ func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param by query string false "Region type (county, district, town_city)" default(county)
-// @Success 200 {array} backend_internal_models.NewBuildPremiumResult
+// @Success 200 {object} NewBuildPremiumResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/new-build-premium [get]
 func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
@@ -155,7 +155,7 @@ func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {array} backend_internal_models.PropertyTypeDistributionResult
+// @Success 200 {object} PropertyTypeDistributionResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/property-type-distribution [get]
 func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
@@ -176,7 +176,7 @@ func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {array} backend_internal_models.PriceBracketResult
+// @Success 200 {object} PriceBracketResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-bracket-distribution [get]
 func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
@@ -200,7 +200,7 @@ func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results" default(10)
 // @Param year query int false "Year to filter by"
-// @Success 200 {array} backend_internal_models.TopActiveAreaResult
+// @Success 200 {object} TopActiveAreaResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/top-active-areas [get]
 func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
@@ -226,7 +226,7 @@ func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Success 200 {object} backend_internal_models.TimeRangeResult
+// @Success 200 {object} TimeRangeResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/time-range [get]
 func (h *AnalyticsHandler) GetTimeRange(c *gin.Context) {

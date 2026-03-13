@@ -3,15 +3,15 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsPropertyTypeDistributionResultSchema } from "./backendInternalModels/propertyTypeDistributionResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiPropertyTypeDistributionResponseSchema } from "./internalRoutesApi/propertyTypeDistributionResponseSchema.ts";
 import { z } from "zod/v4";
 
 /**
  * @description OK
  */
-export const getAnalyticsPropertyTypeDistribution200Schema = z.array(
-  z.lazy(() => backendInternalModelsPropertyTypeDistributionResultSchema),
+export const getAnalyticsPropertyTypeDistribution200Schema = z.lazy(
+  () => internalRoutesApiPropertyTypeDistributionResponseSchema,
 );
 
 /**

@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer" },
+          "percentage": { "type": "number" },
+          "property_type": { "type": "string" }
+        },
+        "x-readme-ref-name": "backend_internal_models.PropertyTypeDistributionResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.PropertyTypeDistributionResponse"
+}

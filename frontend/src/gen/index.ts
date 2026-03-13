@@ -16,6 +16,8 @@ export type { GetAnalyticsTimeRangeQueryKey } from "./hooks/useGetAnalyticsTimeR
 export type { GetAnalyticsTimeRangeSuspenseQueryKey } from "./hooks/useGetAnalyticsTimeRangeSuspense.ts";
 export type { GetAnalyticsTopActiveAreasQueryKey } from "./hooks/useGetAnalyticsTopActiveAreas.ts";
 export type { GetAnalyticsTopActiveAreasSuspenseQueryKey } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
+export type { PostAdminMigrateExistingMutationKey } from "./hooks/usePostAdminMigrateExisting.ts";
+export type { PostAdminResetMutationKey } from "./hooks/usePostAdminReset.ts";
 export type { PostAdminStreamUploadMutationKey } from "./hooks/usePostAdminStreamUpload.ts";
 export type { PostAdminUploadMutationKey } from "./hooks/usePostAdminUpload.ts";
 export type { PostApiQueryMutationKey } from "./hooks/usePostApiQuery.ts";
@@ -81,6 +83,20 @@ export type {
   GetAnalyticsTopActiveAreasQueryResponse,
 } from "./models/GetAnalyticsTopActiveAreas.ts";
 export type {
+  PostAdminMigrateExisting202,
+  PostAdminMigrateExisting400,
+  PostAdminMigrateExisting500,
+  PostAdminMigrateExistingMutation,
+  PostAdminMigrateExistingMutationResponse,
+  PostAdminMigrateExistingQueryParams,
+} from "./models/PostAdminMigrateExisting.ts";
+export type {
+  PostAdminReset200,
+  PostAdminReset500,
+  PostAdminResetMutation,
+  PostAdminResetMutationResponse,
+} from "./models/PostAdminReset.ts";
+export type {
   PostAdminStreamUpload202,
   PostAdminStreamUpload400,
   PostAdminStreamUpload500,
@@ -126,16 +142,24 @@ export type { BackendInternalModelsPropertyTypeDistributionResult } from "./mode
 export type { BackendInternalModelsTimeRangeResult } from "./models/backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./models/backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./models/backendInternalModels/User.ts";
-export type { GormDeletedAt } from "./models/gorm/DeletedAt.ts";
+export type { InternalRoutesApiAffordabilityResponse } from "./models/internalRoutesApi/AffordabilityResponse.ts";
 export type { InternalRoutesApiBaseResponse } from "./models/internalRoutesApi/BaseResponse.ts";
 export type { InternalRoutesApiErrorResponse } from "./models/internalRoutesApi/ErrorResponse.ts";
 export type { InternalRoutesApiGraphQLError } from "./models/internalRoutesApi/GraphQLError.ts";
 export type { InternalRoutesApiGraphQLLocation } from "./models/internalRoutesApi/GraphQLLocation.ts";
 export type { InternalRoutesApiGraphQLRequest } from "./models/internalRoutesApi/GraphQLRequest.ts";
 export type { InternalRoutesApiGraphQLResponse } from "./models/internalRoutesApi/GraphQLResponse.ts";
+export type { InternalRoutesApiGrowthHotspotResponse } from "./models/internalRoutesApi/GrowthHotspotResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./models/internalRoutesApi/JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./models/internalRoutesApi/LoginBody.ts";
 export type { InternalRoutesApiLoginPayload } from "./models/internalRoutesApi/LoginPayload.ts";
+export type { InternalRoutesApiMedianPriceResponse } from "./models/internalRoutesApi/MedianPriceResponse.ts";
+export type { InternalRoutesApiNewBuildPremiumResponse } from "./models/internalRoutesApi/NewBuildPremiumResponse.ts";
+export type { InternalRoutesApiPriceBracketResponse } from "./models/internalRoutesApi/PriceBracketResponse.ts";
+export type { InternalRoutesApiPriceTrendResponse } from "./models/internalRoutesApi/PriceTrendResponse.ts";
+export type { InternalRoutesApiPropertyTypeDistributionResponse } from "./models/internalRoutesApi/PropertyTypeDistributionResponse.ts";
+export type { InternalRoutesApiTimeRangeResponse } from "./models/internalRoutesApi/TimeRangeResponse.ts";
+export type { InternalRoutesApiTopActiveAreaResponse } from "./models/internalRoutesApi/TopActiveAreaResponse.ts";
 export { getAnalyticsAffordability } from "./clients/getAnalyticsAffordability.ts";
 export { getAnalyticsGrowthHotspots } from "./clients/getAnalyticsGrowthHotspots.ts";
 export { getAnalyticsMedianPrice } from "./clients/getAnalyticsMedianPrice.ts";
@@ -145,6 +169,8 @@ export { getAnalyticsPriceTrend } from "./clients/getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./clients/getAnalyticsPropertyTypeDistribution.ts";
 export { getAnalyticsTimeRange } from "./clients/getAnalyticsTimeRange.ts";
 export { getAnalyticsTopActiveAreas } from "./clients/getAnalyticsTopActiveAreas.ts";
+export { postAdminMigrateExisting } from "./clients/postAdminMigrateExisting.ts";
+export { postAdminReset } from "./clients/postAdminReset.ts";
 export { postAdminStreamUpload } from "./clients/postAdminStreamUpload.ts";
 export { postAdminUpload } from "./clients/postAdminUpload.ts";
 export { postApiQuery } from "./clients/postApiQuery.ts";
@@ -204,6 +230,12 @@ export { useGetAnalyticsTopActiveAreas } from "./hooks/useGetAnalyticsTopActiveA
 export { getAnalyticsTopActiveAreasSuspenseQueryKey } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
 export { getAnalyticsTopActiveAreasSuspenseQueryOptions } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
 export { useGetAnalyticsTopActiveAreasSuspense } from "./hooks/useGetAnalyticsTopActiveAreasSuspense.ts";
+export { postAdminMigrateExistingMutationKey } from "./hooks/usePostAdminMigrateExisting.ts";
+export { postAdminMigrateExistingMutationOptions } from "./hooks/usePostAdminMigrateExisting.ts";
+export { usePostAdminMigrateExisting } from "./hooks/usePostAdminMigrateExisting.ts";
+export { postAdminResetMutationKey } from "./hooks/usePostAdminReset.ts";
+export { postAdminResetMutationOptions } from "./hooks/usePostAdminReset.ts";
+export { usePostAdminReset } from "./hooks/usePostAdminReset.ts";
 export { postAdminStreamUploadMutationKey } from "./hooks/usePostAdminStreamUpload.ts";
 export { postAdminStreamUploadMutationOptions } from "./hooks/usePostAdminStreamUpload.ts";
 export { usePostAdminStreamUpload } from "./hooks/usePostAdminStreamUpload.ts";
@@ -279,16 +311,36 @@ export {
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
 } from "./zod/getAnalyticsTopActiveAreasSchema.ts";
-export { gormDeletedAtSchema } from "./zod/gorm/deletedAtSchema.ts";
+export { internalRoutesApiAffordabilityResponseSchema } from "./zod/internalRoutesApi/affordabilityResponseSchema.ts";
 export { internalRoutesApiBaseResponseSchema } from "./zod/internalRoutesApi/baseResponseSchema.ts";
 export { internalRoutesApiErrorResponseSchema } from "./zod/internalRoutesApi/errorResponseSchema.ts";
 export { internalRoutesApiGraphQLErrorSchema } from "./zod/internalRoutesApi/graphQLErrorSchema.ts";
 export { internalRoutesApiGraphQLLocationSchema } from "./zod/internalRoutesApi/graphQLLocationSchema.ts";
 export { internalRoutesApiGraphQLRequestSchema } from "./zod/internalRoutesApi/graphQLRequestSchema.ts";
 export { internalRoutesApiGraphQLResponseSchema } from "./zod/internalRoutesApi/graphQLResponseSchema.ts";
+export { internalRoutesApiGrowthHotspotResponseSchema } from "./zod/internalRoutesApi/growthHotspotResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./zod/internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./zod/internalRoutesApi/loginBodySchema.ts";
 export { internalRoutesApiLoginPayloadSchema } from "./zod/internalRoutesApi/loginPayloadSchema.ts";
+export { internalRoutesApiMedianPriceResponseSchema } from "./zod/internalRoutesApi/medianPriceResponseSchema.ts";
+export { internalRoutesApiNewBuildPremiumResponseSchema } from "./zod/internalRoutesApi/newBuildPremiumResponseSchema.ts";
+export { internalRoutesApiPriceBracketResponseSchema } from "./zod/internalRoutesApi/priceBracketResponseSchema.ts";
+export { internalRoutesApiPriceTrendResponseSchema } from "./zod/internalRoutesApi/priceTrendResponseSchema.ts";
+export { internalRoutesApiPropertyTypeDistributionResponseSchema } from "./zod/internalRoutesApi/propertyTypeDistributionResponseSchema.ts";
+export { internalRoutesApiTimeRangeResponseSchema } from "./zod/internalRoutesApi/timeRangeResponseSchema.ts";
+export { internalRoutesApiTopActiveAreaResponseSchema } from "./zod/internalRoutesApi/topActiveAreaResponseSchema.ts";
+export {
+  postAdminMigrateExisting202Schema,
+  postAdminMigrateExisting400Schema,
+  postAdminMigrateExisting500Schema,
+  postAdminMigrateExistingMutationResponseSchema,
+  postAdminMigrateExistingQueryParamsSchema,
+} from "./zod/postAdminMigrateExistingSchema.ts";
+export {
+  postAdminReset200Schema,
+  postAdminReset500Schema,
+  postAdminResetMutationResponseSchema,
+} from "./zod/postAdminResetSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,

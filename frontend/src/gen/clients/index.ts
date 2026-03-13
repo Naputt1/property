@@ -7,6 +7,8 @@ export { getAnalyticsPriceTrend } from "./getAnalyticsPriceTrend.ts";
 export { getAnalyticsPropertyTypeDistribution } from "./getAnalyticsPropertyTypeDistribution.ts";
 export { getAnalyticsTimeRange } from "./getAnalyticsTimeRange.ts";
 export { getAnalyticsTopActiveAreas } from "./getAnalyticsTopActiveAreas.ts";
+export { postAdminMigrateExisting } from "./postAdminMigrateExisting.ts";
+export { postAdminReset } from "./postAdminReset.ts";
 export { postAdminStreamUpload } from "./postAdminStreamUpload.ts";
 export { postAdminUpload } from "./postAdminUpload.ts";
 export { postApiQuery } from "./postApiQuery.ts";

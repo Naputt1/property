@@ -151,11 +151,105 @@ func UploadCSV(c *gin.Context) {
 	})
 }
 
-func RegisterAdminRoutes(r *gin.RouterGroup, cfg *config.Config, svc services.JobService) {
+// ResetBackend godoc
+// @Summary Reset backend state
+// @Description Truncate properties and jobs tables, clear queues, and clear analytics cache
+// @Tags admin
+// @Produce json
+// @Security JwtAuth
+// @Success 200 {object} BaseResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /admin/reset [post]
+func ResetBackend(c *gin.Context) {
+	svcs := c.MustGet("services").(*services.Services)
+
+	// 1. Truncate properties
+	if err := svcs.Property.Truncate(c.Request.Context()); err != nil {
+		slog.Error("Failed to truncate properties", "error", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to truncate properties"})
+		return
+	}
+
+	// 2. Truncate jobs in DB
+	if err := svcs.Job.Truncate(c.Request.Context()); err != nil {
+		slog.Error("Failed to truncate jobs", "error", err)
+	}
+
+	// 3. Clear Asynq queues
+	if err := svcs.Job.DeleteAllTasks(c.Request.Context(), []string{"default", "migration"}); err != nil {
+		slog.Error("Failed to clear queues", "error", err)
+	}
+
+	// 4. Clear analytics cache
+	if err := svcs.Analytics.ClearCache(c.Request.Context()); err != nil {
+		slog.Error("Failed to clear analytics cache", "error", err)
+	}
+
+	c.JSON(http.StatusOK, BaseResponse{
+		Status:  true,
+		Message: "Backend state reset successfully",
+	})
+}
+
+// MigrateExisting godoc
+// @Summary Trigger migration for existing bucket file
+// @Description Queue a migration job for a file already in the bucket
+// @Tags admin
+// @Produce json
+// @Security JwtAuth
+// @Param bucketKey query string true "Key in bucket"
+// @Param hasHeader query boolean false "CSV has header"
+// @Success 202 {object} JobResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /admin/migrate-existing [post]
+func MigrateExisting(c *gin.Context) {
+	svcs := c.MustGet("services").(*services.Services)
+
+	bucketKey := c.Query("bucketKey")
+	if bucketKey == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Status: false, Error: "bucketKey is required"})
+		return
+	}
+
+	hasHeader := c.DefaultQuery("hasHeader", "true") == "true"
+
+	// Queue job
+	req := models.CSVConfigPayload{
+		BucketKey: bucketKey,
+		HasHeader: hasHeader,
+	}
+
+	payloadBytes, err := json.Marshal(req)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to encode payload"})
+		return
+	}
+
+	job, err := svcs.Job.CreateJob(c.Request.Context(), "properties:migrate:csv", payloadBytes)
+	if err != nil {
+		slog.Error("Failed to create migration job", "error", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: false, Error: "failed to create migration job"})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, JobResponse{
+		BaseResponse: BaseResponse{
+			Status:  true,
+			Message: "Migration job queued successfully",
+		},
+		JobID: job.ID,
+	})
+}
+
+func RegisterAdminRoutes(r *gin.RouterGroup, cfg *config.Config, svcs *services.Services) {
 	r.Use(func(c *gin.Context) {
-		c.Set("jobService", svc)
+		c.Set("jobService", svcs.Job)
+		c.Set("services", svcs)
 		c.Next()
 	})
 	r.POST("/upload", UploadCSV)
 	r.POST("/stream-upload", StreamUploadCSV)
+	r.POST("/reset", ResetBackend)
+	r.POST("/migrate-existing", MigrateExisting)
 }

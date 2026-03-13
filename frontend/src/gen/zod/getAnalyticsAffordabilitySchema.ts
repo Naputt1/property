@@ -3,15 +3,15 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsAffordabilityResultSchema } from "./backendInternalModels/affordabilityResultSchema.ts";
+import { internalRoutesApiAffordabilityResponseSchema } from "./internalRoutesApi/affordabilityResponseSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
 import { z } from "zod/v4";
 
 /**
  * @description OK
  */
-export const getAnalyticsAffordability200Schema = z.array(
-  z.lazy(() => backendInternalModelsAffordabilityResultSchema),
+export const getAnalyticsAffordability200Schema = z.lazy(
+  () => internalRoutesApiAffordabilityResponseSchema,
 );
 
 /**

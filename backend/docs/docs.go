@@ -24,6 +24,89 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/migrate-existing": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Queue a migration job for a file already in the bucket",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Trigger migration for existing bucket file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Key in bucket",
+                        "name": "bucketKey",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "CSV has header",
+                        "name": "hasHeader",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.JobResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/reset": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Truncate properties and jobs tables, clear queues, and clear analytics cache",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Reset backend state",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.BaseResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_routes_api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/stream-upload": {
             "post": {
                 "security": [
@@ -139,10 +222,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.AffordabilityResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.AffordabilityResponse"
                         }
                     },
                     "500": {
@@ -193,10 +273,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.GrowthHotspotResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.GrowthHotspotResponse"
                         }
                     },
                     "500": {
@@ -240,10 +317,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.MedianPriceResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.MedianPriceResponse"
                         }
                     },
                     "500": {
@@ -281,10 +355,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.NewBuildPremiumResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.NewBuildPremiumResponse"
                         }
                     },
                     "500": {
@@ -313,10 +384,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.PriceBracketResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.PriceBracketResponse"
                         }
                     },
                     "500": {
@@ -354,10 +422,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.PriceTrendResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.PriceTrendResponse"
                         }
                     },
                     "500": {
@@ -386,10 +451,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.PropertyTypeDistributionResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.PropertyTypeDistributionResponse"
                         }
                     },
                     "500": {
@@ -418,7 +480,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/backend_internal_models.TimeRangeResult"
+                            "$ref": "#/definitions/internal_routes_api.TimeRangeResponse"
                         }
                     },
                     "500": {
@@ -469,10 +531,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_internal_models.TopActiveAreaResult"
-                            }
+                            "$ref": "#/definitions/internal_routes_api.TopActiveAreaResponse"
                         }
                     },
                     "500": {
@@ -731,7 +790,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "deleted_at": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "id": {
                     "type": "integer"
@@ -753,15 +813,21 @@ const docTemplate = `{
                 }
             }
         },
-        "gorm.DeletedAt": {
+        "internal_routes_api.AffordabilityResponse": {
             "type": "object",
             "properties": {
-                "time": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.AffordabilityResult"
+                    }
+                },
+                "message": {
                     "type": "string"
                 },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
+                "status": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -856,6 +922,24 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_routes_api.GrowthHotspotResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.GrowthHotspotResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
         "internal_routes_api.JobResponse": {
             "type": "object",
             "properties": {
@@ -894,6 +978,129 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/backend_internal_models.User"
+                }
+            }
+        },
+        "internal_routes_api.MedianPriceResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.MedianPriceResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.NewBuildPremiumResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.NewBuildPremiumResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.PriceBracketResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.PriceBracketResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.PriceTrendResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.PriceTrendResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.PropertyTypeDistributionResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.PropertyTypeDistributionResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.TimeRangeResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/backend_internal_models.TimeRangeResult"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "internal_routes_api.TopActiveAreaResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend_internal_models.TopActiveAreaResult"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         }

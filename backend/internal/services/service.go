@@ -19,6 +19,7 @@ type PropertyService interface {
 	UpdateProperty(ctx context.Context, property *models.Property) error
 	DeleteProperty(ctx context.Context, id string) error
 	CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error
+	Truncate(ctx context.Context) error
 }
 
 type JobService interface {
@@ -28,6 +29,8 @@ type JobService interface {
 	UpdateJobProgress(ctx context.Context, id string, progress, total int) error
 	GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error)
 	GetJobByID(ctx context.Context, id string) (*models.Job, error)
+	Truncate(ctx context.Context) error
+	DeleteAllTasks(ctx context.Context, queues []string) error
 }
 
 type AnalyticsService interface {

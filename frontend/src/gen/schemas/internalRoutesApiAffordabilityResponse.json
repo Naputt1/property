@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "avg_price": { "type": "integer" },
+          "property_type": { "type": "string" },
+          "relative_affordability": { "type": "number" }
+        },
+        "x-readme-ref-name": "backend_internal_models.AffordabilityResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.AffordabilityResponse"
+}

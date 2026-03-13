@@ -3,17 +3,15 @@
  * Do not edit manually.
  */
 
-import type { GormDeletedAt } from "../gorm/DeletedAt.ts";
-
 export type BackendInternalModelsUser = {
   /**
    * @type string | undefined
    */
   created_at?: string;
   /**
-   * @type object | undefined
+   * @type string | undefined, date-time
    */
-  deleted_at?: GormDeletedAt;
+  deleted_at?: string;
   /**
    * @type integer | undefined
    */

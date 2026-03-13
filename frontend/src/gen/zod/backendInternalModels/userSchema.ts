@@ -3,14 +3,11 @@
  * Do not edit manually.
  */
 
-import { gormDeletedAtSchema } from "../gorm/deletedAtSchema.ts";
 import { z } from "zod/v4";
 
 export const backendInternalModelsUserSchema = z.object({
   created_at: z.optional(z.string()),
-  get deleted_at() {
-    return gormDeletedAtSchema.optional();
-  },
+  deleted_at: z.optional(z.iso.datetime()),
   id: z.optional(z.int()),
   is_admin: z.optional(z.boolean()),
   name: z.optional(z.string()),

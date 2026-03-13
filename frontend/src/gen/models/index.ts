@@ -58,6 +58,20 @@ export type {
   GetAnalyticsTopActiveAreasQueryResponse,
 } from "./GetAnalyticsTopActiveAreas.ts";
 export type {
+  PostAdminMigrateExisting202,
+  PostAdminMigrateExisting400,
+  PostAdminMigrateExisting500,
+  PostAdminMigrateExistingMutation,
+  PostAdminMigrateExistingMutationResponse,
+  PostAdminMigrateExistingQueryParams,
+} from "./PostAdminMigrateExisting.ts";
+export type {
+  PostAdminReset200,
+  PostAdminReset500,
+  PostAdminResetMutation,
+  PostAdminResetMutationResponse,
+} from "./PostAdminReset.ts";
+export type {
   PostAdminStreamUpload202,
   PostAdminStreamUpload400,
   PostAdminStreamUpload500,
@@ -103,13 +117,21 @@ export type { BackendInternalModelsPropertyTypeDistributionResult } from "./back
 export type { BackendInternalModelsTimeRangeResult } from "./backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./backendInternalModels/User.ts";
-export type { GormDeletedAt } from "./gorm/DeletedAt.ts";
+export type { InternalRoutesApiAffordabilityResponse } from "./internalRoutesApi/AffordabilityResponse.ts";
 export type { InternalRoutesApiBaseResponse } from "./internalRoutesApi/BaseResponse.ts";
 export type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
 export type { InternalRoutesApiGraphQLError } from "./internalRoutesApi/GraphQLError.ts";
 export type { InternalRoutesApiGraphQLLocation } from "./internalRoutesApi/GraphQLLocation.ts";
 export type { InternalRoutesApiGraphQLRequest } from "./internalRoutesApi/GraphQLRequest.ts";
 export type { InternalRoutesApiGraphQLResponse } from "./internalRoutesApi/GraphQLResponse.ts";
+export type { InternalRoutesApiGrowthHotspotResponse } from "./internalRoutesApi/GrowthHotspotResponse.ts";
 export type { InternalRoutesApiJobResponse } from "./internalRoutesApi/JobResponse.ts";
 export type { InternalRoutesApiLoginBody } from "./internalRoutesApi/LoginBody.ts";
 export type { InternalRoutesApiLoginPayload } from "./internalRoutesApi/LoginPayload.ts";
+export type { InternalRoutesApiMedianPriceResponse } from "./internalRoutesApi/MedianPriceResponse.ts";
+export type { InternalRoutesApiNewBuildPremiumResponse } from "./internalRoutesApi/NewBuildPremiumResponse.ts";
+export type { InternalRoutesApiPriceBracketResponse } from "./internalRoutesApi/PriceBracketResponse.ts";
+export type { InternalRoutesApiPriceTrendResponse } from "./internalRoutesApi/PriceTrendResponse.ts";
+export type { InternalRoutesApiPropertyTypeDistributionResponse } from "./internalRoutesApi/PropertyTypeDistributionResponse.ts";
+export type { InternalRoutesApiTimeRangeResponse } from "./internalRoutesApi/TimeRangeResponse.ts";
+export type { InternalRoutesApiTopActiveAreaResponse } from "./internalRoutesApi/TopActiveAreaResponse.ts";

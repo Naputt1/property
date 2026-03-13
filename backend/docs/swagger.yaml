@@ -88,7 +88,8 @@ definitions:
       created_at:
         type: string
       deleted_at:
-        $ref: '#/definitions/gorm.DeletedAt'
+        format: date-time
+        type: string
       id:
         type: integer
       is_admin:
@@ -102,12 +103,16 @@ definitions:
       username:
         type: string
     type: object
-  gorm.DeletedAt:
+  internal_routes_api.AffordabilityResponse:
     properties:
-      time:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.AffordabilityResult'
+        type: array
+      message:
         type: string
-      valid:
-        description: Valid is true if Time is not NULL
+      status:
+        example: true
         type: boolean
     type: object
   internal_routes_api.BaseResponse:
@@ -172,6 +177,18 @@ definitions:
           $ref: '#/definitions/internal_routes_api.GraphQLError'
         type: array
     type: object
+  internal_routes_api.GrowthHotspotResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.GrowthHotspotResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
   internal_routes_api.JobResponse:
     properties:
       job_id:
@@ -199,6 +216,88 @@ definitions:
       user:
         $ref: '#/definitions/backend_internal_models.User'
     type: object
+  internal_routes_api.MedianPriceResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.MedianPriceResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.NewBuildPremiumResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.NewBuildPremiumResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.PriceBracketResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.PriceBracketResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.PriceTrendResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.PriceTrendResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.PropertyTypeDistributionResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.PropertyTypeDistributionResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.TimeRangeResponse:
+    properties:
+      data:
+        $ref: '#/definitions/backend_internal_models.TimeRangeResult'
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  internal_routes_api.TopActiveAreaResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_models.TopActiveAreaResult'
+        type: array
+      message:
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -214,6 +313,59 @@ info:
   title: UK Housing Market & Rental Intelligence API
   version: "1.0"
 paths:
+  /admin/migrate-existing:
+    post:
+      description: Queue a migration job for a file already in the bucket
+      parameters:
+      - description: Key in bucket
+        in: query
+        name: bucketKey
+        required: true
+        type: string
+      - description: CSV has header
+        in: query
+        name: hasHeader
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/internal_routes_api.JobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Trigger migration for existing bucket file
+      tags:
+      - admin
+  /admin/reset:
+    post:
+      description: Truncate properties and jobs tables, clear queues, and clear analytics
+        cache
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Reset backend state
+      tags:
+      - admin
   /admin/stream-upload:
     post:
       consumes:
@@ -289,9 +441,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.AffordabilityResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.AffordabilityResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -325,9 +475,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.GrowthHotspotResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.GrowthHotspotResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -356,9 +504,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.MedianPriceResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.MedianPriceResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -383,9 +529,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.NewBuildPremiumResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.NewBuildPremiumResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -404,9 +548,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.PriceBracketResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.PriceBracketResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -431,9 +573,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.PriceTrendResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.PriceTrendResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -452,9 +592,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.PropertyTypeDistributionResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.PropertyTypeDistributionResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -473,7 +611,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/backend_internal_models.TimeRangeResult'
+            $ref: '#/definitions/internal_routes_api.TimeRangeResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -507,9 +645,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/backend_internal_models.TopActiveAreaResult'
-            type: array
+            $ref: '#/definitions/internal_routes_api.TopActiveAreaResponse'
         "500":
           description: Internal Server Error
           schema:
