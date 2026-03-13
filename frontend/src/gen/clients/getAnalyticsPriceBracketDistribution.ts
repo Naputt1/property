@@ -11,7 +11,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsPriceBracketDistributionQueryResponse,
-  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
 } from "../models/GetAnalyticsPriceBracketDistribution.ts";
 
@@ -35,10 +34,7 @@ export async function getAnalyticsPriceBracketDistribution(
 
   const res = await request<
     GetAnalyticsPriceBracketDistributionQueryResponse,
-    ResponseErrorConfig<
-      | GetAnalyticsPriceBracketDistribution401
-      | GetAnalyticsPriceBracketDistribution500
-    >,
+    ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>,
     unknown
   >({
     method: "GET",

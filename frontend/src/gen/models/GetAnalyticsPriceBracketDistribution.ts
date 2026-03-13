@@ -13,12 +13,6 @@ export type GetAnalyticsPriceBracketDistribution200 =
   InternalRoutesApiPriceBracketResponse;
 
 /**
- * @description Unauthorized
- */
-export type GetAnalyticsPriceBracketDistribution401 =
-  InternalRoutesApiErrorResponse;
-
-/**
  * @description Internal Server Error
  */
 export type GetAnalyticsPriceBracketDistribution500 =
@@ -29,7 +23,5 @@ export type GetAnalyticsPriceBracketDistributionQueryResponse =
 
 export type GetAnalyticsPriceBracketDistributionQuery = {
   Response: GetAnalyticsPriceBracketDistribution200;
-  Errors:
-    | GetAnalyticsPriceBracketDistribution401
-    | GetAnalyticsPriceBracketDistribution500;
+  Errors: GetAnalyticsPriceBracketDistribution500;
 };

@@ -49,14 +49,12 @@ export type {
 } from "./models/GetAdminUsers.ts";
 export type {
   GetAnalyticsAffordability200,
-  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
   GetAnalyticsAffordabilityQuery,
   GetAnalyticsAffordabilityQueryResponse,
 } from "./models/GetAnalyticsAffordability.ts";
 export type {
   GetAnalyticsGrowthHotspots200,
-  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
   GetAnalyticsGrowthHotspotsQuery,
   GetAnalyticsGrowthHotspotsQueryParams,
@@ -64,7 +62,6 @@ export type {
 } from "./models/GetAnalyticsGrowthHotspots.ts";
 export type {
   GetAnalyticsMedianPrice200,
-  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
   GetAnalyticsMedianPriceQuery,
   GetAnalyticsMedianPriceQueryParams,
@@ -72,7 +69,6 @@ export type {
 } from "./models/GetAnalyticsMedianPrice.ts";
 export type {
   GetAnalyticsNewBuildPremium200,
-  GetAnalyticsNewBuildPremium401,
   GetAnalyticsNewBuildPremium500,
   GetAnalyticsNewBuildPremiumQuery,
   GetAnalyticsNewBuildPremiumQueryParams,
@@ -80,14 +76,12 @@ export type {
 } from "./models/GetAnalyticsNewBuildPremium.ts";
 export type {
   GetAnalyticsPriceBracketDistribution200,
-  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
   GetAnalyticsPriceBracketDistributionQuery,
   GetAnalyticsPriceBracketDistributionQueryResponse,
 } from "./models/GetAnalyticsPriceBracketDistribution.ts";
 export type {
   GetAnalyticsPriceTrend200,
-  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
   GetAnalyticsPriceTrendQuery,
   GetAnalyticsPriceTrendQueryParams,
@@ -95,21 +89,18 @@ export type {
 } from "./models/GetAnalyticsPriceTrend.ts";
 export type {
   GetAnalyticsPropertyTypeDistribution200,
-  GetAnalyticsPropertyTypeDistribution401,
   GetAnalyticsPropertyTypeDistribution500,
   GetAnalyticsPropertyTypeDistributionQuery,
   GetAnalyticsPropertyTypeDistributionQueryResponse,
 } from "./models/GetAnalyticsPropertyTypeDistribution.ts";
 export type {
   GetAnalyticsTimeRange200,
-  GetAnalyticsTimeRange401,
   GetAnalyticsTimeRange500,
   GetAnalyticsTimeRangeQuery,
   GetAnalyticsTimeRangeQueryResponse,
 } from "./models/GetAnalyticsTimeRange.ts";
 export type {
   GetAnalyticsTopActiveAreas200,
-  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
   GetAnalyticsTopActiveAreasQuery,
   GetAnalyticsTopActiveAreasQueryParams,
@@ -378,59 +369,50 @@ export {
 } from "./zod/getAdminUsersSchema.ts";
 export {
   getAnalyticsAffordability200Schema,
-  getAnalyticsAffordability401Schema,
   getAnalyticsAffordability500Schema,
   getAnalyticsAffordabilityQueryResponseSchema,
 } from "./zod/getAnalyticsAffordabilitySchema.ts";
 export {
   getAnalyticsGrowthHotspots200Schema,
-  getAnalyticsGrowthHotspots401Schema,
   getAnalyticsGrowthHotspots500Schema,
   getAnalyticsGrowthHotspotsQueryParamsSchema,
   getAnalyticsGrowthHotspotsQueryResponseSchema,
 } from "./zod/getAnalyticsGrowthHotspotsSchema.ts";
 export {
   getAnalyticsMedianPrice200Schema,
-  getAnalyticsMedianPrice401Schema,
   getAnalyticsMedianPrice500Schema,
   getAnalyticsMedianPriceQueryParamsSchema,
   getAnalyticsMedianPriceQueryResponseSchema,
 } from "./zod/getAnalyticsMedianPriceSchema.ts";
 export {
   getAnalyticsNewBuildPremium200Schema,
-  getAnalyticsNewBuildPremium401Schema,
   getAnalyticsNewBuildPremium500Schema,
   getAnalyticsNewBuildPremiumQueryParamsSchema,
   getAnalyticsNewBuildPremiumQueryResponseSchema,
 } from "./zod/getAnalyticsNewBuildPremiumSchema.ts";
 export {
   getAnalyticsPriceBracketDistribution200Schema,
-  getAnalyticsPriceBracketDistribution401Schema,
   getAnalyticsPriceBracketDistribution500Schema,
   getAnalyticsPriceBracketDistributionQueryResponseSchema,
 } from "./zod/getAnalyticsPriceBracketDistributionSchema.ts";
 export {
   getAnalyticsPriceTrend200Schema,
-  getAnalyticsPriceTrend401Schema,
   getAnalyticsPriceTrend500Schema,
   getAnalyticsPriceTrendQueryParamsSchema,
   getAnalyticsPriceTrendQueryResponseSchema,
 } from "./zod/getAnalyticsPriceTrendSchema.ts";
 export {
   getAnalyticsPropertyTypeDistribution200Schema,
-  getAnalyticsPropertyTypeDistribution401Schema,
   getAnalyticsPropertyTypeDistribution500Schema,
   getAnalyticsPropertyTypeDistributionQueryResponseSchema,
 } from "./zod/getAnalyticsPropertyTypeDistributionSchema.ts";
 export {
   getAnalyticsTimeRange200Schema,
-  getAnalyticsTimeRange401Schema,
   getAnalyticsTimeRange500Schema,
   getAnalyticsTimeRangeQueryResponseSchema,
 } from "./zod/getAnalyticsTimeRangeSchema.ts";
 export {
   getAnalyticsTopActiveAreas200Schema,
-  getAnalyticsTopActiveAreas401Schema,
   getAnalyticsTopActiveAreas500Schema,
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,

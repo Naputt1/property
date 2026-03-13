@@ -11,7 +11,6 @@ import type {
 import type {
   GetAnalyticsPriceTrendQueryResponse,
   GetAnalyticsPriceTrendQueryParams,
-  GetAnalyticsPriceTrend401,
   GetAnalyticsPriceTrend500,
 } from "../models/GetAnalyticsPriceTrend.ts";
 import type {
@@ -38,7 +37,7 @@ export function getAnalyticsPriceTrendQueryOptions(
   const queryKey = getAnalyticsPriceTrendQueryKey(params);
   return queryOptions<
     GetAnalyticsPriceTrendQueryResponse,
-    ResponseErrorConfig<GetAnalyticsPriceTrend401 | GetAnalyticsPriceTrend500>,
+    ResponseErrorConfig<GetAnalyticsPriceTrend500>,
     GetAnalyticsPriceTrendQueryResponse,
     typeof queryKey
   >({
@@ -67,9 +66,7 @@ export function useGetAnalyticsPriceTrend<
     query?: Partial<
       QueryObserverOptions<
         GetAnalyticsPriceTrendQueryResponse,
-        ResponseErrorConfig<
-          GetAnalyticsPriceTrend401 | GetAnalyticsPriceTrend500
-        >,
+        ResponseErrorConfig<GetAnalyticsPriceTrend500>,
         TData,
         TQueryData,
         TQueryKey
@@ -90,10 +87,9 @@ export function useGetAnalyticsPriceTrend<
       queryKey,
     } as unknown as QueryObserverOptions,
     queryClient,
-  ) as UseQueryResult<
-    TData,
-    ResponseErrorConfig<GetAnalyticsPriceTrend401 | GetAnalyticsPriceTrend500>
-  > & { queryKey: TQueryKey };
+  ) as UseQueryResult<TData, ResponseErrorConfig<GetAnalyticsPriceTrend500>> & {
+    queryKey: TQueryKey;
+  };
 
   query.queryKey = queryKey as TQueryKey;
 

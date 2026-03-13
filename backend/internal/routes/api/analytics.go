@@ -33,11 +33,9 @@ func RegisterAnalyticsRoutes(rg *gin.RouterGroup, cfg *config.Config, svc servic
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param by query string false "Region type (county, district, town_city)" default(county)
 // @Param year query int false "Year to filter by"
 // @Success 200 {object} MedianPriceResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/median-price [get]
 func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
@@ -61,10 +59,8 @@ func (h *AnalyticsHandler) GetMedianPriceByRegion(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param interval query string false "Time interval (month, year)" default(month)
 // @Success 200 {object} PriceTrendResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-trend [get]
 func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
@@ -86,9 +82,7 @@ func (h *AnalyticsHandler) GetPriceTrend(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Success 200 {object} AffordabilityResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/affordability [get]
 func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
@@ -109,12 +103,10 @@ func (h *AnalyticsHandler) GetAffordability(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results (0 for all)" default(10)
 // @Param year query int false "Year to filter by"
 // @Success 200 {object} GrowthHotspotResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/growth-hotspots [get]
 func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
@@ -140,10 +132,8 @@ func (h *AnalyticsHandler) GetGrowthHotspots(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param by query string false "Region type (county, district, town_city)" default(county)
 // @Success 200 {object} NewBuildPremiumResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/new-build-premium [get]
 func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
@@ -165,9 +155,7 @@ func (h *AnalyticsHandler) GetNewBuildPremium(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Success 200 {object} PropertyTypeDistributionResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/property-type-distribution [get]
 func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
@@ -188,9 +176,7 @@ func (h *AnalyticsHandler) GetPropertyTypeDistribution(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Success 200 {object} PriceBracketResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/price-bracket-distribution [get]
 func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
@@ -211,12 +197,10 @@ func (h *AnalyticsHandler) GetPriceBracketDistribution(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Param by query string false "Region type (county, district, town_city)" default(district)
 // @Param limit query int false "Number of results" default(10)
 // @Param year query int false "Year to filter by"
 // @Success 200 {object} TopActiveAreaResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/top-active-areas [get]
 func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
@@ -242,9 +226,7 @@ func (h *AnalyticsHandler) GetTopActiveAreas(c *gin.Context) {
 // @Tags analytics
 // @Accept json
 // @Produce json
-// @Security JwtAuth
 // @Success 200 {object} TimeRangeResponse
-// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse
 // @Router /analytics/time-range [get]
 func (h *AnalyticsHandler) GetTimeRange(c *gin.Context) {

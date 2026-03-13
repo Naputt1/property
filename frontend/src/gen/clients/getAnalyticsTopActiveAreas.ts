@@ -12,7 +12,6 @@ import type {
 import type {
   GetAnalyticsTopActiveAreasQueryResponse,
   GetAnalyticsTopActiveAreasQueryParams,
-  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
 } from "../models/GetAnalyticsTopActiveAreas.ts";
 
@@ -34,9 +33,7 @@ export async function getAnalyticsTopActiveAreas(
 
   const res = await request<
     GetAnalyticsTopActiveAreasQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsTopActiveAreas401 | GetAnalyticsTopActiveAreas500
-    >,
+    ResponseErrorConfig<GetAnalyticsTopActiveAreas500>,
     unknown
   >({
     method: "GET",

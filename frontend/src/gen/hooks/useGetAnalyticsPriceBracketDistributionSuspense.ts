@@ -10,7 +10,6 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsPriceBracketDistributionQueryResponse,
-  GetAnalyticsPriceBracketDistribution401,
   GetAnalyticsPriceBracketDistribution500,
 } from "../models/GetAnalyticsPriceBracketDistribution.ts";
 import type {
@@ -35,10 +34,7 @@ export function getAnalyticsPriceBracketDistributionSuspenseQueryOptions(
   const queryKey = getAnalyticsPriceBracketDistributionSuspenseQueryKey();
   return queryOptions<
     GetAnalyticsPriceBracketDistributionQueryResponse,
-    ResponseErrorConfig<
-      | GetAnalyticsPriceBracketDistribution401
-      | GetAnalyticsPriceBracketDistribution500
-    >,
+    ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>,
     GetAnalyticsPriceBracketDistributionQueryResponse,
     typeof queryKey
   >({
@@ -66,10 +62,7 @@ export function useGetAnalyticsPriceBracketDistributionSuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsPriceBracketDistributionQueryResponse,
-        ResponseErrorConfig<
-          | GetAnalyticsPriceBracketDistribution401
-          | GetAnalyticsPriceBracketDistribution500
-        >,
+        ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>,
         TData,
         TQueryKey
       >
@@ -92,10 +85,7 @@ export function useGetAnalyticsPriceBracketDistributionSuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<
-      | GetAnalyticsPriceBracketDistribution401
-      | GetAnalyticsPriceBracketDistribution500
-    >
+    ResponseErrorConfig<GetAnalyticsPriceBracketDistribution500>
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

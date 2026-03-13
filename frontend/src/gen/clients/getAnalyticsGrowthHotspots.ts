@@ -12,7 +12,6 @@ import type {
 import type {
   GetAnalyticsGrowthHotspotsQueryResponse,
   GetAnalyticsGrowthHotspotsQueryParams,
-  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
 } from "../models/GetAnalyticsGrowthHotspots.ts";
 
@@ -34,9 +33,7 @@ export async function getAnalyticsGrowthHotspots(
 
   const res = await request<
     GetAnalyticsGrowthHotspotsQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsGrowthHotspots401 | GetAnalyticsGrowthHotspots500
-    >,
+    ResponseErrorConfig<GetAnalyticsGrowthHotspots500>,
     unknown
   >({
     method: "GET",

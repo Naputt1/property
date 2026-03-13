@@ -22,11 +22,6 @@ export type GetAnalyticsNewBuildPremium200 =
   InternalRoutesApiNewBuildPremiumResponse;
 
 /**
- * @description Unauthorized
- */
-export type GetAnalyticsNewBuildPremium401 = InternalRoutesApiErrorResponse;
-
-/**
  * @description Internal Server Error
  */
 export type GetAnalyticsNewBuildPremium500 = InternalRoutesApiErrorResponse;
@@ -37,5 +32,5 @@ export type GetAnalyticsNewBuildPremiumQueryResponse =
 export type GetAnalyticsNewBuildPremiumQuery = {
   Response: GetAnalyticsNewBuildPremium200;
   QueryParams: GetAnalyticsNewBuildPremiumQueryParams;
-  Errors: GetAnalyticsNewBuildPremium401 | GetAnalyticsNewBuildPremium500;
+  Errors: GetAnalyticsNewBuildPremium500;
 };

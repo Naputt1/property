@@ -12,7 +12,6 @@ import type {
 import type {
   GetAnalyticsMedianPriceQueryResponse,
   GetAnalyticsMedianPriceQueryParams,
-  GetAnalyticsMedianPrice401,
   GetAnalyticsMedianPrice500,
 } from "../models/GetAnalyticsMedianPrice.ts";
 
@@ -34,9 +33,7 @@ export async function getAnalyticsMedianPrice(
 
   const res = await request<
     GetAnalyticsMedianPriceQueryResponse,
-    ResponseErrorConfig<
-      GetAnalyticsMedianPrice401 | GetAnalyticsMedianPrice500
-    >,
+    ResponseErrorConfig<GetAnalyticsMedianPrice500>,
     unknown
   >({
     method: "GET",

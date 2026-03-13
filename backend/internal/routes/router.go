@@ -58,13 +58,14 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 	authGroup := r.Group("/api/auth")
 	api.RegisterAuthRoutes(authGroup, cfg, svcs)
 
+	// Public analytics routes
+	analyticsGroup := r.Group("/api/analytics")
+	api.RegisterAnalyticsRoutes(analyticsGroup, cfg, svcs.Analytics)
+
 	// Protected routes
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middlewares.JwtAuth(cfg))
 	{
-		analyticsGroup := apiGroup.Group("/analytics")
-		api.RegisterAnalyticsRoutes(analyticsGroup, cfg, svcs.Analytics)
-
 		userGroup := apiGroup.Group("/user")
 		api.RegisterUserRoutes(userGroup, cfg, svcs)
 
