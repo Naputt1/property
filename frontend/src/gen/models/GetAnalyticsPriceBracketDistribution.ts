@@ -3,14 +3,14 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsPriceBracketResult } from "./backendInternalModels/PriceBracketResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiPriceBracketResponse } from "./internalRoutesApi/PriceBracketResponse.ts";
 
 /**
  * @description OK
  */
 export type GetAnalyticsPriceBracketDistribution200 =
-  BackendInternalModelsPriceBracketResult[];
+  InternalRoutesApiPriceBracketResponse;
 
 /**
  * @description Internal Server Error

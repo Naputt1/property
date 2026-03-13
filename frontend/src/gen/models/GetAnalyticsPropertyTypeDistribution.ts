@@ -3,14 +3,14 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsPropertyTypeDistributionResult } from "./backendInternalModels/PropertyTypeDistributionResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiPropertyTypeDistributionResponse } from "./internalRoutesApi/PropertyTypeDistributionResponse.ts";
 
 /**
  * @description OK
  */
 export type GetAnalyticsPropertyTypeDistribution200 =
-  BackendInternalModelsPropertyTypeDistributionResult[];
+  InternalRoutesApiPropertyTypeDistributionResponse;
 
 /**
  * @description Internal Server Error

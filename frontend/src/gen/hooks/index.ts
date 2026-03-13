@@ -16,6 +16,8 @@ export type { GetAnalyticsTimeRangeQueryKey } from "./useGetAnalyticsTimeRange.t
 export type { GetAnalyticsTimeRangeSuspenseQueryKey } from "./useGetAnalyticsTimeRangeSuspense.ts";
 export type { GetAnalyticsTopActiveAreasQueryKey } from "./useGetAnalyticsTopActiveAreas.ts";
 export type { GetAnalyticsTopActiveAreasSuspenseQueryKey } from "./useGetAnalyticsTopActiveAreasSuspense.ts";
+export type { PostAdminMigrateExistingMutationKey } from "./usePostAdminMigrateExisting.ts";
+export type { PostAdminResetMutationKey } from "./usePostAdminReset.ts";
 export type { PostAdminStreamUploadMutationKey } from "./usePostAdminStreamUpload.ts";
 export type { PostAdminUploadMutationKey } from "./usePostAdminUpload.ts";
 export type { PostApiQueryMutationKey } from "./usePostApiQuery.ts";
@@ -75,6 +77,12 @@ export { useGetAnalyticsTopActiveAreas } from "./useGetAnalyticsTopActiveAreas.t
 export { getAnalyticsTopActiveAreasSuspenseQueryKey } from "./useGetAnalyticsTopActiveAreasSuspense.ts";
 export { getAnalyticsTopActiveAreasSuspenseQueryOptions } from "./useGetAnalyticsTopActiveAreasSuspense.ts";
 export { useGetAnalyticsTopActiveAreasSuspense } from "./useGetAnalyticsTopActiveAreasSuspense.ts";
+export { postAdminMigrateExistingMutationKey } from "./usePostAdminMigrateExisting.ts";
+export { postAdminMigrateExistingMutationOptions } from "./usePostAdminMigrateExisting.ts";
+export { usePostAdminMigrateExisting } from "./usePostAdminMigrateExisting.ts";
+export { postAdminResetMutationKey } from "./usePostAdminReset.ts";
+export { postAdminResetMutationOptions } from "./usePostAdminReset.ts";
+export { usePostAdminReset } from "./usePostAdminReset.ts";
 export { postAdminStreamUploadMutationKey } from "./usePostAdminStreamUpload.ts";
 export { postAdminStreamUploadMutationOptions } from "./usePostAdminStreamUpload.ts";
 export { usePostAdminStreamUpload } from "./usePostAdminStreamUpload.ts";

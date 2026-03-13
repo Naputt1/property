@@ -63,3 +63,7 @@ func (r *jobRepository) GetPendingOrRunningJobsCount(ctx context.Context, taskTy
 		Count(&count).Error
 	return count, err
 }
+
+func (r *jobRepository) Truncate(ctx context.Context) error {
+	return r.db.WithContext(ctx).Exec("TRUNCATE TABLE jobs").Error
+}

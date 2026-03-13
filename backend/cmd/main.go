@@ -67,10 +67,11 @@ func main() {
 	db.InitDB(cfg)
 
 	// Initialize asynq client
-	asynqClient := asynq.NewClient(asynq.RedisClientOpt{
+	redisOpt := asynq.RedisClientOpt{
 		Addr: cfg.Opt.Redis.URL,
 		DB:   cfg.Opt.Redis.DB,
-	})
+	}
+	asynqClient := asynq.NewClient(redisOpt)
 
 	if err := asynqClient.Ping(); err != nil {
 		slog.Error("failed to connect to Redis", "error", err)
@@ -91,7 +92,7 @@ func main() {
 	}
 
 	// Initialize Services
-	svcs := services.NewServices(cfg, repos, asynqClient, socketMgr)
+	svcs := services.NewServices(cfg, repos, asynqClient, redisOpt, socketMgr)
 
 	// Initialize and Start Asynq Server for background migration tasks
 	asynqSrv, err := queue.NewAsynqServer(cfg, svcs)

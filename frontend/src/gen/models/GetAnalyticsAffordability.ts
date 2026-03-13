@@ -3,14 +3,14 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsAffordabilityResult } from "./backendInternalModels/AffordabilityResult.ts";
+import type { InternalRoutesApiAffordabilityResponse } from "./internalRoutesApi/AffordabilityResponse.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
 
 /**
  * @description OK
  */
 export type GetAnalyticsAffordability200 =
-  BackendInternalModelsAffordabilityResult[];
+  InternalRoutesApiAffordabilityResponse;
 
 /**
  * @description Internal Server Error

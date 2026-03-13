@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "avg_price": { "type": "integer" },
+          "median_price": { "type": "integer" },
+          "period": { "type": "string" },
+          "transaction_count": { "type": "integer" }
+        },
+        "x-readme-ref-name": "backend_internal_models.PriceTrendResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.PriceTrendResponse"
+}

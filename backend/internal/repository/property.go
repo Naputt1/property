@@ -33,6 +33,10 @@ func (r *propertyRepository) CreateBatch(ctx context.Context, properties []model
 	return r.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(properties, batchSize).Error
 }
 
+func (r *propertyRepository) Truncate(ctx context.Context) error {
+	return r.db.WithContext(ctx).Exec("TRUNCATE TABLE properties").Error
+}
+
 func (r *propertyRepository) GetByID(ctx context.Context, id string) (*models.Property, error) {
 	var property models.Property
 	err := r.db.WithContext(ctx).First(&property, "id = ?", id).Error

@@ -58,16 +58,36 @@ export {
   getAnalyticsTopActiveAreasQueryParamsSchema,
   getAnalyticsTopActiveAreasQueryResponseSchema,
 } from "./getAnalyticsTopActiveAreasSchema.ts";
-export { gormDeletedAtSchema } from "./gorm/deletedAtSchema.ts";
+export { internalRoutesApiAffordabilityResponseSchema } from "./internalRoutesApi/affordabilityResponseSchema.ts";
 export { internalRoutesApiBaseResponseSchema } from "./internalRoutesApi/baseResponseSchema.ts";
 export { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
 export { internalRoutesApiGraphQLErrorSchema } from "./internalRoutesApi/graphQLErrorSchema.ts";
 export { internalRoutesApiGraphQLLocationSchema } from "./internalRoutesApi/graphQLLocationSchema.ts";
 export { internalRoutesApiGraphQLRequestSchema } from "./internalRoutesApi/graphQLRequestSchema.ts";
 export { internalRoutesApiGraphQLResponseSchema } from "./internalRoutesApi/graphQLResponseSchema.ts";
+export { internalRoutesApiGrowthHotspotResponseSchema } from "./internalRoutesApi/growthHotspotResponseSchema.ts";
 export { internalRoutesApiJobResponseSchema } from "./internalRoutesApi/jobResponseSchema.ts";
 export { internalRoutesApiLoginBodySchema } from "./internalRoutesApi/loginBodySchema.ts";
 export { internalRoutesApiLoginPayloadSchema } from "./internalRoutesApi/loginPayloadSchema.ts";
+export { internalRoutesApiMedianPriceResponseSchema } from "./internalRoutesApi/medianPriceResponseSchema.ts";
+export { internalRoutesApiNewBuildPremiumResponseSchema } from "./internalRoutesApi/newBuildPremiumResponseSchema.ts";
+export { internalRoutesApiPriceBracketResponseSchema } from "./internalRoutesApi/priceBracketResponseSchema.ts";
+export { internalRoutesApiPriceTrendResponseSchema } from "./internalRoutesApi/priceTrendResponseSchema.ts";
+export { internalRoutesApiPropertyTypeDistributionResponseSchema } from "./internalRoutesApi/propertyTypeDistributionResponseSchema.ts";
+export { internalRoutesApiTimeRangeResponseSchema } from "./internalRoutesApi/timeRangeResponseSchema.ts";
+export { internalRoutesApiTopActiveAreaResponseSchema } from "./internalRoutesApi/topActiveAreaResponseSchema.ts";
+export {
+  postAdminMigrateExisting202Schema,
+  postAdminMigrateExisting400Schema,
+  postAdminMigrateExisting500Schema,
+  postAdminMigrateExistingMutationResponseSchema,
+  postAdminMigrateExistingQueryParamsSchema,
+} from "./postAdminMigrateExistingSchema.ts";
+export {
+  postAdminReset200Schema,
+  postAdminReset500Schema,
+  postAdminResetMutationResponseSchema,
+} from "./postAdminResetSchema.ts";
 export {
   postAdminStreamUpload202Schema,
   postAdminStreamUpload400Schema,

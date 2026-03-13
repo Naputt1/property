@@ -2,17 +2,7 @@
   "type": "object",
   "properties": {
     "created_at": { "type": "string" },
-    "deleted_at": {
-      "type": "object",
-      "properties": {
-        "time": { "type": "string" },
-        "valid": {
-          "description": "Valid is true if Time is not NULL",
-          "type": "boolean"
-        }
-      },
-      "x-readme-ref-name": "gorm.DeletedAt"
-    },
+    "deleted_at": { "type": "string", "format": "date-time" },
     "id": { "type": "integer" },
     "is_admin": { "type": "boolean" },
     "name": { "type": "string" },

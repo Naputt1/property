@@ -22,9 +22,9 @@ type Repositories struct {
 	Analytics repository.AnalyticsRepository
 }
 
-func NewServices(cfg *config.Config, repos Repositories, asynqClient *asynq.Client, socket repository.SocketService) *Services {
+func NewServices(cfg *config.Config, repos Repositories, asynqClient *asynq.Client, redisConnOpt asynq.RedisConnOpt, socket repository.SocketService) *Services {
 	analyticsSvc := NewAnalyticsService(cfg, repos.Analytics)
-	jobSvc := NewJobService(repos.Job, asynqClient)
+	jobSvc := NewJobService(repos.Job, asynqClient, redisConnOpt)
 	return &Services{
 		User:      NewUserService(repos.User),
 		Property:  NewPropertyService(repos.Property, analyticsSvc, jobSvc),

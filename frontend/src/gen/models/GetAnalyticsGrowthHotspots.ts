@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsGrowthHotspotResult } from "./backendInternalModels/GrowthHotspotResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiGrowthHotspotResponse } from "./internalRoutesApi/GrowthHotspotResponse.ts";
 
 export type GetAnalyticsGrowthHotspotsQueryParams = {
   /**
@@ -30,7 +30,7 @@ export type GetAnalyticsGrowthHotspotsQueryParams = {
  * @description OK
  */
 export type GetAnalyticsGrowthHotspots200 =
-  BackendInternalModelsGrowthHotspotResult[];
+  InternalRoutesApiGrowthHotspotResponse;
 
 /**
  * @description Internal Server Error

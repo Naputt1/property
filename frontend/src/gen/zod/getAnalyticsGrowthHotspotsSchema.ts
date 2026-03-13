@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsGrowthHotspotResultSchema } from "./backendInternalModels/growthHotspotResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiGrowthHotspotResponseSchema } from "./internalRoutesApi/growthHotspotResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const getAnalyticsGrowthHotspotsQueryParamsSchema = z.object({
@@ -23,8 +23,8 @@ export const getAnalyticsGrowthHotspotsQueryParamsSchema = z.object({
 /**
  * @description OK
  */
-export const getAnalyticsGrowthHotspots200Schema = z.array(
-  z.lazy(() => backendInternalModelsGrowthHotspotResultSchema),
+export const getAnalyticsGrowthHotspots200Schema = z.lazy(
+  () => internalRoutesApiGrowthHotspotResponseSchema,
 );
 
 /**

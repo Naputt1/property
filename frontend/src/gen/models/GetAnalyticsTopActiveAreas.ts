@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsTopActiveAreaResult } from "./backendInternalModels/TopActiveAreaResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiTopActiveAreaResponse } from "./internalRoutesApi/TopActiveAreaResponse.ts";
 
 export type GetAnalyticsTopActiveAreasQueryParams = {
   /**
@@ -30,7 +30,7 @@ export type GetAnalyticsTopActiveAreasQueryParams = {
  * @description OK
  */
 export type GetAnalyticsTopActiveAreas200 =
-  BackendInternalModelsTopActiveAreaResult[];
+  InternalRoutesApiTopActiveAreaResponse;
 
 /**
  * @description Internal Server Error

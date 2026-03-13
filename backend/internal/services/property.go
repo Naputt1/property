@@ -27,6 +27,10 @@ func (s *propertyService) GetPropertyByID(ctx context.Context, id string) (*mode
 	return s.repo.GetByID(ctx, id)
 }
 
+func (s *propertyService) Truncate(ctx context.Context) error {
+	return s.repo.Truncate(ctx)
+}
+
 func (s *propertyService) CreateBatch(ctx context.Context, properties []models.Property, batchSize int) error {
 	return s.repo.CreateBatch(ctx, properties, batchSize)
 }

@@ -3,15 +3,15 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsTimeRangeResultSchema } from "./backendInternalModels/timeRangeResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiTimeRangeResponseSchema } from "./internalRoutesApi/timeRangeResponseSchema.ts";
 import { z } from "zod/v4";
 
 /**
  * @description OK
  */
 export const getAnalyticsTimeRange200Schema = z.lazy(
-  () => backendInternalModelsTimeRangeResultSchema,
+  () => internalRoutesApiTimeRangeResponseSchema,
 );
 
 /**

@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "new_avg": { "type": "integer" },
+          "old_avg": { "type": "integer" },
+          "premium_percent": { "type": "number" },
+          "region": { "type": "string" }
+        },
+        "x-readme-ref-name": "backend_internal_models.NewBuildPremiumResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.NewBuildPremiumResponse"
+}

@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsNewBuildPremiumResult } from "./backendInternalModels/NewBuildPremiumResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiNewBuildPremiumResponse } from "./internalRoutesApi/NewBuildPremiumResponse.ts";
 
 export type GetAnalyticsNewBuildPremiumQueryParams = {
   /**
@@ -19,7 +19,7 @@ export type GetAnalyticsNewBuildPremiumQueryParams = {
  * @description OK
  */
 export type GetAnalyticsNewBuildPremium200 =
-  BackendInternalModelsNewBuildPremiumResult[];
+  InternalRoutesApiNewBuildPremiumResponse;
 
 /**
  * @description Internal Server Error

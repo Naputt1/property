@@ -3,15 +3,15 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsPriceBracketResultSchema } from "./backendInternalModels/priceBracketResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiPriceBracketResponseSchema } from "./internalRoutesApi/priceBracketResponseSchema.ts";
 import { z } from "zod/v4";
 
 /**
  * @description OK
  */
-export const getAnalyticsPriceBracketDistribution200Schema = z.array(
-  z.lazy(() => backendInternalModelsPriceBracketResultSchema),
+export const getAnalyticsPriceBracketDistribution200Schema = z.lazy(
+  () => internalRoutesApiPriceBracketResponseSchema,
 );
 
 /**

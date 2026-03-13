@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsTopActiveAreaResultSchema } from "./backendInternalModels/topActiveAreaResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiTopActiveAreaResponseSchema } from "./internalRoutesApi/topActiveAreaResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const getAnalyticsTopActiveAreasQueryParamsSchema = z.object({
@@ -19,8 +19,8 @@ export const getAnalyticsTopActiveAreasQueryParamsSchema = z.object({
 /**
  * @description OK
  */
-export const getAnalyticsTopActiveAreas200Schema = z.array(
-  z.lazy(() => backendInternalModelsTopActiveAreaResultSchema),
+export const getAnalyticsTopActiveAreas200Schema = z.lazy(
+  () => internalRoutesApiTopActiveAreaResponseSchema,
 );
 
 /**

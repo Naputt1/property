@@ -14,14 +14,16 @@ import (
 )
 
 type jobService struct {
-	repo        repository.JobRepository
-	asynqClient *asynq.Client
+	repo         repository.JobRepository
+	asynqClient  *asynq.Client
+	redisConnOpt asynq.RedisConnOpt
 }
 
-func NewJobService(repo repository.JobRepository, asynqClient *asynq.Client) JobService {
+func NewJobService(repo repository.JobRepository, asynqClient *asynq.Client, redisConnOpt asynq.RedisConnOpt) JobService {
 	return &jobService{
-		repo:        repo,
-		asynqClient: asynqClient,
+		repo:         repo,
+		asynqClient:  asynqClient,
+		redisConnOpt: redisConnOpt,
 	}
 }
 
@@ -100,6 +102,36 @@ func (s *jobService) UpdateJobStatus(ctx context.Context, id string, status mode
 
 func (s *jobService) UpdateJobProgress(ctx context.Context, id string, progress, total int) error {
 	return s.repo.UpdateProgress(ctx, id, progress, total)
+}
+
+func (s *jobService) Truncate(ctx context.Context) error {
+	return s.repo.Truncate(ctx)
+}
+
+func (s *jobService) DeleteAllTasks(ctx context.Context, queues []string) error {
+	inspector := asynq.NewInspector(s.redisConnOpt)
+	defer inspector.Close()
+
+	for _, q := range queues {
+		// Delete all tasks in the queue
+		// Pending
+		if _, err := inspector.DeleteAllPendingTasks(q); err != nil {
+			fmt.Printf("failed to delete pending tasks in queue %s: %v\n", q, err)
+		}
+		// Scheduled
+		if _, err := inspector.DeleteAllScheduledTasks(q); err != nil {
+			fmt.Printf("failed to delete scheduled tasks in queue %s: %v\n", q, err)
+		}
+		// Retry
+		if _, err := inspector.DeleteAllRetryTasks(q); err != nil {
+			fmt.Printf("failed to delete retry tasks in queue %s: %v\n", q, err)
+		}
+		// Archived
+		if _, err := inspector.DeleteAllArchivedTasks(q); err != nil {
+			fmt.Printf("failed to delete archived tasks in queue %s: %v\n", q, err)
+		}
+	}
+	return nil
 }
 
 func (s *jobService) GetJobs(ctx context.Context, limit, offset int) ([]models.Job, int64, error) {

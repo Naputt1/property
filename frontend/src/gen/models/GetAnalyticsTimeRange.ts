@@ -3,13 +3,13 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsTimeRangeResult } from "./backendInternalModels/TimeRangeResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiTimeRangeResponse } from "./internalRoutesApi/TimeRangeResponse.ts";
 
 /**
  * @description OK
  */
-export type GetAnalyticsTimeRange200 = BackendInternalModelsTimeRangeResult;
+export type GetAnalyticsTimeRange200 = InternalRoutesApiTimeRangeResponse;
 
 /**
  * @description Internal Server Error

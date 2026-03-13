@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "region": { "type": "string" },
+          "total_value": { "type": "integer" },
+          "transaction_count": { "type": "integer" }
+        },
+        "x-readme-ref-name": "backend_internal_models.TopActiveAreaResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.TopActiveAreaResponse"
+}

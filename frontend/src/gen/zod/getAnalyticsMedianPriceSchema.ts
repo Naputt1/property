@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsMedianPriceResultSchema } from "./backendInternalModels/medianPriceResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiMedianPriceResponseSchema } from "./internalRoutesApi/medianPriceResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const getAnalyticsMedianPriceQueryParamsSchema = z.object({
@@ -18,8 +18,8 @@ export const getAnalyticsMedianPriceQueryParamsSchema = z.object({
 /**
  * @description OK
  */
-export const getAnalyticsMedianPrice200Schema = z.array(
-  z.lazy(() => backendInternalModelsMedianPriceResultSchema),
+export const getAnalyticsMedianPrice200Schema = z.lazy(
+  () => internalRoutesApiMedianPriceResponseSchema,
 );
 
 /**

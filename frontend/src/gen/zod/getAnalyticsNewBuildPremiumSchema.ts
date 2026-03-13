@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsNewBuildPremiumResultSchema } from "./backendInternalModels/newBuildPremiumResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiNewBuildPremiumResponseSchema } from "./internalRoutesApi/newBuildPremiumResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const getAnalyticsNewBuildPremiumQueryParamsSchema = z.object({
@@ -17,8 +17,8 @@ export const getAnalyticsNewBuildPremiumQueryParamsSchema = z.object({
 /**
  * @description OK
  */
-export const getAnalyticsNewBuildPremium200Schema = z.array(
-  z.lazy(() => backendInternalModelsNewBuildPremiumResultSchema),
+export const getAnalyticsNewBuildPremium200Schema = z.lazy(
+  () => internalRoutesApiNewBuildPremiumResponseSchema,
 );
 
 /**

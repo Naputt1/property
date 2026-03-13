@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsPriceTrendResult } from "./backendInternalModels/PriceTrendResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiPriceTrendResponse } from "./internalRoutesApi/PriceTrendResponse.ts";
 
 export type GetAnalyticsPriceTrendQueryParams = {
   /**
@@ -18,7 +18,7 @@ export type GetAnalyticsPriceTrendQueryParams = {
 /**
  * @description OK
  */
-export type GetAnalyticsPriceTrend200 = BackendInternalModelsPriceTrendResult[];
+export type GetAnalyticsPriceTrend200 = InternalRoutesApiPriceTrendResponse;
 
 /**
  * @description Internal Server Error

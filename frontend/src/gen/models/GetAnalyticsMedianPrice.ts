@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsMedianPriceResult } from "./backendInternalModels/MedianPriceResult.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
+import type { InternalRoutesApiMedianPriceResponse } from "./internalRoutesApi/MedianPriceResponse.ts";
 
 export type GetAnalyticsMedianPriceQueryParams = {
   /**
@@ -23,8 +23,7 @@ export type GetAnalyticsMedianPriceQueryParams = {
 /**
  * @description OK
  */
-export type GetAnalyticsMedianPrice200 =
-  BackendInternalModelsMedianPriceResult[];
+export type GetAnalyticsMedianPrice200 = InternalRoutesApiMedianPriceResponse;
 
 /**
  * @description Internal Server Error

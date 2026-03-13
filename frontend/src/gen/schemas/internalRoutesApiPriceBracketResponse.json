@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bracket": { "type": "string" },
+          "count": { "type": "integer" },
+          "percentage": { "type": "number" }
+        },
+        "x-readme-ref-name": "backend_internal_models.PriceBracketResult"
+      }
+    },
+    "message": { "type": "string" },
+    "status": { "type": "boolean", "example": true }
+  },
+  "x-readme-ref-name": "internal_routes_api.PriceBracketResponse"
+}

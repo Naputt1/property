@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsPriceTrendResultSchema } from "./backendInternalModels/priceTrendResultSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
+import { internalRoutesApiPriceTrendResponseSchema } from "./internalRoutesApi/priceTrendResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const getAnalyticsPriceTrendQueryParamsSchema = z.object({
@@ -14,8 +14,8 @@ export const getAnalyticsPriceTrendQueryParamsSchema = z.object({
 /**
  * @description OK
  */
-export const getAnalyticsPriceTrend200Schema = z.array(
-  z.lazy(() => backendInternalModelsPriceTrendResultSchema),
+export const getAnalyticsPriceTrend200Schema = z.lazy(
+  () => internalRoutesApiPriceTrendResponseSchema,
 );
 
 /**
