@@ -13,7 +13,7 @@ func TestNewS3Service_Configuration(t *testing.T) {
 		opt                  config.OptionBucket
 		expectedRegion       string
 		expectedPathStyle    bool
-		expectedAvoidPayload bool
+		expectedUsePayload   bool
 	}{
 		{
 			name: "Default configuration",

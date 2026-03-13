@@ -37,7 +37,7 @@ type OptionBucket struct {
 	SecretKey            string `env:"RUSTFS_SECRET_KEY" envDefault:"rustfsadmin"`
 	UseSSL               bool   `env:"BUCKET_USE_SSL" envDefault:"false"`
 	UsePathStyle         bool   `env:"BUCKET_USE_PATH_STYLE" envDefault:"true"`
-	AvoidUnsignedPayload bool   `env:"BUCKET_AVOID_UNSIGNED_PAYLOAD" envDefault:"false"`
+	UseUnsignedPayload   bool   `env:"BUCKET_USE_UNSIGNED_PAYLOAD" envDefault:"false"`
 	BucketName           string `env:"BUCKET_NAME" envDefault:"property-data"`
 }
 

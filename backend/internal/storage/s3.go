@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/url"
 
 	"backend/internal/config"
@@ -59,12 +60,20 @@ func NewS3Service(opt config.OptionBucket) (repository.BucketService, error) {
 		o.BaseEndpoint = aws.String(endpoint)
 		o.UsePathStyle = opt.UsePathStyle
 		// S3 compatible backends often need unsigned payload for streaming/multipart
-		if !opt.AvoidUnsignedPayload {
+		if opt.UseUnsignedPayload {
 			o.APIOptions = append(o.APIOptions, v4.SwapComputePayloadSHA256ForUnsignedPayloadMiddleware)
 		}
 	})
 
 	uploader := manager.NewUploader(s3Client)
+
+	slog.Info("Initializing S3 Service",
+		slog.String("endpoint", endpoint),
+		slog.String("region", region),
+		slog.String("bucket", opt.BucketName),
+		slog.Bool("pathStyle", opt.UsePathStyle),
+		slog.Bool("useUnsignedPayload", opt.UseUnsignedPayload),
+	)
 
 	return &S3Service{
 		Client:   s3Client,
