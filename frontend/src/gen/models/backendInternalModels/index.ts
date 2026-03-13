@@ -7,5 +7,4 @@ export type { BackendInternalModelsPriceTrendResult } from "./PriceTrendResult.t
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./PropertyTypeDistributionResult.ts";
 export type { BackendInternalModelsTimeRangeResult } from "./TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./TopActiveAreaResult.ts";
-export type { BackendInternalModelsUser } from "./User.ts";
 export type { BackendInternalModelsUserDTO } from "./UserDTO.ts";

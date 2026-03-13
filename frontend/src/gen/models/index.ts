@@ -174,7 +174,6 @@ export type { BackendInternalModelsPriceTrendResult } from "./backendInternalMod
 export type { BackendInternalModelsPropertyTypeDistributionResult } from "./backendInternalModels/PropertyTypeDistributionResult.ts";
 export type { BackendInternalModelsTimeRangeResult } from "./backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./backendInternalModels/TopActiveAreaResult.ts";
-export type { BackendInternalModelsUser } from "./backendInternalModels/User.ts";
 export type { BackendInternalModelsUserDTO } from "./backendInternalModels/UserDTO.ts";
 export type { InternalRoutesApiAffordabilityResponse } from "./internalRoutesApi/AffordabilityResponse.ts";
 export type { InternalRoutesApiBaseResponse } from "./internalRoutesApi/BaseResponse.ts";

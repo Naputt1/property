@@ -32,8 +32,8 @@ type OptionRedis struct {
 
 type OptionBucket struct {
 	Endpoint   string `env:"BUCKET_ENDPOINT" envDefault:"http://localhost:9000"`
-	AccessKey  string `env:"BUCKET_ACCESS_KEY" envDefault:"rustfsadmin"`
-	SecretKey  string `env:"BUCKET_SECRET_KEY" envDefault:"rustfsadmin"`
+	AccessKey  string `env:"RUSTFS_ACCESS_KEY" envDefault:"rustfsadmin"`
+	SecretKey  string `env:"RUSTFS_SECRET_KEY" envDefault:"rustfsadmin"`
 	UseSSL     bool   `env:"BUCKET_USE_SSL" envDefault:"false"`
 	BucketName string `env:"BUCKET_NAME" envDefault:"property-data"`
 }
@@ -77,6 +77,18 @@ func CreateConfig() (*Config, error) {
 	err := env.Parse(opt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse env: %w", err)
+	}
+
+	// Fallback to BUCKET_ACCESS_KEY/SECRET_KEY if RUSTFS_ are at default and BUCKET_ are set
+	if opt.Bucket.AccessKey == "rustfsadmin" {
+		if val := os.Getenv("BUCKET_ACCESS_KEY"); val != "" {
+			opt.Bucket.AccessKey = val
+		}
+	}
+	if opt.Bucket.SecretKey == "rustfsadmin" {
+		if val := os.Getenv("BUCKET_SECRET_KEY"); val != "" {
+			opt.Bucket.SecretKey = val
+		}
 	}
 
 	logDir := "logs"

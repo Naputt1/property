@@ -1,10 +1,104 @@
 basePath: /api
 definitions:
-  api.AffordabilityResponse:
+  backend_internal_models.AffordabilityResult:
+    properties:
+      avg_price:
+        type: integer
+      property_type:
+        type: string
+      relative_affordability:
+        type: number
+    type: object
+  backend_internal_models.GrowthHotspotResult:
+    properties:
+      current_median:
+        type: integer
+      growth_rate:
+        type: number
+      prev_median:
+        type: integer
+      region:
+        type: string
+    type: object
+  backend_internal_models.MedianPriceResult:
+    properties:
+      median_price:
+        type: integer
+      region:
+        type: string
+    type: object
+  backend_internal_models.NewBuildPremiumResult:
+    properties:
+      new_avg:
+        type: integer
+      old_avg:
+        type: integer
+      premium_percent:
+        type: number
+      region:
+        type: string
+    type: object
+  backend_internal_models.PriceBracketResult:
+    properties:
+      bracket:
+        type: string
+      count:
+        type: integer
+      percentage:
+        type: number
+    type: object
+  backend_internal_models.PriceTrendResult:
+    properties:
+      avg_price:
+        type: integer
+      median_price:
+        type: integer
+      period:
+        type: string
+      transaction_count:
+        type: integer
+    type: object
+  backend_internal_models.PropertyTypeDistributionResult:
+    properties:
+      count:
+        type: integer
+      percentage:
+        type: number
+      property_type:
+        type: string
+    type: object
+  backend_internal_models.TimeRangeResult:
+    properties:
+      max_year:
+        type: integer
+      min_year:
+        type: integer
+    type: object
+  backend_internal_models.TopActiveAreaResult:
+    properties:
+      region:
+        type: string
+      total_value:
+        type: integer
+      transaction_count:
+        type: integer
+    type: object
+  backend_internal_models.UserDTO:
+    properties:
+      id:
+        type: integer
+      is_admin:
+        type: boolean
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  internal_routes_api.AffordabilityResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.AffordabilityResult'
+          $ref: '#/definitions/backend_internal_models.AffordabilityResult'
         type: array
       message:
         type: string
@@ -12,7 +106,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.BaseResponse:
+  internal_routes_api.BaseResponse:
     properties:
       message:
         type: string
@@ -20,7 +114,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.ChangePasswordRequest:
+  internal_routes_api.ChangePasswordRequest:
     properties:
       new_password:
         minLength: 6
@@ -31,7 +125,7 @@ definitions:
     - new_password
     - old_password
     type: object
-  api.CreateUserRequest:
+  internal_routes_api.CreateUserRequest:
     properties:
       is_admin:
         type: boolean
@@ -46,7 +140,7 @@ definitions:
     - password
     - username
     type: object
-  api.ErrorResponse:
+  internal_routes_api.ErrorResponse:
     properties:
       error:
         type: string
@@ -54,14 +148,14 @@ definitions:
         example: false
         type: boolean
     type: object
-  api.GraphQLError:
+  internal_routes_api.GraphQLError:
     properties:
       extensions:
         additionalProperties: true
         type: object
       locations:
         items:
-          $ref: '#/definitions/api.GraphQLLocation'
+          $ref: '#/definitions/internal_routes_api.GraphQLLocation'
         type: array
       message:
         type: string
@@ -69,14 +163,14 @@ definitions:
         items: {}
         type: array
     type: object
-  api.GraphQLLocation:
+  internal_routes_api.GraphQLLocation:
     properties:
       column:
         type: integer
       line:
         type: integer
     type: object
-  api.GraphQLRequest:
+  internal_routes_api.GraphQLRequest:
     properties:
       operationName:
         description: Optional operation name if multiple are defined in the query
@@ -90,21 +184,21 @@ definitions:
         description: Optional variables for the operation
         type: object
     type: object
-  api.GraphQLResponse:
+  internal_routes_api.GraphQLResponse:
     properties:
       data:
         description: The requested data
       errors:
         description: Any errors encountered during execution
         items:
-          $ref: '#/definitions/api.GraphQLError'
+          $ref: '#/definitions/internal_routes_api.GraphQLError'
         type: array
     type: object
-  api.GrowthHotspotResponse:
+  internal_routes_api.GrowthHotspotResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.GrowthHotspotResult'
+          $ref: '#/definitions/backend_internal_models.GrowthHotspotResult'
         type: array
       message:
         type: string
@@ -112,7 +206,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.JobResponse:
+  internal_routes_api.JobResponse:
     properties:
       job_id:
         type: string
@@ -122,7 +216,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.LoginBody:
+  internal_routes_api.LoginBody:
     properties:
       password:
         type: string
@@ -132,7 +226,7 @@ definitions:
     - password
     - username
     type: object
-  api.LoginResponse:
+  internal_routes_api.LoginResponse:
     properties:
       status:
         example: true
@@ -140,13 +234,13 @@ definitions:
       token:
         type: string
       user:
-        $ref: '#/definitions/models.UserDTO'
+        $ref: '#/definitions/backend_internal_models.UserDTO'
     type: object
-  api.MedianPriceResponse:
+  internal_routes_api.MedianPriceResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.MedianPriceResult'
+          $ref: '#/definitions/backend_internal_models.MedianPriceResult'
         type: array
       message:
         type: string
@@ -154,11 +248,11 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.NewBuildPremiumResponse:
+  internal_routes_api.NewBuildPremiumResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.NewBuildPremiumResult'
+          $ref: '#/definitions/backend_internal_models.NewBuildPremiumResult'
         type: array
       message:
         type: string
@@ -166,11 +260,11 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.PriceBracketResponse:
+  internal_routes_api.PriceBracketResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.PriceBracketResult'
+          $ref: '#/definitions/backend_internal_models.PriceBracketResult'
         type: array
       message:
         type: string
@@ -178,11 +272,11 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.PriceTrendResponse:
+  internal_routes_api.PriceTrendResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.PriceTrendResult'
+          $ref: '#/definitions/backend_internal_models.PriceTrendResult'
         type: array
       message:
         type: string
@@ -190,11 +284,11 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.PropertyTypeDistributionResponse:
+  internal_routes_api.PropertyTypeDistributionResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.PropertyTypeDistributionResult'
+          $ref: '#/definitions/backend_internal_models.PropertyTypeDistributionResult'
         type: array
       message:
         type: string
@@ -202,21 +296,21 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.TimeRangeResponse:
+  internal_routes_api.TimeRangeResponse:
     properties:
       data:
-        $ref: '#/definitions/models.TimeRangeResult'
+        $ref: '#/definitions/backend_internal_models.TimeRangeResult'
       message:
         type: string
       status:
         example: true
         type: boolean
     type: object
-  api.TopActiveAreaResponse:
+  internal_routes_api.TopActiveAreaResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.TopActiveAreaResult'
+          $ref: '#/definitions/backend_internal_models.TopActiveAreaResult'
         type: array
       message:
         type: string
@@ -224,7 +318,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  api.UpdateUserRequest:
+  internal_routes_api.UpdateUserRequest:
     properties:
       is_admin:
         type: boolean
@@ -234,100 +328,6 @@ definitions:
         type: string
     required:
     - username
-    type: object
-  models.AffordabilityResult:
-    properties:
-      avg_price:
-        type: integer
-      property_type:
-        type: string
-      relative_affordability:
-        type: number
-    type: object
-  models.GrowthHotspotResult:
-    properties:
-      current_median:
-        type: integer
-      growth_rate:
-        type: number
-      prev_median:
-        type: integer
-      region:
-        type: string
-    type: object
-  models.MedianPriceResult:
-    properties:
-      median_price:
-        type: integer
-      region:
-        type: string
-    type: object
-  models.NewBuildPremiumResult:
-    properties:
-      new_avg:
-        type: integer
-      old_avg:
-        type: integer
-      premium_percent:
-        type: number
-      region:
-        type: string
-    type: object
-  models.PriceBracketResult:
-    properties:
-      bracket:
-        type: string
-      count:
-        type: integer
-      percentage:
-        type: number
-    type: object
-  models.PriceTrendResult:
-    properties:
-      avg_price:
-        type: integer
-      median_price:
-        type: integer
-      period:
-        type: string
-      transaction_count:
-        type: integer
-    type: object
-  models.PropertyTypeDistributionResult:
-    properties:
-      count:
-        type: integer
-      percentage:
-        type: number
-      property_type:
-        type: string
-    type: object
-  models.TimeRangeResult:
-    properties:
-      max_year:
-        type: integer
-      min_year:
-        type: integer
-    type: object
-  models.TopActiveAreaResult:
-    properties:
-      region:
-        type: string
-      total_value:
-        type: integer
-      transaction_count:
-        type: integer
-    type: object
-  models.UserDTO:
-    properties:
-      id:
-        type: integer
-      is_admin:
-        type: boolean
-      name:
-        type: string
-      username:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -363,23 +363,23 @@ paths:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.JobResponse'
+            $ref: '#/definitions/internal_routes_api.JobResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden (Admin only)
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Trigger migration for existing bucket file
@@ -395,19 +395,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden (Admin only)
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Reset backend state
@@ -431,23 +431,23 @@ paths:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.JobResponse'
+            $ref: '#/definitions/internal_routes_api.JobResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden (Admin only)
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Stream upload CSV file
@@ -471,23 +471,23 @@ paths:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.JobResponse'
+            $ref: '#/definitions/internal_routes_api.JobResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden (Admin only)
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Upload CSV file directly
@@ -503,20 +503,20 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.UserDTO'
+              $ref: '#/definitions/backend_internal_models.UserDTO'
             type: array
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: List all users
@@ -532,30 +532,30 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/api.CreateUserRequest'
+          $ref: '#/definitions/internal_routes_api.CreateUserRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Create a new user
@@ -576,23 +576,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Delete a user
@@ -613,30 +613,30 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/api.UpdateUserRequest'
+          $ref: '#/definitions/internal_routes_api.UpdateUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Update a user
@@ -653,11 +653,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.AffordabilityResponse'
+            $ref: '#/definitions/internal_routes_api.AffordabilityResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get affordability index
       tags:
       - analytics
@@ -687,11 +687,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.GrowthHotspotResponse'
+            $ref: '#/definitions/internal_routes_api.GrowthHotspotResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get growth hotspots
       tags:
       - analytics
@@ -716,11 +716,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.MedianPriceResponse'
+            $ref: '#/definitions/internal_routes_api.MedianPriceResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get median price by region
       tags:
       - analytics
@@ -741,11 +741,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.NewBuildPremiumResponse'
+            $ref: '#/definitions/internal_routes_api.NewBuildPremiumResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get new build premium
       tags:
       - analytics
@@ -760,11 +760,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PriceBracketResponse'
+            $ref: '#/definitions/internal_routes_api.PriceBracketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get price bracket distribution
       tags:
       - analytics
@@ -785,11 +785,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PriceTrendResponse'
+            $ref: '#/definitions/internal_routes_api.PriceTrendResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get price trend analysis
       tags:
       - analytics
@@ -804,11 +804,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PropertyTypeDistributionResponse'
+            $ref: '#/definitions/internal_routes_api.PropertyTypeDistributionResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get property type distribution
       tags:
       - analytics
@@ -823,11 +823,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.TimeRangeResponse'
+            $ref: '#/definitions/internal_routes_api.TimeRangeResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get available time range for analytics
       tags:
       - analytics
@@ -857,11 +857,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.TopActiveAreaResponse'
+            $ref: '#/definitions/internal_routes_api.TopActiveAreaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Get top active areas
       tags:
       - analytics
@@ -958,22 +958,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.GraphQLRequest'
+          $ref: '#/definitions/internal_routes_api.GraphQLRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.GraphQLResponse'
+            $ref: '#/definitions/internal_routes_api.GraphQLResponse'
         "400":
           description: Invalid GraphQL request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized (if authentication is required for specific operation)
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: Unified GraphQL API
       tags:
       - GraphQL
@@ -989,26 +989,26 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/api.LoginBody'
+          $ref: '#/definitions/internal_routes_api.LoginBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.LoginResponse'
+            $ref: '#/definitions/internal_routes_api.LoginResponse'
         "400":
           description: Invalid request body
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Invalid username or password
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       summary: User login
       tags:
       - auth
@@ -1023,7 +1023,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
       summary: User logout
       tags:
       - auth
@@ -1038,26 +1038,26 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/api.ChangePasswordRequest'
+          $ref: '#/definitions/internal_routes_api.ChangePasswordRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.BaseResponse'
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.ErrorResponse'
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
       security:
       - JwtAuth: []
       summary: Change own password
