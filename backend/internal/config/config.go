@@ -31,11 +31,14 @@ type OptionRedis struct {
 }
 
 type OptionBucket struct {
-	Endpoint   string `env:"BUCKET_ENDPOINT" envDefault:"http://localhost:9000"`
-	AccessKey  string `env:"RUSTFS_ACCESS_KEY" envDefault:"rustfsadmin"`
-	SecretKey  string `env:"RUSTFS_SECRET_KEY" envDefault:"rustfsadmin"`
-	UseSSL     bool   `env:"BUCKET_USE_SSL" envDefault:"false"`
-	BucketName string `env:"BUCKET_NAME" envDefault:"property-data"`
+	Endpoint             string `env:"BUCKET_ENDPOINT" envDefault:"http://localhost:9000"`
+	Region               string `env:"BUCKET_REGION" envDefault:"us-east-1"`
+	AccessKey            string `env:"RUSTFS_ACCESS_KEY" envDefault:"rustfsadmin"`
+	SecretKey            string `env:"RUSTFS_SECRET_KEY" envDefault:"rustfsadmin"`
+	UseSSL               bool   `env:"BUCKET_USE_SSL" envDefault:"false"`
+	UsePathStyle         bool   `env:"BUCKET_USE_PATH_STYLE" envDefault:"true"`
+	AvoidUnsignedPayload bool   `env:"BUCKET_AVOID_UNSIGNED_PAYLOAD" envDefault:"false"`
+	BucketName           string `env:"BUCKET_NAME" envDefault:"property-data"`
 }
 
 type Option struct {

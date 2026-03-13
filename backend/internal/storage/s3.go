@@ -40,9 +40,14 @@ func NewS3Service(opt config.OptionBucket) (repository.BucketService, error) {
 
 	creds := credentials.NewStaticCredentialsProvider(opt.AccessKey, opt.SecretKey, "")
 
-	// Some S3-compatible backends prefer an empty region
+	// Use configured region
+	region := opt.Region
+	if region == "" {
+		region = "us-east-1"
+	}
+
 	awsCfg, err := awsconfig.LoadDefaultConfig(context.TODO(),
-		awsconfig.WithRegion("us-east-1"),
+		awsconfig.WithRegion(region),
 		awsconfig.WithCredentialsProvider(creds),
 	)
 
@@ -50,18 +55,13 @@ func NewS3Service(opt config.OptionBucket) (repository.BucketService, error) {
 		return nil, fmt.Errorf("failed to load AWS config: %w", err)
 	}
 
-	// s3Client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
-	// 	o.BaseEndpoint = aws.String(fmt.Sprintf("%s://%s", u.Scheme, u.Host))
-	// 	o.UsePathStyle = true
-	// 	// S3 compatible backends often need unsigned payload for streaming/multipart
-	// 	o.APIOptions = append(o.APIOptions, v4.SwapComputePayloadSHA256ForUnsignedPayloadMiddleware)
-	// })
-
 	s3Client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
 		o.BaseEndpoint = aws.String(endpoint)
-		o.UsePathStyle = true
+		o.UsePathStyle = opt.UsePathStyle
 		// S3 compatible backends often need unsigned payload for streaming/multipart
-		o.APIOptions = append(o.APIOptions, v4.SwapComputePayloadSHA256ForUnsignedPayloadMiddleware)
+		if !opt.AvoidUnsignedPayload {
+			o.APIOptions = append(o.APIOptions, v4.SwapComputePayloadSHA256ForUnsignedPayloadMiddleware)
+		}
 	})
 
 	uploader := manager.NewUploader(s3Client)
