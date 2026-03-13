@@ -206,6 +206,7 @@ export type { BackendInternalModelsPropertyTypeDistributionResult } from "./mode
 export type { BackendInternalModelsTimeRangeResult } from "./models/backendInternalModels/TimeRangeResult.ts";
 export type { BackendInternalModelsTopActiveAreaResult } from "./models/backendInternalModels/TopActiveAreaResult.ts";
 export type { BackendInternalModelsUser } from "./models/backendInternalModels/User.ts";
+export type { BackendInternalModelsUserDTO } from "./models/backendInternalModels/UserDTO.ts";
 export type { InternalRoutesApiAffordabilityResponse } from "./models/internalRoutesApi/AffordabilityResponse.ts";
 export type { InternalRoutesApiBaseResponse } from "./models/internalRoutesApi/BaseResponse.ts";
 export type { InternalRoutesApiChangePasswordRequest } from "./models/internalRoutesApi/ChangePasswordRequest.ts";
@@ -350,6 +351,7 @@ export { backendInternalModelsPriceTrendResultSchema } from "./zod/backendIntern
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./zod/backendInternalModels/propertyTypeDistributionResultSchema.ts";
 export { backendInternalModelsTimeRangeResultSchema } from "./zod/backendInternalModels/timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./zod/backendInternalModels/topActiveAreaResultSchema.ts";
+export { backendInternalModelsUserDTOSchema } from "./zod/backendInternalModels/userDTOSchema.ts";
 export { backendInternalModelsUserSchema } from "./zod/backendInternalModels/userSchema.ts";
 export {
   deleteAdminUsersId200Schema,

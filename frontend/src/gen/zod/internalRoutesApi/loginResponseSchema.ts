@@ -3,13 +3,13 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsUserSchema } from "../backendInternalModels/userSchema.ts";
+import { backendInternalModelsUserDTOSchema } from "../backendInternalModels/userDTOSchema.ts";
 import { z } from "zod/v4";
 
 export const internalRoutesApiLoginResponseSchema = z.object({
   status: z.optional(z.boolean()),
   token: z.optional(z.string()),
   get user() {
-    return backendInternalModelsUserSchema.optional();
+    return backendInternalModelsUserDTOSchema.optional();
   },
 });

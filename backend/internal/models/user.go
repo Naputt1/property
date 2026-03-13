@@ -22,6 +22,22 @@ func (User) TableName() string {
 	return "users"
 }
 
+type UserDTO struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
+func (u *User) ToDTO() UserDTO {
+	return UserDTO{
+		ID:       u.ID,
+		Username: u.Username,
+		Name:     u.Name,
+		IsAdmin:  u.IsAdmin,
+	}
+}
+
 type UserJwt struct {
 	Id int64 `json:"id"`
 }

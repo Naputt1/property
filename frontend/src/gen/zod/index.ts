@@ -7,6 +7,7 @@ export { backendInternalModelsPriceTrendResultSchema } from "./backendInternalMo
 export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./backendInternalModels/propertyTypeDistributionResultSchema.ts";
 export { backendInternalModelsTimeRangeResultSchema } from "./backendInternalModels/timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./backendInternalModels/topActiveAreaResultSchema.ts";
+export { backendInternalModelsUserDTOSchema } from "./backendInternalModels/userDTOSchema.ts";
 export { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
 export {
   deleteAdminUsersId200Schema,
