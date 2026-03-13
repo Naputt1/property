@@ -4,7 +4,7 @@ set -e
 # Configuration
 # Change these if your Tailscale URLs or ports are different
 BACKEND_URL="${BACKEND_URL:-https://property.napnap.work/api}" # Or use tailscale IP if bypassing Cloudflare for API too
-RUSTFS_URL="${RUSTFS_URL:-http://rustfs.property.ras-pi.tail0684eb.ts.net:9000}"
+RUSTFS_URL="${RUSTFS_URL:-http://rustfs.property.ras-pi.tail0684eb.ts.net}"
 RUSTFS_ACCESS_KEY="${RUSTFS_ACCESS_KEY:-rustfsadmin}"
 RUSTFS_SECRET_KEY="${RUSTFS_SECRET_KEY:-rustfsadmin}" # Use your actual secret key
 BUCKET_NAME="${BUCKET_NAME:-property-data}"
