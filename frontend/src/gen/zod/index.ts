@@ -8,7 +8,6 @@ export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./bac
 export { backendInternalModelsTimeRangeResultSchema } from "./backendInternalModels/timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./backendInternalModels/topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserDTOSchema } from "./backendInternalModels/userDTOSchema.ts";
-export { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
 export {
   deleteAdminUsersId200Schema,
   deleteAdminUsersId400Schema,

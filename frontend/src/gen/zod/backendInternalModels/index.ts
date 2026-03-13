@@ -8,4 +8,3 @@ export { backendInternalModelsPropertyTypeDistributionResultSchema } from "./pro
 export { backendInternalModelsTimeRangeResultSchema } from "./timeRangeResultSchema.ts";
 export { backendInternalModelsTopActiveAreaResultSchema } from "./topActiveAreaResultSchema.ts";
 export { backendInternalModelsUserDTOSchema } from "./userDTOSchema.ts";
-export { backendInternalModelsUserSchema } from "./userSchema.ts";

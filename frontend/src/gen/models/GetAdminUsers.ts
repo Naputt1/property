@@ -3,13 +3,13 @@
  * Do not edit manually.
  */
 
-import type { BackendInternalModelsUser } from "./backendInternalModels/User.ts";
+import type { BackendInternalModelsUserDTO } from "./backendInternalModels/UserDTO.ts";
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
 
 /**
  * @description OK
  */
-export type GetAdminUsers200 = BackendInternalModelsUser[];
+export type GetAdminUsers200 = BackendInternalModelsUserDTO[];
 
 /**
  * @description Unauthorized

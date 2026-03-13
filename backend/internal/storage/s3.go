@@ -17,6 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/smithy-go"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 )
 
 type S3Service struct {
@@ -59,6 +60,8 @@ func NewS3Service(opt config.OptionBucket) (repository.BucketService, error) {
 	s3Client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
 		o.BaseEndpoint = aws.String(endpoint)
 		o.UsePathStyle = true
+		// S3 compatible backends often need unsigned payload for streaming/multipart
+		o.APIOptions = append(o.APIOptions, v4.SwapComputePayloadSHA256ForUnsignedPayloadMiddleware)
 	})
 
 	uploader := manager.NewUploader(s3Client)

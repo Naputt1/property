@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import { backendInternalModelsUserSchema } from "./backendInternalModels/userSchema.ts";
+import { backendInternalModelsUserDTOSchema } from "./backendInternalModels/userDTOSchema.ts";
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
 import { z } from "zod/v4";
 
@@ -11,7 +11,7 @@ import { z } from "zod/v4";
  * @description OK
  */
 export const getAdminUsers200Schema = z.array(
-  z.lazy(() => backendInternalModelsUserSchema),
+  z.lazy(() => backendInternalModelsUserDTOSchema),
 );
 
 /**
