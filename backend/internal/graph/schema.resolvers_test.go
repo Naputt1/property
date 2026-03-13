@@ -48,6 +48,11 @@ func (m *MockPropertyService) CreateBatch(ctx context.Context, properties []mode
 	return args.Error(0)
 }
 
+func (m *MockPropertyService) Truncate(ctx context.Context) error {
+	args := m.Called(ctx)
+	return args.Error(0)
+}
+
 type MockJobService struct {
 	mock.Mock
 }
@@ -79,6 +84,16 @@ func (m *MockJobService) UpdateJobProgress(ctx context.Context, id string, progr
 
 func (m *MockJobService) EnqueueAnalyticsRefresh(ctx context.Context, delay time.Duration) error {
 	args := m.Called(ctx, delay)
+	return args.Error(0)
+}
+
+func (m *MockJobService) Truncate(ctx context.Context) error {
+	args := m.Called(ctx)
+	return args.Error(0)
+}
+
+func (m *MockJobService) DeleteAllTasks(ctx context.Context, queues []string) error {
+	args := m.Called(ctx, queues)
 	return args.Error(0)
 }
 

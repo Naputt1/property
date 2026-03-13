@@ -251,6 +251,15 @@ func ReturnUnauth(c *gin.Context, cfg *config.Config) {
 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": false, "error": "Unauthorized"})
 }
 
+func GetUserFromContext(c *gin.Context) *models.UserJwt {
+	userData, ok := c.Get(config.CONTEXT_USER)
+	if !ok {
+		return nil
+	}
+	user := userData.(models.UserJwt)
+	return &user
+}
+
 func ClearToken(c *gin.Context, cfg *config.Config) {
 	c.SetCookie(token.ACCESS_TOKEN_NAME, "", -1, "/", "", cfg.Opt.IsProd, true)
 	c.SetCookie(token.REFRESH_TOKEN_NAME, "", -1, "/", "", cfg.Opt.IsProd, true)

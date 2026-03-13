@@ -37,7 +37,7 @@ func TestMapRecordToProperty(t *testing.T) {
 		assert.Equal(t, "D", prop.PropertyType)
 		assert.Equal(t, "London", prop.TownCity)
 		assert.Equal(t, "Greater London", prop.District) // Matches input
-		assert.Equal(t, "GREATER LONDON", prop.County) // Derived from SW postcode (uppercase from map)
+		assert.Equal(t, "Greater London", prop.County) // Derived from SW postcode (Title Case from map)
 	})
 
 	t.Run("17-column split postcode", func(t *testing.T) {
@@ -52,7 +52,7 @@ func TestMapRecordToProperty(t *testing.T) {
 		assert.Equal(t, "D", prop.PropertyType)
 		assert.Equal(t, "London", prop.TownCity)
 		assert.Equal(t, "Greater London", prop.District) // Matches input
-		assert.Equal(t, "GREATER LONDON", prop.County) // Derived from SW postcode (uppercase from map)
+		assert.Equal(t, "Greater London", prop.County) // Derived from SW postcode (Title Case from map)
 	})
 
 	t.Run("17-column shift verification", func(t *testing.T) {
@@ -68,8 +68,8 @@ func TestMapRecordToProperty(t *testing.T) {
 		assert.Equal(t, "T", prop.PropertyType)
 		assert.Equal(t, "Y", prop.OldNew)
 		assert.Equal(t, "L", prop.Duration)
-		assert.Equal(t, "TOWN", prop.TownCity)
-		assert.Equal(t, "DISTRICT", prop.District)
-		assert.Equal(t, "GREATER LONDON", prop.County) // Derived from SW1A
+		assert.Equal(t, "Town", prop.TownCity)
+		assert.Equal(t, "District", prop.District)
+		assert.Equal(t, "Greater London", prop.County) // Derived from SW1A
 	})
 }

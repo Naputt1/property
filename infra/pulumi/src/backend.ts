@@ -49,7 +49,7 @@ export function createBackend(
                     value: pulumi.interpolate`${redisHost}:6379`,
                   },
                   {
-                    name: "RUSTFS_URL",
+                    name: "BUCKET_ENDPOINT",
                     value: pulumi.interpolate`http://${rustfsHost}:${services.rustfs.spec.ports[0].port}`,
                   },
                   { name: "RUSTFS_ACCESS_KEY", value: "rustfsadmin" },

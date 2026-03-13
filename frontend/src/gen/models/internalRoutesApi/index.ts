@@ -1,5 +1,7 @@
 export type { InternalRoutesApiAffordabilityResponse } from "./AffordabilityResponse.ts";
 export type { InternalRoutesApiBaseResponse } from "./BaseResponse.ts";
+export type { InternalRoutesApiChangePasswordRequest } from "./ChangePasswordRequest.ts";
+export type { InternalRoutesApiCreateUserRequest } from "./CreateUserRequest.ts";
 export type { InternalRoutesApiErrorResponse } from "./ErrorResponse.ts";
 export type { InternalRoutesApiGraphQLError } from "./GraphQLError.ts";
 export type { InternalRoutesApiGraphQLLocation } from "./GraphQLLocation.ts";
@@ -16,3 +18,4 @@ export type { InternalRoutesApiPriceTrendResponse } from "./PriceTrendResponse.t
 export type { InternalRoutesApiPropertyTypeDistributionResponse } from "./PropertyTypeDistributionResponse.ts";
 export type { InternalRoutesApiTimeRangeResponse } from "./TimeRangeResponse.ts";
 export type { InternalRoutesApiTopActiveAreaResponse } from "./TopActiveAreaResponse.ts";
+export type { InternalRoutesApiUpdateUserRequest } from "./UpdateUserRequest.ts";

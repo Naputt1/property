@@ -140,11 +140,6 @@ function Admin() {
     }
   };
 
-  const handleLogout = () => {
-    clearAuth();
-    navigate({ to: "/login" });
-  };
-
   if (!user) return null;
 
   return (
@@ -156,17 +151,17 @@ function Admin() {
         </div>
         <div className="flex gap-4">
           <Link
+            to="/admin/users"
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Manage Users
+          </Link>
+          <Link
             to="/admin/properties"
             className="text-sm font-medium text-blue-600 hover:underline"
           >
             Manage Properties
           </Link>
-          <button
-            onClick={handleLogout}
-            className="text-sm font-medium text-red-600 hover:text-red-700"
-          >
-            Logout
-          </button>
         </div>
       </div>
 

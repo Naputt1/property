@@ -123,6 +123,32 @@ definitions:
         example: true
         type: boolean
     type: object
+  internal_routes_api.ChangePasswordRequest:
+    properties:
+      new_password:
+        minLength: 6
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  internal_routes_api.CreateUserRequest:
+    properties:
+      is_admin:
+        type: boolean
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   internal_routes_api.ErrorResponse:
     properties:
       error:
@@ -301,6 +327,17 @@ definitions:
         example: true
         type: boolean
     type: object
+  internal_routes_api.UpdateUserRequest:
+    properties:
+      is_admin:
+        type: boolean
+      name:
+        type: string
+      username:
+        type: string
+    required:
+    - username
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -463,6 +500,155 @@ paths:
       security:
       - JwtAuth: []
       summary: Upload CSV file directly
+      tags:
+      - admin
+  /admin/users:
+    get:
+      description: Get a list of all users. Admin only.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/backend_internal_models.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: List all users
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with specified role. Admin only.
+      parameters:
+      - description: User details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_routes_api.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Create a new user
+      tags:
+      - admin
+  /admin/users/{id}:
+    delete:
+      description: Delete a user by ID. Admin only.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Delete a user
+      tags:
+      - admin
+    put:
+      consumes:
+      - application/json
+      description: Update user details. Admin only.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_routes_api.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Update a user
       tags:
       - admin
   /analytics/affordability:
@@ -904,6 +1090,42 @@ paths:
       summary: User logout
       tags:
       - auth
+  /user/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Change the password of the currently logged-in user.
+      parameters:
+      - description: Password details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_routes_api.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_routes_api.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_routes_api.ErrorResponse'
+      security:
+      - JwtAuth: []
+      summary: Change own password
+      tags:
+      - user
 securityDefinitions:
   JwtAuth:
     description: Type 'Bearer ' followed by your JWT token in the input field. The

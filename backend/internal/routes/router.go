@@ -22,6 +22,7 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 	r.Use(middlewares.SlogMiddleware(), gin.Recovery())
 	r.Use(func(c *gin.Context) {
 		c.Set("config", cfg)
+		c.Set("services", svcs)
 		c.Next()
 	})
 
@@ -55,7 +56,7 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 
 	// Auth routes
 	authGroup := r.Group("/api/auth")
-	api.RegisterAuthRoutes(authGroup, cfg)
+	api.RegisterAuthRoutes(authGroup, cfg, svcs)
 
 	// Protected routes
 	apiGroup := r.Group("/api")
@@ -63,6 +64,9 @@ func SetupRouter(cfg *config.Config, svcs *services.Services) *gin.Engine {
 	{
 		analyticsGroup := apiGroup.Group("/analytics")
 		api.RegisterAnalyticsRoutes(analyticsGroup, cfg, svcs.Analytics)
+
+		userGroup := apiGroup.Group("/user")
+		api.RegisterUserRoutes(userGroup, cfg, svcs)
 
 		adminGroup := apiGroup.Group("/admin")
 		adminGroup.Use(middlewares.AdminMiddleware())

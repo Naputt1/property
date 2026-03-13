@@ -36,3 +36,17 @@ func (r *userRepository) GetByID(ctx context.Context, id int64) (*models.User, e
 	}
 	return &user, nil
 }
+
+func (r *userRepository) List(ctx context.Context) ([]*models.User, error) {
+	var users []*models.User
+	err := r.db.WithContext(ctx).Order("id asc").Find(&users).Error
+	return users, err
+}
+
+func (r *userRepository) Update(ctx context.Context, user *models.User) error {
+	return r.db.WithContext(ctx).Save(user).Error
+}
+
+func (r *userRepository) Delete(ctx context.Context, id int64) error {
+	return r.db.WithContext(ctx).Delete(&models.User{}, id).Error
+}
