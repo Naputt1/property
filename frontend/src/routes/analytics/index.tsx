@@ -151,7 +151,7 @@ function Analytics() {
           <div className="h-87.5 w-full">
             {!loadingTrends ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={priceTrends}>
+                <LineChart data={priceTrends as any}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="period" fontSize={12} tickMargin={10} />
                   <YAxis
@@ -204,7 +204,7 @@ function Analytics() {
           <div className="h-87.5 w-full">
             {!loadingActivityTrends ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={activityTrends}>
+                <LineChart data={activityTrends as any}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="period" fontSize={12} tickMargin={10} />
                   <YAxis fontSize={12} />
@@ -250,7 +250,7 @@ function Analytics() {
           <div className="h-87.5 w-full">
             {!loadingMedian ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={medianPrices?.slice(0, 15)}>
+                <BarChart data={medianPrices as any}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="region" fontSize={12} tickMargin={10} />
                   <YAxis
@@ -300,7 +300,7 @@ function Analytics() {
           <div className="h-87.5 w-full">
             {!loadingPremium ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={newBuildPremium?.slice(0, 10)}>
+                <BarChart data={newBuildPremium as any}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="region" fontSize={10} />
                   <YAxis
@@ -309,19 +309,17 @@ function Analytics() {
                   />
                   <Tooltip
                     formatter={(value: any) => formatPrice(Number(value))}
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
                   />
-                  <Legend />
                   <Bar
-                    dataKey="new_avg"
+                    dataKey="premium_percentage"
                     fill="var(--color-chart-4)"
-                    name="New Build Avg"
                     radius={[4, 4, 0, 0]}
-                  />
-                  <Bar
-                    dataKey="old_avg"
-                    fill="var(--color-muted-foreground)"
-                    name="Established Avg"
-                    radius={[4, 4, 0, 0]}
+                    name="Premium %"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -358,7 +356,7 @@ function Analytics() {
               </thead>
               <tbody className="divide-y divide-border">
                 {!loadingActiveAreas ? (
-                  activeAreas?.map((area: any, i: number) => (
+                  (activeAreas as any)?.map((area: any, i: number) => (
                     <tr key={i} className="hover:bg-muted/50 transition-colors">
                       <td className="px-4 py-3 font-medium">{area.region}</td>
                       <td className="px-4 py-3 text-right font-mono">
@@ -395,7 +393,7 @@ function Analytics() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={typeDistribution}
+                    data={typeDistribution as any}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -405,7 +403,7 @@ function Analytics() {
                     nameKey="property_type"
                     label={({ name }) => getPropertyTypeName(name)}
                   >
-                    {typeDistribution?.map((_, index: number) => (
+                    {(typeDistribution as any)?.map((_: any, index: number) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -434,7 +432,7 @@ function Analytics() {
           <div className="h-75 w-full">
             {!loadingBracketDist ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={bracketDistribution}>
+                <BarChart data={bracketDistribution as any}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="bracket" fontSize={12} />
                   <YAxis fontSize={12} />
@@ -468,7 +466,7 @@ function Analytics() {
           <div className="h-87.5 w-full">
             {!loadingAffordability ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={affordability} layout="vertical">
+                <BarChart data={affordability as any} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                   <XAxis type="number" hide />
                   <YAxis
@@ -515,7 +513,7 @@ function Analytics() {
               </thead>
               <tbody className="divide-y divide-border">
                 {!loadingHotspots ? (
-                  hotspots?.map((h: any, i: number) => (
+                  (hotspots as any)?.map((h: any, i: number) => (
                     <tr key={i} className="hover:bg-muted/50 transition-colors">
                       <td className="px-4 py-3 font-medium">{h.region}</td>
                       <td className="px-4 py-3">

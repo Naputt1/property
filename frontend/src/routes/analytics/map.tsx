@@ -46,8 +46,8 @@ function MapAnalytics() {
 
   // Initialize selected year from time range
   useEffect(() => {
-    if (timeRange && selectedYear === null && timeRange.max_year) {
-      setSelectedYear(timeRange.max_year);
+    if (timeRange && selectedYear === null && (timeRange as any).max_year) {
+      setSelectedYear((timeRange as any).max_year);
     }
   }, [timeRange, selectedYear]);
 
@@ -86,17 +86,17 @@ function MapAnalytics() {
   const mapData = useMemo(() => {
     let rawData: Array<{ region?: string; value?: number | bigint }> = [];
     if (metric === "median_price") {
-      rawData = (medianPrices || []).map((d: any) => ({
+      rawData = ((medianPrices as any) || []).map((d: any) => ({
         region: d.region,
         value: d.median_price,
       }));
     } else if (metric === "growth_rate") {
-      rawData = (hotspots || []).map((d: any) => ({
+      rawData = ((hotspots as any) || []).map((d: any) => ({
         region: d.region,
         value: d.growth_rate,
       }));
     } else {
-      rawData = (activeAreas || []).map((d: any) => ({
+      rawData = ((activeAreas as any) || []).map((d: any) => ({
         region: d.region,
         value: Number(d.transaction_count),
       }));
@@ -148,11 +148,11 @@ function MapAnalytics() {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-indigo-600 rounded-lg text-white">
-              <MapIcon className="h-6 w-6" />
+            <div className="p-2 bg-indigo-50 rounded-lg">
+              <MapIcon className="h-6 w-6 text-indigo-600" />
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">
-              UK Market Intelligence
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+              UK Housing <span className="text-indigo-600">Intelligence</span>
             </h1>
           </div>
           <p className="text-slate-500 font-medium max-w-2xl leading-relaxed">
@@ -186,13 +186,11 @@ function MapAnalytics() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700">
-                    Market Metric
+                    Active Metric
                   </label>
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="flex flex-col gap-2">
                     <Button
-                      variant={
-                        metric === "median_price" ? "default" : "outline"
-                      }
+                      variant={metric === "median_price" ? "default" : "outline"}
                       className={`justify-start gap-3 h-12 px-4 transition-all ${metric === "median_price" ? "bg-indigo-600 shadow-lg shadow-indigo-100" : "hover:bg-slate-50 border-slate-200"}`}
                       onClick={() => setMetric("median_price")}
                     >
@@ -231,7 +229,7 @@ function MapAnalytics() {
                       onChange={(e) => setRegionType(e.target.value as any)}
                     >
                       <option value="county">County Level</option>
-                      <option value="district">District Level</option>
+                      <option value="district">Local Authority (District)</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-indigo-500 transition-colors">
                       <svg
@@ -241,7 +239,7 @@ function MapAnalytics() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2"
+                        strokeWidth="3"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
@@ -251,47 +249,37 @@ function MapAnalytics() {
                   </div>
                 </div>
 
-                {timeRange && (
-                  <div className="space-y-6 pt-4 border-t border-slate-100">
-                    {metric === "growth_rate" && (
-                      <p className="text-[10px] text-slate-500 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
-                        Note: Growth rate compares the selected period to the
-                        same period in the previous year.
-                      </p>
-                    )}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-indigo-500" />
-                          Year: {selectedYear}
-                        </label>
-                        <button
-                          onClick={() => setSelectedYear(null)}
-                          className={`text-[10px] font-bold uppercase tracking-wider ${selectedYear === null ? "text-indigo-600" : "text-slate-400 hover:text-indigo-600"}`}
-                        >
-                          All Time
-                        </button>
-                      </div>
-                      <Slider
-                        value={[
-                          selectedYear ||
-                            (timeRange?.max_year ?? new Date().getFullYear()),
-                        ]}
-                        min={timeRange?.min_year ?? 1995}
-                        max={timeRange?.max_year ?? new Date().getFullYear()}
-                        step={1}
-                        onValueChange={([val]) => setSelectedYear(val)}
-                        className={selectedYear === null ? "opacity-40" : ""}
-                      />
-                      <div className="flex justify-between text-[10px] font-bold text-slate-400">
-                        <span>{timeRange?.min_year ?? 1995}</span>
-                        <span>
-                          {timeRange?.max_year ?? new Date().getFullYear()}
-                        </span>
-                      </div>
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-bold text-slate-700">
+                      Time Horizon
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setSelectedYear(null)}
+                        className={`text-[10px] font-bold uppercase tracking-wider ${selectedYear === null ? "text-indigo-600" : "text-slate-400 hover:text-indigo-600"}`}
+                      >
+                        All Time
+                      </button>
                     </div>
                   </div>
-                )}
+                  <div className="pt-2 px-1">
+                    <Slider
+                      value={[selectedYear || ((timeRange as any)?.max_year ?? 2024)]}
+                      min={(timeRange as any)?.min_year ?? 1995}
+                      max={(timeRange as any)?.max_year ?? new Date().getFullYear()}
+                      step={1}
+                      onValueChange={([val]) => setSelectedYear(val)}
+                      className={selectedYear === null ? "opacity-40" : ""}
+                    />
+                    <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-400">
+                      <span>{(timeRange as any)?.min_year ?? 1995}</span>
+                      <span>
+                        {(timeRange as any)?.max_year ?? new Date().getFullYear()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
