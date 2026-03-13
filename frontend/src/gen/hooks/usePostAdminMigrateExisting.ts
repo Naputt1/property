@@ -12,6 +12,8 @@ import type {
   PostAdminMigrateExistingMutationResponse,
   PostAdminMigrateExistingQueryParams,
   PostAdminMigrateExisting400,
+  PostAdminMigrateExisting401,
+  PostAdminMigrateExisting403,
   PostAdminMigrateExisting500,
 } from "../models/PostAdminMigrateExisting.ts";
 import type {
@@ -36,7 +38,10 @@ export function postAdminMigrateExistingMutationOptions<TContext = unknown>(
   return mutationOptions<
     PostAdminMigrateExistingMutationResponse,
     ResponseErrorConfig<
-      PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+      | PostAdminMigrateExisting400
+      | PostAdminMigrateExisting401
+      | PostAdminMigrateExisting403
+      | PostAdminMigrateExisting500
     >,
     { params: PostAdminMigrateExistingQueryParams },
     TContext
@@ -58,7 +63,10 @@ export function usePostAdminMigrateExisting<TContext>(
     mutation?: UseMutationOptions<
       PostAdminMigrateExistingMutationResponse,
       ResponseErrorConfig<
-        PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+        | PostAdminMigrateExisting400
+        | PostAdminMigrateExisting401
+        | PostAdminMigrateExisting403
+        | PostAdminMigrateExisting500
       >,
       { params: PostAdminMigrateExistingQueryParams },
       TContext
@@ -76,7 +84,10 @@ export function usePostAdminMigrateExisting<TContext>(
   ) as UseMutationOptions<
     PostAdminMigrateExistingMutationResponse,
     ResponseErrorConfig<
-      PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+      | PostAdminMigrateExisting400
+      | PostAdminMigrateExisting401
+      | PostAdminMigrateExisting403
+      | PostAdminMigrateExisting500
     >,
     { params: PostAdminMigrateExistingQueryParams },
     TContext
@@ -85,7 +96,10 @@ export function usePostAdminMigrateExisting<TContext>(
   return useMutation<
     PostAdminMigrateExistingMutationResponse,
     ResponseErrorConfig<
-      PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+      | PostAdminMigrateExisting400
+      | PostAdminMigrateExisting401
+      | PostAdminMigrateExisting403
+      | PostAdminMigrateExisting500
     >,
     { params: PostAdminMigrateExistingQueryParams },
     TContext
@@ -99,7 +113,10 @@ export function usePostAdminMigrateExisting<TContext>(
   ) as UseMutationResult<
     PostAdminMigrateExistingMutationResponse,
     ResponseErrorConfig<
-      PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+      | PostAdminMigrateExisting400
+      | PostAdminMigrateExisting401
+      | PostAdminMigrateExisting403
+      | PostAdminMigrateExisting500
     >,
     { params: PostAdminMigrateExistingQueryParams },
     TContext

@@ -11,6 +11,7 @@ import type {
 import type {
   GetAnalyticsGrowthHotspotsQueryResponse,
   GetAnalyticsGrowthHotspotsQueryParams,
+  GetAnalyticsGrowthHotspots401,
   GetAnalyticsGrowthHotspots500,
 } from "../models/GetAnalyticsGrowthHotspots.ts";
 import type {
@@ -38,7 +39,9 @@ export function getAnalyticsGrowthHotspotsSuspenseQueryOptions(
   const queryKey = getAnalyticsGrowthHotspotsSuspenseQueryKey(params);
   return queryOptions<
     GetAnalyticsGrowthHotspotsQueryResponse,
-    ResponseErrorConfig<GetAnalyticsGrowthHotspots500>,
+    ResponseErrorConfig<
+      GetAnalyticsGrowthHotspots401 | GetAnalyticsGrowthHotspots500
+    >,
     GetAnalyticsGrowthHotspotsQueryResponse,
     typeof queryKey
   >({
@@ -66,7 +69,9 @@ export function useGetAnalyticsGrowthHotspotsSuspense<
     query?: Partial<
       UseSuspenseQueryOptions<
         GetAnalyticsGrowthHotspotsQueryResponse,
-        ResponseErrorConfig<GetAnalyticsGrowthHotspots500>,
+        ResponseErrorConfig<
+          GetAnalyticsGrowthHotspots401 | GetAnalyticsGrowthHotspots500
+        >,
         TData,
         TQueryKey
       >
@@ -89,7 +94,9 @@ export function useGetAnalyticsGrowthHotspotsSuspense<
     queryClient,
   ) as UseSuspenseQueryResult<
     TData,
-    ResponseErrorConfig<GetAnalyticsGrowthHotspots500>
+    ResponseErrorConfig<
+      GetAnalyticsGrowthHotspots401 | GetAnalyticsGrowthHotspots500
+    >
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

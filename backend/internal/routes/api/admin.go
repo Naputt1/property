@@ -23,6 +23,8 @@ import (
 // @Param filename query string true "Original filename"
 // @Success 202 {object} JobResponse
 // @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse "Unauthorized"
+// @Failure 403 {object} ErrorResponse "Forbidden (Admin only)"
 // @Failure 500 {object} ErrorResponse
 // @Router /admin/stream-upload [post]
 func StreamUploadCSV(c *gin.Context) {
@@ -94,6 +96,8 @@ func StreamUploadCSV(c *gin.Context) {
 // @Param file formData file true "CSV File"
 // @Success 202 {object} JobResponse
 // @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse "Unauthorized"
+// @Failure 403 {object} ErrorResponse "Forbidden (Admin only)"
 // @Failure 500 {object} ErrorResponse
 // @Router /admin/upload [post]
 func UploadCSV(c *gin.Context) {
@@ -158,6 +162,8 @@ func UploadCSV(c *gin.Context) {
 // @Produce json
 // @Security JwtAuth
 // @Success 200 {object} BaseResponse
+// @Failure 401 {object} ErrorResponse "Unauthorized"
+// @Failure 403 {object} ErrorResponse "Forbidden (Admin only)"
 // @Failure 500 {object} ErrorResponse
 // @Router /admin/reset [post]
 func ResetBackend(c *gin.Context) {
@@ -201,6 +207,8 @@ func ResetBackend(c *gin.Context) {
 // @Param hasHeader query boolean false "CSV has header"
 // @Success 202 {object} JobResponse
 // @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse "Unauthorized"
+// @Failure 403 {object} ErrorResponse "Forbidden (Admin only)"
 // @Failure 500 {object} ErrorResponse
 // @Router /admin/migrate-existing [post]
 func MigrateExisting(c *gin.Context) {

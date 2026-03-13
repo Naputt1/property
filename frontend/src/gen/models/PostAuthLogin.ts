@@ -5,17 +5,27 @@
 
 import type { InternalRoutesApiErrorResponse } from "./internalRoutesApi/ErrorResponse.ts";
 import type { InternalRoutesApiLoginBody } from "./internalRoutesApi/LoginBody.ts";
-import type { InternalRoutesApiLoginPayload } from "./internalRoutesApi/LoginPayload.ts";
+import type { InternalRoutesApiLoginResponse } from "./internalRoutesApi/LoginResponse.ts";
 
 /**
  * @description OK
  */
-export type PostAuthLogin200 = InternalRoutesApiLoginPayload;
+export type PostAuthLogin200 = InternalRoutesApiLoginResponse;
 
 /**
- * @description Unauthorized
+ * @description Invalid request body
+ */
+export type PostAuthLogin400 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Invalid username or password
  */
 export type PostAuthLogin401 = InternalRoutesApiErrorResponse;
+
+/**
+ * @description Internal server error
+ */
+export type PostAuthLogin500 = InternalRoutesApiErrorResponse;
 
 /**
  * @description User login credentials
@@ -27,5 +37,5 @@ export type PostAuthLoginMutationResponse = PostAuthLogin200;
 export type PostAuthLoginMutation = {
   Response: PostAuthLogin200;
   Request: PostAuthLoginMutationRequest;
-  Errors: PostAuthLogin401;
+  Errors: PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500;
 };

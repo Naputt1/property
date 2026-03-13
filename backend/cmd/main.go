@@ -40,6 +40,7 @@ import (
 // @securityDefinitions.apikey JwtAuth
 // @in header
 // @name Authorization
+// @description Type 'Bearer ' followed by your JWT token in the input field. The token can be obtained from the /auth/login endpoint.
 
 func main() {
 	flag.Parse()

@@ -28,6 +28,13 @@ export const getAnalyticsGrowthHotspots200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsGrowthHotspots401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsGrowthHotspots500Schema = z.lazy(

@@ -26,6 +26,11 @@ export type GetAnalyticsMedianPriceQueryParams = {
 export type GetAnalyticsMedianPrice200 = InternalRoutesApiMedianPriceResponse;
 
 /**
+ * @description Unauthorized
+ */
+export type GetAnalyticsMedianPrice401 = InternalRoutesApiErrorResponse;
+
+/**
  * @description Internal Server Error
  */
 export type GetAnalyticsMedianPrice500 = InternalRoutesApiErrorResponse;
@@ -35,5 +40,5 @@ export type GetAnalyticsMedianPriceQueryResponse = GetAnalyticsMedianPrice200;
 export type GetAnalyticsMedianPriceQuery = {
   Response: GetAnalyticsMedianPrice200;
   QueryParams: GetAnalyticsMedianPriceQueryParams;
-  Errors: GetAnalyticsMedianPrice500;
+  Errors: GetAnalyticsMedianPrice401 | GetAnalyticsMedianPrice500;
 };

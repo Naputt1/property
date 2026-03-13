@@ -211,6 +211,7 @@ func JwtSign(cfg *config.Config) func(*gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": true,
 			"user":   user,
+			"token":  accessTokenString,
 		})
 	}
 }

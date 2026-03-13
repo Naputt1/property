@@ -12,6 +12,8 @@ import type {
   PostAdminUploadMutationRequest,
   PostAdminUploadMutationResponse,
   PostAdminUpload400,
+  PostAdminUpload401,
+  PostAdminUpload403,
   PostAdminUpload500,
 } from "../models/PostAdminUpload.ts";
 import type {
@@ -37,7 +39,12 @@ export function postAdminUploadMutationOptions<TContext = unknown>(
   const mutationKey = postAdminUploadMutationKey();
   return mutationOptions<
     PostAdminUploadMutationResponse,
-    ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+    ResponseErrorConfig<
+      | PostAdminUpload400
+      | PostAdminUpload401
+      | PostAdminUpload403
+      | PostAdminUpload500
+    >,
     { data: PostAdminUploadMutationRequest },
     TContext
   >({
@@ -57,7 +64,12 @@ export function usePostAdminUpload<TContext>(
   options: {
     mutation?: UseMutationOptions<
       PostAdminUploadMutationResponse,
-      ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+      ResponseErrorConfig<
+        | PostAdminUpload400
+        | PostAdminUpload401
+        | PostAdminUpload403
+        | PostAdminUpload500
+      >,
       { data: PostAdminUploadMutationRequest },
       TContext
     > & { client?: QueryClient };
@@ -75,14 +87,24 @@ export function usePostAdminUpload<TContext>(
     config,
   ) as UseMutationOptions<
     PostAdminUploadMutationResponse,
-    ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+    ResponseErrorConfig<
+      | PostAdminUpload400
+      | PostAdminUpload401
+      | PostAdminUpload403
+      | PostAdminUpload500
+    >,
     { data: PostAdminUploadMutationRequest },
     TContext
   >;
 
   return useMutation<
     PostAdminUploadMutationResponse,
-    ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+    ResponseErrorConfig<
+      | PostAdminUpload400
+      | PostAdminUpload401
+      | PostAdminUpload403
+      | PostAdminUpload500
+    >,
     { data: PostAdminUploadMutationRequest },
     TContext
   >(
@@ -94,7 +116,12 @@ export function usePostAdminUpload<TContext>(
     queryClient,
   ) as UseMutationResult<
     PostAdminUploadMutationResponse,
-    ResponseErrorConfig<PostAdminUpload400 | PostAdminUpload500>,
+    ResponseErrorConfig<
+      | PostAdminUpload400
+      | PostAdminUpload401
+      | PostAdminUpload403
+      | PostAdminUpload500
+    >,
     { data: PostAdminUploadMutationRequest },
     TContext
   >;

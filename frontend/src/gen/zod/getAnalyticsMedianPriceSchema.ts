@@ -23,6 +23,13 @@ export const getAnalyticsMedianPrice200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsMedianPrice401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsMedianPrice500Schema = z.lazy(

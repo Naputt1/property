@@ -11,6 +11,7 @@ import type {
 import type {
   GetAnalyticsTopActiveAreasQueryResponse,
   GetAnalyticsTopActiveAreasQueryParams,
+  GetAnalyticsTopActiveAreas401,
   GetAnalyticsTopActiveAreas500,
 } from "../models/GetAnalyticsTopActiveAreas.ts";
 import type {
@@ -41,7 +42,9 @@ export function getAnalyticsTopActiveAreasQueryOptions(
   const queryKey = getAnalyticsTopActiveAreasQueryKey(params);
   return queryOptions<
     GetAnalyticsTopActiveAreasQueryResponse,
-    ResponseErrorConfig<GetAnalyticsTopActiveAreas500>,
+    ResponseErrorConfig<
+      GetAnalyticsTopActiveAreas401 | GetAnalyticsTopActiveAreas500
+    >,
     GetAnalyticsTopActiveAreasQueryResponse,
     typeof queryKey
   >({
@@ -70,7 +73,9 @@ export function useGetAnalyticsTopActiveAreas<
     query?: Partial<
       QueryObserverOptions<
         GetAnalyticsTopActiveAreasQueryResponse,
-        ResponseErrorConfig<GetAnalyticsTopActiveAreas500>,
+        ResponseErrorConfig<
+          GetAnalyticsTopActiveAreas401 | GetAnalyticsTopActiveAreas500
+        >,
         TData,
         TQueryData,
         TQueryKey
@@ -93,7 +98,9 @@ export function useGetAnalyticsTopActiveAreas<
     queryClient,
   ) as UseQueryResult<
     TData,
-    ResponseErrorConfig<GetAnalyticsTopActiveAreas500>
+    ResponseErrorConfig<
+      GetAnalyticsTopActiveAreas401 | GetAnalyticsTopActiveAreas500
+    >
   > & { queryKey: TQueryKey };
 
   query.queryKey = queryKey as TQueryKey;

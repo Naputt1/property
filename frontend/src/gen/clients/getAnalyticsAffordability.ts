@@ -11,6 +11,7 @@ import type {
 } from "../../services/kubb-client";
 import type {
   GetAnalyticsAffordabilityQueryResponse,
+  GetAnalyticsAffordability401,
   GetAnalyticsAffordability500,
 } from "../models/GetAnalyticsAffordability.ts";
 
@@ -31,7 +32,9 @@ export async function getAnalyticsAffordability(
 
   const res = await request<
     GetAnalyticsAffordabilityQueryResponse,
-    ResponseErrorConfig<GetAnalyticsAffordability500>,
+    ResponseErrorConfig<
+      GetAnalyticsAffordability401 | GetAnalyticsAffordability500
+    >,
     unknown
   >({
     method: "GET",

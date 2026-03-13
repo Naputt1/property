@@ -11,7 +11,9 @@ import type {
 import type {
   PostAuthLoginMutationRequest,
   PostAuthLoginMutationResponse,
+  PostAuthLogin400,
   PostAuthLogin401,
+  PostAuthLogin500,
 } from "../models/PostAuthLogin.ts";
 import type {
   UseMutationOptions,
@@ -35,7 +37,7 @@ export function postAuthLoginMutationOptions<TContext = unknown>(
   const mutationKey = postAuthLoginMutationKey();
   return mutationOptions<
     PostAuthLoginMutationResponse,
-    ResponseErrorConfig<PostAuthLogin401>,
+    ResponseErrorConfig<PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500>,
     { data: PostAuthLoginMutationRequest },
     TContext
   >({
@@ -47,7 +49,7 @@ export function postAuthLoginMutationOptions<TContext = unknown>(
 }
 
 /**
- * @description Log in a user with username and password
+ * @description Authenticate a user with username and password. Returns a JWT token and user info, and sets HTTP-only cookies for session management.
  * @summary User login
  * {@link /auth/login}
  */
@@ -55,7 +57,9 @@ export function usePostAuthLogin<TContext>(
   options: {
     mutation?: UseMutationOptions<
       PostAuthLoginMutationResponse,
-      ResponseErrorConfig<PostAuthLogin401>,
+      ResponseErrorConfig<
+        PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500
+      >,
       { data: PostAuthLoginMutationRequest },
       TContext
     > & { client?: QueryClient };
@@ -72,14 +76,14 @@ export function usePostAuthLogin<TContext>(
     config,
   ) as UseMutationOptions<
     PostAuthLoginMutationResponse,
-    ResponseErrorConfig<PostAuthLogin401>,
+    ResponseErrorConfig<PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500>,
     { data: PostAuthLoginMutationRequest },
     TContext
   >;
 
   return useMutation<
     PostAuthLoginMutationResponse,
-    ResponseErrorConfig<PostAuthLogin401>,
+    ResponseErrorConfig<PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500>,
     { data: PostAuthLoginMutationRequest },
     TContext
   >(
@@ -91,7 +95,7 @@ export function usePostAuthLogin<TContext>(
     queryClient,
   ) as UseMutationResult<
     PostAuthLoginMutationResponse,
-    ResponseErrorConfig<PostAuthLogin401>,
+    ResponseErrorConfig<PostAuthLogin400 | PostAuthLogin401 | PostAuthLogin500>,
     { data: PostAuthLoginMutationRequest },
     TContext
   >;

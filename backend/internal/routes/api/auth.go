@@ -21,13 +21,15 @@ type LoginBody struct {
 
 // Login godoc
 // @Summary User login
-// @Description Log in a user with username and password
+// @Description Authenticate a user with username and password. Returns a JWT token and user info, and sets HTTP-only cookies for session management.
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Param body body LoginBody true "User login credentials"
-// @Success 200 {object} LoginPayload
-// @Failure 401 {object} ErrorResponse
+// @Success 200 {object} LoginResponse
+// @Failure 400 {object} ErrorResponse "Invalid request body"
+// @Failure 401 {object} ErrorResponse "Invalid username or password"
+// @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /auth/login [post]
 func Login(c *gin.Context) {
 	cfg := c.MustGet("config").(*config.Config)

@@ -22,6 +22,20 @@ export const postAdminUpload400Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const postAdminUpload401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export const postAdminUpload403Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const postAdminUpload500Schema = z.lazy(

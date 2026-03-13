@@ -13,6 +13,8 @@ import type {
   PostAdminMigrateExistingMutationResponse,
   PostAdminMigrateExistingQueryParams,
   PostAdminMigrateExisting400,
+  PostAdminMigrateExisting401,
+  PostAdminMigrateExisting403,
   PostAdminMigrateExisting500,
 } from "../models/PostAdminMigrateExisting.ts";
 
@@ -35,7 +37,10 @@ export async function postAdminMigrateExisting(
   const res = await request<
     PostAdminMigrateExistingMutationResponse,
     ResponseErrorConfig<
-      PostAdminMigrateExisting400 | PostAdminMigrateExisting500
+      | PostAdminMigrateExisting400
+      | PostAdminMigrateExisting401
+      | PostAdminMigrateExisting403
+      | PostAdminMigrateExisting500
     >,
     unknown
   >({

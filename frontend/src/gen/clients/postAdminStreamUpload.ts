@@ -13,6 +13,8 @@ import type {
   PostAdminStreamUploadMutationResponse,
   PostAdminStreamUploadQueryParams,
   PostAdminStreamUpload400,
+  PostAdminStreamUpload401,
+  PostAdminStreamUpload403,
   PostAdminStreamUpload500,
 } from "../models/PostAdminStreamUpload.ts";
 
@@ -34,7 +36,12 @@ export async function postAdminStreamUpload(
 
   const res = await request<
     PostAdminStreamUploadMutationResponse,
-    ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+    ResponseErrorConfig<
+      | PostAdminStreamUpload400
+      | PostAdminStreamUpload401
+      | PostAdminStreamUpload403
+      | PostAdminStreamUpload500
+    >,
     unknown
   >({
     method: "POST",

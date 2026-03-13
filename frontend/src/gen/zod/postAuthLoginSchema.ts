@@ -5,20 +5,34 @@
 
 import { internalRoutesApiErrorResponseSchema } from "./internalRoutesApi/errorResponseSchema.ts";
 import { internalRoutesApiLoginBodySchema } from "./internalRoutesApi/loginBodySchema.ts";
-import { internalRoutesApiLoginPayloadSchema } from "./internalRoutesApi/loginPayloadSchema.ts";
+import { internalRoutesApiLoginResponseSchema } from "./internalRoutesApi/loginResponseSchema.ts";
 import { z } from "zod/v4";
 
 /**
  * @description OK
  */
 export const postAuthLogin200Schema = z.lazy(
-  () => internalRoutesApiLoginPayloadSchema,
+  () => internalRoutesApiLoginResponseSchema,
 );
 
 /**
- * @description Unauthorized
+ * @description Invalid request body
+ */
+export const postAuthLogin400Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Invalid username or password
  */
 export const postAuthLogin401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Internal server error
+ */
+export const postAuthLogin500Schema = z.lazy(
   () => internalRoutesApiErrorResponseSchema,
 );
 

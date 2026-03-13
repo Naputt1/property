@@ -12,6 +12,8 @@ import type {
   PostAdminStreamUploadMutationResponse,
   PostAdminStreamUploadQueryParams,
   PostAdminStreamUpload400,
+  PostAdminStreamUpload401,
+  PostAdminStreamUpload403,
   PostAdminStreamUpload500,
 } from "../models/PostAdminStreamUpload.ts";
 import type {
@@ -35,7 +37,12 @@ export function postAdminStreamUploadMutationOptions<TContext = unknown>(
   const mutationKey = postAdminStreamUploadMutationKey();
   return mutationOptions<
     PostAdminStreamUploadMutationResponse,
-    ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+    ResponseErrorConfig<
+      | PostAdminStreamUpload400
+      | PostAdminStreamUpload401
+      | PostAdminStreamUpload403
+      | PostAdminStreamUpload500
+    >,
     { params: PostAdminStreamUploadQueryParams },
     TContext
   >({
@@ -55,7 +62,12 @@ export function usePostAdminStreamUpload<TContext>(
   options: {
     mutation?: UseMutationOptions<
       PostAdminStreamUploadMutationResponse,
-      ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+      ResponseErrorConfig<
+        | PostAdminStreamUpload400
+        | PostAdminStreamUpload401
+        | PostAdminStreamUpload403
+        | PostAdminStreamUpload500
+      >,
       { params: PostAdminStreamUploadQueryParams },
       TContext
     > & { client?: QueryClient };
@@ -71,14 +83,24 @@ export function usePostAdminStreamUpload<TContext>(
     config,
   ) as UseMutationOptions<
     PostAdminStreamUploadMutationResponse,
-    ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+    ResponseErrorConfig<
+      | PostAdminStreamUpload400
+      | PostAdminStreamUpload401
+      | PostAdminStreamUpload403
+      | PostAdminStreamUpload500
+    >,
     { params: PostAdminStreamUploadQueryParams },
     TContext
   >;
 
   return useMutation<
     PostAdminStreamUploadMutationResponse,
-    ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+    ResponseErrorConfig<
+      | PostAdminStreamUpload400
+      | PostAdminStreamUpload401
+      | PostAdminStreamUpload403
+      | PostAdminStreamUpload500
+    >,
     { params: PostAdminStreamUploadQueryParams },
     TContext
   >(
@@ -90,7 +112,12 @@ export function usePostAdminStreamUpload<TContext>(
     queryClient,
   ) as UseMutationResult<
     PostAdminStreamUploadMutationResponse,
-    ResponseErrorConfig<PostAdminStreamUpload400 | PostAdminStreamUpload500>,
+    ResponseErrorConfig<
+      | PostAdminStreamUpload400
+      | PostAdminStreamUpload401
+      | PostAdminStreamUpload403
+      | PostAdminStreamUpload500
+    >,
     { params: PostAdminStreamUploadQueryParams },
     TContext
   >;

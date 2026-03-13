@@ -5,7 +5,11 @@
 
 import type { BackendInternalModelsUser } from "../backendInternalModels/User.ts";
 
-export type InternalRoutesApiLoginPayload = {
+export type InternalRoutesApiLoginResponse = {
+  /**
+   * @type boolean | undefined
+   */
+  status?: boolean;
   /**
    * @type string | undefined
    */

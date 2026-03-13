@@ -15,6 +15,20 @@ export const postAdminReset200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const postAdminReset401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export const postAdminReset403Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const postAdminReset500Schema = z.lazy(

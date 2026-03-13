@@ -19,6 +19,13 @@ export const getAnalyticsPriceTrend200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsPriceTrend401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsPriceTrend500Schema = z.lazy(

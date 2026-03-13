@@ -15,6 +15,13 @@ export const getAnalyticsPropertyTypeDistribution200Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const getAnalyticsPropertyTypeDistribution401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const getAnalyticsPropertyTypeDistribution500Schema = z.lazy(

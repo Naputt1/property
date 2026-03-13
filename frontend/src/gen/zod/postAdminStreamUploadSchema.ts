@@ -26,6 +26,20 @@ export const postAdminStreamUpload400Schema = z.lazy(
 );
 
 /**
+ * @description Unauthorized
+ */
+export const postAdminStreamUpload401Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
+ * @description Forbidden (Admin only)
+ */
+export const postAdminStreamUpload403Schema = z.lazy(
+  () => internalRoutesApiErrorResponseSchema,
+);
+
+/**
  * @description Internal Server Error
  */
 export const postAdminStreamUpload500Schema = z.lazy(

@@ -10,6 +10,8 @@ import type {
 } from "../../services/kubb-client";
 import type {
   PostAdminResetMutationResponse,
+  PostAdminReset401,
+  PostAdminReset403,
   PostAdminReset500,
 } from "../models/PostAdminReset.ts";
 import type {
@@ -33,7 +35,9 @@ export function postAdminResetMutationOptions<TContext = unknown>(
   const mutationKey = postAdminResetMutationKey();
   return mutationOptions<
     PostAdminResetMutationResponse,
-    ResponseErrorConfig<PostAdminReset500>,
+    ResponseErrorConfig<
+      PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+    >,
     void,
     TContext
   >({
@@ -53,7 +57,9 @@ export function usePostAdminReset<TContext>(
   options: {
     mutation?: UseMutationOptions<
       PostAdminResetMutationResponse,
-      ResponseErrorConfig<PostAdminReset500>,
+      ResponseErrorConfig<
+        PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+      >,
       void,
       TContext
     > & { client?: QueryClient };
@@ -69,14 +75,18 @@ export function usePostAdminReset<TContext>(
     config,
   ) as UseMutationOptions<
     PostAdminResetMutationResponse,
-    ResponseErrorConfig<PostAdminReset500>,
+    ResponseErrorConfig<
+      PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+    >,
     void,
     TContext
   >;
 
   return useMutation<
     PostAdminResetMutationResponse,
-    ResponseErrorConfig<PostAdminReset500>,
+    ResponseErrorConfig<
+      PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+    >,
     void,
     TContext
   >(
@@ -88,7 +98,9 @@ export function usePostAdminReset<TContext>(
     queryClient,
   ) as UseMutationResult<
     PostAdminResetMutationResponse,
-    ResponseErrorConfig<PostAdminReset500>,
+    ResponseErrorConfig<
+      PostAdminReset401 | PostAdminReset403 | PostAdminReset500
+    >,
     void,
     TContext
   >;
