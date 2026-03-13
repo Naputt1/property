@@ -46,8 +46,21 @@ RESET_RESPONSE=$(curl -s -X POST "$BACKEND_URL/admin/reset" \
 echo "Reset response: $RESET_RESPONSE"
 
 echo "--- 3. Uploading Dataset to RustFS (S3) via Tailscale ---"
-# Using AWS CLI if available, otherwise fallback to curl
-FILENAME=$(basename "$DATASET_FILE")
+# Compress dataset if it's not already compressed
+if [[ "$DATASET_FILE" != *.gz ]]; then
+    echo "Compressing $DATASET_FILE (this might take a minute)..."
+    # Use pigz if available for faster compression, otherwise fallback to gzip
+    if command -v pigz &> /dev/null; then
+        pigz -c "$DATASET_FILE" > "$DATASET_FILE.gz"
+    else
+        gzip -c "$DATASET_FILE" > "$DATASET_FILE.gz"
+    fi
+    UPLOAD_FILE="$DATASET_FILE.gz"
+else
+    UPLOAD_FILE="$DATASET_FILE"
+fi
+
+FILENAME=$(basename "$UPLOAD_FILE")
 BUCKET_KEY="uploads/$(date +%s)-$FILENAME"
 
 if command -v aws &> /dev/null; then
@@ -56,16 +69,57 @@ if command -v aws &> /dev/null; then
     export AWS_SECRET_ACCESS_KEY="$RUSTFS_SECRET_KEY"
     export AWS_DEFAULT_REGION="us-east-1"
 
+    # Configure AWS CLI for better reliability on large files
+    echo "Configuring AWS CLI for large file upload (concurrency: 10, chunksize: 32MB, timeout: 300s)..."
+    aws configure set default.s3.max_concurrent_requests 10
+    aws configure set default.s3.multipart_chunksize 32MB
+    aws configure set default.s3.multipart_threshold 128MB
+    aws configure set default.s3.max_attempts 20
+    # Note: connect_timeout and read_timeout are set in config file, or use global options if supported
+
     # Ensure bucket exists (ignore error if it already exists)
     echo "Ensuring bucket $BUCKET_NAME exists..."
     aws s3 mb "s3://$BUCKET_NAME" --endpoint-url "$RUSTFS_URL" --no-verify-ssl || true
     
-    aws s3 cp "$DATASET_FILE" "s3://$BUCKET_NAME/$BUCKET_KEY" \
-        --endpoint-url "$RUSTFS_URL" \
-        --no-verify-ssl
+    # Calculate file size in bytes
+    FILE_SIZE=$(wc -c < "$UPLOAD_FILE" | tr -d ' ')
+    echo "Upload file size ($UPLOAD_FILE): $FILE_SIZE bytes"
+
+    # Retry loop for upload
+    MAX_RETRIES=5
+    RETRY_COUNT=0
+    SUCCESS=false
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        echo "Uploading $UPLOAD_FILE (Attempt $((RETRY_COUNT+1))/$MAX_RETRIES)..."
+        if aws s3 cp "$UPLOAD_FILE" "s3://$BUCKET_NAME/$BUCKET_KEY" \
+            --endpoint-url "$RUSTFS_URL" \
+            --no-verify-ssl \
+            --cli-read-timeout 300 \
+            --cli-connect-timeout 300 \
+            --expected-size "$FILE_SIZE"; then
+            SUCCESS=true
+            break
+        else
+            RETRY_COUNT=$((RETRY_COUNT+1))
+            echo "Upload failed. Waiting 20 seconds before retry..."
+            sleep 20
+        fi
+    done
+
+    if [ "$SUCCESS" = false ]; then
+        echo "Error: Upload failed after $MAX_RETRIES attempts."
+        # Clean up temporary gz file if we created it
+        if [[ "$DATASET_FILE" != *.gz ]]; then rm -f "$UPLOAD_FILE"; fi
+        exit 1
+    fi
 else
     echo "AWS CLI not found, using curl for upload (this might be slower for very large files)..."
-    curl -v -X PUT -T "$DATASET_FILE" "$RUSTFS_URL/$BUCKET_NAME/$BUCKET_KEY"
+    curl -v -X PUT -T "$UPLOAD_FILE" "$RUSTFS_URL/$BUCKET_NAME/$BUCKET_KEY"
+fi
+
+# Clean up temporary gz file if we created it
+if [[ "$DATASET_FILE" != *.gz ]]; then
+    rm -f "$UPLOAD_FILE"
 fi
 
 echo "Upload completed: $BUCKET_KEY"
