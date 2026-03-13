@@ -6,7 +6,7 @@ export function createIngress(
   ns: Namespace,
   services: { backend: Service; rustfs: Service },
 ) {
-  const frontendHosts = ["property.napnap.work", "ras-pi.tail0684eb.ts.net"];
+  const frontendHosts = ["property.napnap.work"];
   const rustfsHost = "rustfs.property.ras-pi.tail0684eb.ts.net";
 
   const spaFallback = new k8s.apiextensions.CustomResource("spa-fallback", {
@@ -64,7 +64,7 @@ export function createIngress(
       },
     },
     spec: {
-      rules: frontendHosts.map((host) => ({
+      rules: [...frontendHosts, rustfsHost].map((host) => ({
         host,
         http: {
           paths: [
