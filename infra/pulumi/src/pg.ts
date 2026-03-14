@@ -39,6 +39,12 @@ export function createPostgres(ns: Namespace, config: pulumi.Config) {
                 { name: "POSTGRES_DB", value: "property" },
               ],
               ports: [{ containerPort: 5432 }],
+              volumeMounts: [
+                {
+                  name: "postgres-data",
+                  mountPath: "/var/lib/postgresql/data",
+                },
+              ],
             },
           ],
           volumes: [

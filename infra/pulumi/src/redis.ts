@@ -32,6 +32,12 @@ export function createRedis(ns: Namespace, config: pulumi.Config) {
               name: "redis",
               image: "redis:7-alpine",
               ports: [{ containerPort: 6379 }],
+              volumeMounts: [
+                {
+                  name: "redis-data",
+                  mountPath: "/data",
+                },
+              ],
             },
           ],
           volumes: [
