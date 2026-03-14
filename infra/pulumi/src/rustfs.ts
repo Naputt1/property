@@ -39,6 +39,12 @@ export function createRustFS(ns: Namespace, config: pulumi.Config) {
                 { name: "RUSTFS_SECRET_KEY", value: rustfsPassword },
               ],
               ports: [{ containerPort: 9000 }, { containerPort: 9001 }],
+              volumeMounts: [
+                {
+                  name: "rustfs-data",
+                  mountPath: "/data",
+                },
+              ],
             },
           ],
           volumes: [
