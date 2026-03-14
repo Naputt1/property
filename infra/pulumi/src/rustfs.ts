@@ -29,6 +29,27 @@ export function createRustFS(ns: Namespace, config: pulumi.Config) {
       template: {
         metadata: { labels: rustfsLabels },
         spec: {
+          securityContext: {
+            fsGroup: 1000,
+            runAsUser: 1000,
+            runAsGroup: 1000,
+          },
+          initContainers: [
+            {
+              name: "fix-permissions",
+              image: "busybox",
+              command: ["sh", "-c", "chown -R 1000:1000 /data"],
+              securityContext: {
+                runAsUser: 0,
+              },
+              volumeMounts: [
+                {
+                  name: "rustfs-data",
+                  mountPath: "/data",
+                },
+              ],
+            },
+          ],
           containers: [
             {
               name: "rustfs",
@@ -40,10 +61,8 @@ export function createRustFS(ns: Namespace, config: pulumi.Config) {
               ],
               ports: [{ containerPort: 9000 }, { containerPort: 9001 }],
               volumeMounts: [
-                {
-                  name: "rustfs-data",
-                  mountPath: "/data",
-                },
+                { name: "rustfs-data", mountPath: "/data" },
+                { name: "rustfs-data", mountPath: "/logs" },
               ],
             },
           ],

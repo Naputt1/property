@@ -27,6 +27,19 @@ export function createRedis(ns: Namespace, config: pulumi.Config) {
       template: {
         metadata: { labels: redisLabels },
         spec: {
+          initContainers: [
+            {
+              name: "fix-permissions",
+              image: "busybox",
+              command: ["sh", "-c", "chown -R 999:999 /data"],
+              volumeMounts: [
+                {
+                  name: "redis-data",
+                  mountPath: "/data",
+                },
+              ],
+            },
+          ],
           containers: [
             {
               name: "redis",
