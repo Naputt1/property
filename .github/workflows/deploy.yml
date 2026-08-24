@@ -25,6 +25,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Fetch shared CI secrets from Infisical
+        uses: infisical/secrets-action@v1.0.16
+        with:
+          method: universal
+          domain: https://infisical.napnap.work
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          project-slug: github-3-unr
+          env-slug: prod
+
       - name: Filter changes
         id: filter
         uses: dorny/paths-filter@v3
@@ -85,8 +95,8 @@ jobs:
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          oauth-client-id: ${{ env.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ env.TS_OAUTH_SECRET }}
           tags: tag:ci
           hostname: github-runnervm
 
@@ -96,8 +106,11 @@ jobs:
 
       - name: Set up kubeconfig
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBECONFIG" > "$HOME/.kube/config"
+          # kubectl and the Pulumi k8s provider read $KUBECONFIG as a PATH,
+          # so repoint it at the file instead of the fetched secret content
+          echo "KUBECONFIG=$HOME/.kube/config" >> "$GITHUB_ENV"
 
       - name: Set up Pulumi
         id: pulumi
@@ -107,7 +120,7 @@ jobs:
           stack-name: Naputt1/property
           work-dir: infra/pulumi
         env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_ACCESS_TOKEN: ${{ env.PULUMI_ACCESS_TOKEN }}
 
       - name: Build and Deploy Frontend to RustFS
         run: |
@@ -129,4 +142,4 @@ jobs:
           ./upload-to-rustfs.sh
         env:
           BUCKET_NAME: ${{ env.BUCKET_NAME }}
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_ACCESS_TOKEN: ${{ env.PULUMI_ACCESS_TOKEN }}
