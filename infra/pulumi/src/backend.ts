@@ -13,6 +13,7 @@ export function createBackend(
   const rustfsPassword = config.requireSecret("rustfsPassword");
   const turnstileSiteKey = config.requireSecret("turnstileSiteKey");
   const turnstileSecretKey = config.requireSecret("turnstileSecretKey");
+  const replicas = config.getNumber("replicas") ?? 1;
 
   const dbHost = pulumi.interpolate`${services.postgres.metadata.name}.${ns.metadata.name}.svc.cluster.local`;
   const rustfsHost = pulumi.interpolate`${services.rustfs.metadata.name}.${ns.metadata.name}.svc.cluster.local`;
@@ -25,6 +26,7 @@ export function createBackend(
       metadata: { namespace: ns.metadata.name },
       spec: {
         selector: { matchLabels: backendLabels },
+        replicas,
         template: {
           metadata: { labels: backendLabels },
           spec: {

@@ -22,3 +22,4 @@ config:
     secure: AAABAKnL6hrpqagnzkQ+a91ptsIBC9ZEI5mYtqIvVf+JakfazWhU87ULNhbf+/dsl3Cvn4FDT9SbqG/faHA3KByXqSxNjnMQoJLIRg==
   property:cloudflareAccountId:
     secure: AAABAGDjd9U1eNrFmoUMZ3LI5l9Opi4DO+Wct6vUvYt92CZ5SpwWnL83DvlgNrWaYahxsr109uoptxBv8cL4Hg==
+  property:replicas: "0"

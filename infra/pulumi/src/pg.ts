@@ -4,6 +4,7 @@ import { Namespace } from "@pulumi/kubernetes/core/v1";
 
 export function createPostgres(ns: Namespace, config: pulumi.Config) {
   const dbPassword = config.requireSecret("dbPassword");
+  const replicas = config.getNumber("replicas") ?? 1;
 
   const postgresPvc = new k8s.core.v1.PersistentVolumeClaim("postgres-pvc", {
     metadata: {
@@ -26,6 +27,7 @@ export function createPostgres(ns: Namespace, config: pulumi.Config) {
     metadata: { namespace: ns.metadata.name },
     spec: {
       selector: { matchLabels: postgresLabels },
+        replicas,
       template: {
         metadata: { labels: postgresLabels },
         spec: {

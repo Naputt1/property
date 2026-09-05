@@ -3,6 +3,8 @@ import * as k8s from "@pulumi/kubernetes";
 import { Namespace } from "@pulumi/kubernetes/core/v1";
 
 export function createRedis(ns: Namespace, config: pulumi.Config) {
+  const replicas = config.getNumber("replicas") ?? 1;
+
   const redisPvc = new k8s.core.v1.PersistentVolumeClaim("redis-pvc", {
     metadata: {
       namespace: ns.metadata.name,
@@ -24,6 +26,7 @@ export function createRedis(ns: Namespace, config: pulumi.Config) {
     metadata: { namespace: ns.metadata.name },
     spec: {
       selector: { matchLabels: redisLabels },
+        replicas,
       template: {
         metadata: { labels: redisLabels },
         spec: {

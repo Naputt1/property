@@ -4,6 +4,7 @@ import { Namespace } from "@pulumi/kubernetes/core/v1";
 
 export function createRustFS(ns: Namespace, config: pulumi.Config) {
   const rustfsPassword = config.requireSecret("rustfsPassword");
+  const replicas = config.getNumber("replicas") ?? 1;
 
   const rustfsPvc = new k8s.core.v1.PersistentVolumeClaim("rustfs-pvc", {
     metadata: {
@@ -26,6 +27,7 @@ export function createRustFS(ns: Namespace, config: pulumi.Config) {
     metadata: { namespace: ns.metadata.name },
     spec: {
       selector: { matchLabels: rustfsLabels },
+        replicas,
       template: {
         metadata: { labels: rustfsLabels },
         spec: {

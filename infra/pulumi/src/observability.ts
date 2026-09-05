@@ -8,6 +8,7 @@ export function createObservability(
   services: { backend: Service; redis: Service },
   dependOn?: any[],
 ) {
+  const replicas = config.getNumber("replicas") ?? 1;
   const redisHost = pulumi.interpolate`${services.redis.metadata.name}.${ns.metadata.name}.svc.cluster.local`;
   const backendHost = pulumi.interpolate`${services.backend.metadata.name}.${ns.metadata.name}.svc.cluster.local`;
 
@@ -18,6 +19,7 @@ export function createObservability(
       metadata: { namespace: ns.metadata.name },
       spec: {
         selector: { matchLabels: asynqmonLabels },
+        replicas,
         template: {
           metadata: { labels: asynqmonLabels },
           spec: {
@@ -82,6 +84,7 @@ scrape_configs:
       metadata: { namespace: ns.metadata.name },
       spec: {
         selector: { matchLabels: prometheusLabels },
+        replicas,
         template: {
           metadata: { labels: prometheusLabels },
           spec: {
@@ -180,6 +183,7 @@ schema_config:
       metadata: { namespace: ns.metadata.name },
       spec: {
         selector: { matchLabels: lokiLabels },
+        replicas,
         template: {
           metadata: { labels: lokiLabels },
           spec: {
@@ -302,6 +306,13 @@ scrape_configs:
         template: {
           metadata: { labels: promtailLabels },
           spec: {
+            // DaemonSets have no replicas; gate scheduling on a node label
+            // that only exists when the stack is "on". Setting replicas=0
+            // applies this non-existent selector so promtail stops scheduling.
+            nodeSelector:
+              replicas > 0
+                ? {}
+                : { "gems/local-prevent-scheduling": "true" },
             serviceAccountName: promtailServiceAccount.metadata.name,
             initContainers: [
               {
@@ -611,6 +622,7 @@ providers:
       metadata: { namespace: ns.metadata.name },
       spec: {
         selector: { matchLabels: grafanaLabels },
+        replicas,
         template: {
           metadata: { labels: grafanaLabels },
           spec: {
